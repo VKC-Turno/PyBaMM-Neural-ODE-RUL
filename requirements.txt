@@ -1,0 +1,19 @@
+# Core simulation
+pybamm>=24.0
+scipy>=1.11
+numpy>=1.24
+
+# Neural ODE surrogate
+torch>=2.1
+torchdiffeq>=0.2.3
+
+# Data + IO
+pandas>=2.0
+pyarrow>=14.0
+
+# Config and utilities
+pyyaml>=6.0
+joblib>=1.3
+
+# Plotting
+matplotlib>=3.7

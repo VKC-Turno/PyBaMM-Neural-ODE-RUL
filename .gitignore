@@ -1,0 +1,33 @@
+# ── Proprietary data (never commit) ──
+data/
+Data/
+
+# ── PyBaMM run cache + intermediate outputs ──
+outputs/pybamm_cache/
+outputs/tuned_params/
+# Keep archived hold-out results committed (they're what the abstract cites):
+!outputs/holdout_sweep/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+
+# ── LaTeX aux ──
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+
+# ── Editor / OS ──
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# ── Notebooks ──
+.ipynb_checkpoints/
