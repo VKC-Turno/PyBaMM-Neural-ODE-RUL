@@ -18,103 +18,104 @@
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
-\setstretch{1.05}
+\usepackage{enumitem}
+\setstretch{1.02}
+\setlength{\parskip}{-0.1em}
 
 \graphicspath{{../outputs/holdout_sweep/}}
 
-% ── kill default title spacing
 \usepackage{titling}
 \setlength{\droptitle}{-2.2cm}
-
 \pagestyle{empty}
 
-\title{\vspace{-0.6cm}\textbf{\normalsize Physics-guided characterisation-time reduction for
-second-life LFP cells:\\ how few cycles does PyBaMM's reaction-limited SEI need?}}
-\author{\normalsize \textbf{\underline{Krishna Chaitanya Vaddepally}}$^{\dagger}$\\
-  \small $^{\dagger}$Presenting author. Turno (Blubble Pvt.\ Ltd.), India.\\
-  \small \texttt{battery.product@turno.club}}
-\date{\vspace{-0.25cm}\small \textbf{Category:} Physics-based Models
-      \quad $\bullet$ \quad \textbf{Preference:} Oral (poster acceptable)}
+\title{\vspace{-0.8cm}\textbf{\normalsize Physics-guided characterisation-time
+budgeting for second-life LFP cells:\\ how few cycles does PyBaMM's
+reaction-limited SEI need to predict remaining life?}}
+\author{\normalsize \underline{Krishna Chaitanya Vaddepally}\\[-0.2em]
+  \small \emph{Turno (Blubble Pvt.\ Ltd.), India} \quad
+  \texttt{battery.product@turno.club}}
+\date{}
 
 \begin{document}
 \maketitle
 \thispagestyle{empty}
 
-\vspace{-1.0em}
-\noindent\textbf{Motivation.}
+\vspace{-2.8em}
 Second-life repurposing of used lithium-iron-phosphate (LFP) cells for
 stationary energy storage is bottlenecked by characterisation cost:
 pack builders must estimate remaining useful life (RUL) with no
-beginning-of-life data and limited laboratory cycling time. We ask:
-\emph{how many measured cycles does a physics-based degradation
-model need before it can predict the remaining life of a used cell?}
+beginning-of-life data and limited cycling time. Prior PyBaMM-based
+work on second-life aging optimisation [3] and on physics-model
+generalisation via universal differential equations [4] improves
+calibration quality but does not quantify how much characterisation
+cycling is required for reliable RUL prediction. We ask: \emph{how
+many measured cycles does a physics-based degradation model need
+before it can predict the remaining life of a used cell?}
 
-\vspace{-0.3em}
-\noindent\textbf{Method.}
-We calibrate PyBaMM's reaction-limited SEI degradation model
-(\texttt{Prada2013} chemistry, isothermal 25\,$^{\circ}$C) against the
-measured fade slope of a used cell using only its first $K$ cycles, then
-run the calibrated model to the full measured horizon and score against
-the held-out cycles $K$--$N$. A single scalar (SEI exchange current density
-$j_{\text{SEI}}$) is fit per cell by bisection on
-$\log_{10}(j_{\text{SEI}})$; per-cell open-circuit voltage, initial
+We calibrate PyBaMM's [1] reaction-limited SEI degradation model
+(\texttt{Prada2013} chemistry [2], isothermal 25\,$^{\circ}$C) against
+the measured fade slope of a used cell using only its first $K$ cycles,
+then run the calibrated model to the full measured horizon and score
+against the held-out cycles $K$--$N$. A single scalar (SEI exchange
+current density $j_{\text{SEI}}$) is fit per cell by bisection on
+$\log_{10}(j_{\text{SEI}})$. Per-cell open-circuit voltage, initial
 state-of-health, and ohmic resistance are constrained from HPPC and
 OCV--SoC characterisation. We sweep $K \in \{50, 100, 200, 400, 800\}$
 across seven MFR\_A-cohort cells with clean long-trajectory records
 ($N > 1000$ cycles each) that pass an upstream reaction-limited-shape
-filter.
+filter. Calibration and hold-out sweeps are orchestrated by a Claude
+Code multi-agent pipeline (\texttt{AGENT\_PARAM\_ID},
+\texttt{AGENT\_VOLTARIS\_TUNING}, \texttt{AGENT\_SIMULATION}) released
+with the code.
 
-\vspace{-0.3em}
-\noindent\textbf{Result.}
-Prediction RMSE on held-out cycles drops from a median of 11.2\,pp SoH at
-$K=50$ to $1.4$\,pp at $K=100$ and $0.5$\,pp at $K=800$ (Fig.~\ref{fig:rmse}).
-At $K=400$, all 7/7 cells achieve $\text{RMSE}_{\text{test}} < 3$\,pp
-SoH: \textbf{400 vs.\ $\approx$1200 measured cycles per cell (3$\times$
-reduction, $\approx$4 months of test-lab time saved at 0.25\,C).} Five
-of seven cells already converge at $K=100$ with end-of-trajectory error
-below $0.4$\,pp (Fig.~\ref{fig:cell07}) --- a \textbf{12$\times$
-reduction} for that sub-cohort. The remaining two exhibit a
-post-formation recovery transient (positive apparent slope across
-cycles 50--200) and require $K \geq 400$; this signal itself classifies
-cells for correct calibration windowing.
+Prediction RMSE on held-out cycles drops from a median of 11.2\,pp SoH
+at $K=50$ to 1.4\,pp at $K=100$ and 0.5\,pp at $K=800$ (Fig.~1). At
+$K=400$, all 7/7 cells achieve $\text{RMSE}_{\text{test}} < 3$\,pp SoH:
+\textbf{400 vs.\ ${\approx}1200$ measured cycles per cell (3$\times$
+reduction, ${\approx}4$ months of test-lab time saved at 0.25\,C).}
+Five of seven cells already converge at $K=100$ with end-of-trajectory
+error below 0.4\,pp (Fig.~2), yielding a \textbf{12$\times$ reduction}
+for that sub-cohort. The remaining two exhibit a post-formation recovery
+transient (positive apparent slope across cycles 50--200) and require
+$K \geq 400$; this signal itself classifies cells for correct
+calibration windowing.
 
 % ── Figures side by side
-\vspace{-0.3em}
+\vspace{-0.6em}
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.42\textwidth}
     \includegraphics[width=\linewidth]{holdout_rmse_vs_K.png}
-    \caption{Held-out RMSE vs.\ training window $K$; red dashed = $3$\,pp
-      target.}
-    \label{fig:rmse}
+    \caption*{\footnotesize Figure 1: Held-out RMSE vs.\ training window
+      $K$; red dashed = 3\,pp SoH target.}
   \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.42\textwidth}
     \includegraphics[width=\linewidth]{fig2_trajectory_cell_07.png}
-    \caption{$K{=}100$-cycle fit predicts remaining $1345$ cycles of
-      cell~07 to $0.29$\,pp SoH RMSE.}
-    \label{fig:cell07}
+    \caption*{\footnotesize Figure 2: $K{=}100$-cycle fit predicts
+      remaining 1345 cycles of cell~07 to 0.29\,pp SoH RMSE.}
   \end{subfigure}
 \end{figure}
 
-\vspace{-1.2em}
-\noindent\textbf{Scope \& PyBaMM usage.}
+\vspace{-1.4em}
 The result holds only within the reaction-limited SEI regime. Cells
 flagged by an upstream shape filter (non-monotonic-early, three-regime,
-or accelerating anomalies) are excluded --- such shapes may reflect
-LAM domination (where PyBaMM's stress-driven LAM lacks saturation and
-overfits) or data-processing artefacts (batch-transition discontinuities
-in cycle records). PyBaMM (\texttt{v26.4.3}) is the calibration target
-and extrapolation engine; per-cell characterisation is mapped into the
-\texttt{Prada2013} parameter set via \texttt{build\_pybamm\_parameters},
-and bisection over $\log_{10}(j_{\text{SEI}})$ uses cached 10-cycle
-PyBaMM runs. Scripts released at
+or accelerating anomalies) are excluded --- such shapes may reflect LAM
+domination (where PyBaMM's stress-driven LAM lacks saturation) or
+data-processing artefacts (batch-transition discontinuities). All
+results are reproducible from the released sweep script (PyBaMM
+\texttt{v26.4.3}, full 35-run sweep ${\approx}30$~min on a single
+core). Code + archived results:
 \url{https://github.com/VKC-Turno/PyBaMM-Neural-ODE-RUL}.
 
-{\small
-\noindent\textbf{References.}
-[1] V. Sulzer et al., \emph{J.\ Open Res.\ Softw.} 9(1) 14--21 (2021).
-\;
-[2] M. Prada et al., \emph{J.\ Electrochem.\ Soc.} 160(4) A616--A628 (2013).
+\vspace{0.2em}
+{\scriptsize
+\noindent\textbf{References:}
+\begin{enumerate}[leftmargin=1.4em,itemsep=-0.2em,topsep=0em]
+\item V. Sulzer et al., \emph{Python Battery Mathematical Modelling (PyBaMM)}, J. Open Res. Softw. 9(1), 14--21 (2021).
+\item M. Prada et al., \emph{Simplified electrochemical and thermal model of LiFePO$_4$-graphite Li-ion batteries}, J. Electrochem. Soc. 160(4), A616--A628 (2013).
+\item O. Ouledboutaarija et al., \emph{Advancing Second-Life Lithium-Ion Batteries: Optimization Techniques}, PyBaMM Conf.\ 2025 Book of Abstracts, p.\ 19.
+\item J. A. Kuzhiyil et al., \emph{Enhancing Generalisability of Physics-based Battery Degradation Using UDE}, PyBaMM Conf.\ 2025 Book of Abstracts, p.\ 12.
+\end{enumerate}
 }
 
 \end{document}
