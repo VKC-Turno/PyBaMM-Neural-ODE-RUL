@@ -33,7 +33,7 @@ second-life LFP cells:\\ how few cycles does PyBaMM's reaction-limited SEI need?
 \author{\normalsize \textbf{\underline{Krishna Chaitanya Vaddepally}}$^{\dagger}$\\
   \small $^{\dagger}$Presenting author. Turno (Blubble Pvt.\ Ltd.), India.\\
   \small \texttt{battery.product@turno.club}}
-\date{\vspace{-0.5cm}\small \textbf{Category:} Physics-based Models
+\date{\vspace{-0.25cm}\small \textbf{Category:} Physics-based Models
       \quad $\bullet$ \quad \textbf{Preference:} Oral (poster acceptable)}
 
 \begin{document}
@@ -43,11 +43,10 @@ second-life LFP cells:\\ how few cycles does PyBaMM's reaction-limited SEI need?
 \vspace{-1.0em}
 \noindent\textbf{Motivation.}
 Second-life repurposing of used lithium-iron-phosphate (LFP) cells for
-stationary battery-energy-storage applications is bottlenecked by
-characterisation cost: pack builders must estimate remaining useful life
-(RUL) of cells for which no beginning-of-life data exists and for which
-laboratory cycling time is limited. We ask a direct engineering
-question: \emph{how many measured cycles does a physics-based degradation
+stationary energy storage is bottlenecked by characterisation cost:
+pack builders must estimate remaining useful life (RUL) with no
+beginning-of-life data and limited laboratory cycling time. We ask:
+\emph{how many measured cycles does a physics-based degradation
 model need before it can predict the remaining life of a used cell?}
 
 \vspace{-0.3em}
@@ -69,12 +68,13 @@ filter.
 \noindent\textbf{Result.}
 Prediction RMSE on held-out cycles drops from a median of 11.2\,pp SoH at
 $K=50$ to $1.4$\,pp at $K=100$ and $0.5$\,pp at $K=800$ (Fig.~\ref{fig:rmse}).
-At $K=400$ all 7/7 cells achieve
-$\text{RMSE}_{\text{test}} < 3$\,pp SoH --- a $65$--$75\%$ reduction in
-required cycling time versus full-trajectory calibration. Five of seven
-cells already converge at $K=100$ with end-of-trajectory error below
-$0.4$\,pp (Fig.~\ref{fig:cell07}). The remaining two exhibit a
-post-formation recovery transient (positive apparent fade slope across
+At $K=400$, all 7/7 cells achieve $\text{RMSE}_{\text{test}} < 3$\,pp
+SoH: \textbf{400 vs.\ $\approx$1200 measured cycles per cell (3$\times$
+reduction, $\approx$4 months of test-lab time saved at 0.25\,C).} Five
+of seven cells already converge at $K=100$ with end-of-trajectory error
+below $0.4$\,pp (Fig.~\ref{fig:cell07}) --- a \textbf{12$\times$
+reduction} for that sub-cohort. The remaining two exhibit a
+post-formation recovery transient (positive apparent slope across
 cycles 50--200) and require $K \geq 400$; this signal itself classifies
 cells for correct calibration windowing.
 
@@ -110,7 +110,6 @@ $\log_{10}(j_{\text{SEI}})$ uses cached 10-cycle PyBaMM runs. Scripts
 released at
 \url{https://github.com/VKC-Turno/PyBaMM-Neural-ODE-RUL}.
 
-\vspace{-0.6em}
 {\small
 \noindent\textbf{Acknowledgements.} The author thanks Sunil Kumar Rawat
 (Imperial College London) for developing the initial cell parameter
