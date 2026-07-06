@@ -98,23 +98,19 @@ cells for correct calibration windowing.
 
 \vspace{-1.2em}
 \noindent\textbf{Scope \& PyBaMM usage.}
-The result holds only within the reaction-limited SEI regime; cells where
-graphite loss-of-active-material dominates (identified upstream by
-non-monotonic-early or three-regime shape) fall outside this envelope
-because PyBaMM's stress-driven LAM formulation lacks saturation and
-overfits short calibration windows. PyBaMM (\texttt{v26.4.3}) is the
-calibration target and extrapolation engine; per-cell characterisation
-is mapped into the \texttt{Prada2013} parameter set via
-\texttt{build\_pybamm\_parameters}, and bisection over
-$\log_{10}(j_{\text{SEI}})$ uses cached 10-cycle PyBaMM runs. Scripts
-released at
+The result holds only within the reaction-limited SEI regime. Cells
+flagged by an upstream shape filter (non-monotonic-early, three-regime,
+or accelerating anomalies) are excluded --- such shapes may reflect
+LAM domination (where PyBaMM's stress-driven LAM lacks saturation and
+overfits) or data-processing artefacts (batch-transition discontinuities
+in cycle records). PyBaMM (\texttt{v26.4.3}) is the calibration target
+and extrapolation engine; per-cell characterisation is mapped into the
+\texttt{Prada2013} parameter set via \texttt{build\_pybamm\_parameters},
+and bisection over $\log_{10}(j_{\text{SEI}})$ uses cached 10-cycle
+PyBaMM runs. Scripts released at
 \url{https://github.com/VKC-Turno/PyBaMM-Neural-ODE-RUL}.
 
 {\small
-\noindent\textbf{Acknowledgements.} The author thanks Sunil Kumar Rawat
-(Imperial College London) for developing the initial cell parameter
-identification and first-life PyBaMM degradation model on which this
-work builds.\\[-0.3em]
 \noindent\textbf{References.}
 [1] V. Sulzer et al., \emph{J.\ Open Res.\ Softw.} 9(1) 14--21 (2021).
 \;
