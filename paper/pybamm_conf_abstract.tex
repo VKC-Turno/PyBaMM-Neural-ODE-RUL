@@ -19,13 +19,15 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
 \usepackage{enumitem}
-\setstretch{1.02}
-\setlength{\parskip}{-0.1em}
+\setstretch{1.08}
+% Block-paragraph style — no first-line indent, natural gap between paragraphs
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
 
 \graphicspath{{../outputs/holdout_sweep/}}
 
 \usepackage{titling}
-\setlength{\droptitle}{-2.2cm}
+\setlength{\droptitle}{-2.6cm}
 \pagestyle{empty}
 
 \title{\vspace{-0.8cm}\textbf{\normalsize Physics-guided characterisation-time
@@ -40,17 +42,16 @@ reaction-limited SEI need to predict remaining life?}}
 \maketitle
 \thispagestyle{empty}
 
-\vspace{-2.8em}
+\vspace{-3.2em}
 Second-life repurposing of used lithium-iron-phosphate (LFP) cells for
 stationary energy storage is bottlenecked by characterisation cost:
 pack builders must estimate remaining useful life (RUL) with no
 beginning-of-life data and limited cycling time. Prior PyBaMM-based
-work on second-life aging optimisation [3] and on physics-model
-generalisation via universal differential equations [4] improves
-calibration quality but does not quantify how much characterisation
-cycling is required for reliable RUL prediction. We ask: \emph{how
-many measured cycles does a physics-based degradation model need
-before it can predict the remaining life of a used cell?}
+work has optimised calibration [3] and generalised physics-based
+degradation models [4] but has not quantified the cycling budget
+required for reliable RUL prediction. We ask: \emph{how many measured
+cycles does a physics-based degradation model need before it can
+predict the remaining life of a used cell?}
 
 We calibrate PyBaMM's [1] reaction-limited SEI degradation model
 (\texttt{Prada2013} chemistry [2], isothermal 25\,$^{\circ}$C) against
@@ -81,7 +82,7 @@ $K \geq 400$; this signal itself classifies cells for correct
 calibration windowing.
 
 % ── Figures side by side
-\vspace{-0.6em}
+\vspace{-1.0em}
 \begin{figure}[h!]
   \centering
   \begin{subfigure}[t]{0.42\textwidth}
@@ -101,21 +102,23 @@ The result holds only within the reaction-limited SEI regime. Cells
 flagged by an upstream shape filter (non-monotonic-early, three-regime,
 or accelerating anomalies) are excluded --- such shapes may reflect LAM
 domination (where PyBaMM's stress-driven LAM lacks saturation) or
-data-processing artefacts (batch-transition discontinuities). All
-results are reproducible from the released sweep script (PyBaMM
-\texttt{v26.4.3}, full 35-run sweep ${\approx}30$~min on a single
-core). Code + archived results:
-\url{https://github.com/VKC-Turno/PyBaMM-Neural-ODE-RUL}.
+data-processing artefacts (batch-transition discontinuities). The full
+35-run sweep is reproducible on a single core in ${\approx}30$~min
+using PyBaMM \texttt{v26.4.3}.
 
-\vspace{0.2em}
+\vspace{-0.1em}
 {\scriptsize
-\noindent\textbf{References:}
-\begin{enumerate}[leftmargin=1.4em,itemsep=-0.2em,topsep=0em]
-\item V. Sulzer et al., \emph{Python Battery Mathematical Modelling (PyBaMM)}, J. Open Res. Softw. 9(1), 14--21 (2021).
-\item M. Prada et al., \emph{Simplified electrochemical and thermal model of LiFePO$_4$-graphite Li-ion batteries}, J. Electrochem. Soc. 160(4), A616--A628 (2013).
-\item O. Ouledboutaarija et al., \emph{Advancing Second-Life Lithium-Ion Batteries: Optimization Techniques}, PyBaMM Conf.\ 2025 Book of Abstracts, p.\ 19.
-\item J. A. Kuzhiyil et al., \emph{Enhancing Generalisability of Physics-based Battery Degradation Using UDE}, PyBaMM Conf.\ 2025 Book of Abstracts, p.\ 12.
-\end{enumerate}
-}
+\noindent\textbf{References.}\;
+[1] V. Sulzer et al., \emph{Python Battery Mathematical Modelling
+(PyBaMM)}, J. Open Res. Softw. 9(1), 14--21 (2021).\;
+[2] M. Prada et al., \emph{Simplified electrochemical and thermal model
+of LiFePO$_4$-graphite Li-ion batteries}, J. Electrochem. Soc. 160(4),
+A616--A628 (2013).\;
+[3] O. Ouledboutaarija et al., \emph{Advancing Second-Life Lithium-Ion
+Batteries}, PyBaMM Conf.\ 2025 Book of Abstracts, p.\ 19.\;
+[4] J. A. Kuzhiyil et al., \emph{Enhancing Generalisability of
+Physics-based Battery Degradation Using UDE}, PyBaMM Conf.\ 2025 Book
+of Abstracts, p.\ 12.
+\par}
 
 \end{document}
