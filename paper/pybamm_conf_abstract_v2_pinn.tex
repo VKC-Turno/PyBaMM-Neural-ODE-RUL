@@ -1,13 +1,16 @@
 % PyBaMM Conference 2026 — 1-page abstract, V2 (universal PINN)
-% Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
+% Submission requirements: A4, Arial >= 12pt, PDF, optional 1-2 figures
 % Deadline: 2026-07-15 UTC
-\documentclass[11pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 
+% ── Arial-equivalent (Helvetica) as default face; venue requires Arial >= 12pt
 \usepackage[T1]{fontenc}
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 
-\usepackage[a4paper,top=1.4cm,bottom=1.4cm,left=1.6cm,right=1.6cm]{geometry}
+% ── Tight A4 margins to fit content on a single page
+\usepackage[a4paper,top=1.8cm,bottom=1.8cm,left=1.8cm,right=1.8cm]{geometry}
+
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -15,9 +18,11 @@
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
-\setstretch{1.0}
+\usepackage{enumitem}
+\setstretch{1.08}
+% Block-paragraph style — no first-line indent, natural gap between paragraphs
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.25em}
+\setlength{\parskip}{0.4em}
 
 \graphicspath{{../outputs/make_agnostic/}}
 
@@ -25,89 +30,92 @@
 \setlength{\droptitle}{-2.6cm}
 \pagestyle{empty}
 
-\title{\vspace{-0.6cm}\textbf{\normalsize A universal physics-informed neural
-network for used-LFP RUL:\\ 50-cycle characterisation across three manufacturers,
-8$\times$ cycling reduction vs pure PyBaMM}}
-\author{\small \textbf{\underline{Krishna Chaitanya Vaddepally}}$^{\dagger}$\;
-  \small \emph{$^{\dagger}$Presenting author. Turno (Blubble Pvt.\ Ltd.), India.}\;
-  \small \texttt{battery.product@turno.club}}
-\date{\vspace{-0.5cm}\small \textbf{Category:} Physics-based Models
-      \; $\bullet$ \; \textbf{Preference:} Oral (poster acceptable)}
+\title{\vspace{-1.0cm}\textbf{\normalsize A universal physics-informed
+neural network for used-LFP RUL:\\ 50-cycle characterisation across
+three manufacturers, 8$\times$ cycling reduction vs pure PyBaMM}}
+\author{\normalsize \underline{Krishna Chaitanya Vaddepally}\\[-0.3em]
+  \small \emph{Turno (Blubble Pvt.\ Ltd.), India}}
+\date{}
 
 \begin{document}
 \maketitle
 \thispagestyle{empty}
 
-\vspace{-1.8em}
-\textbf{Motivation.} Second-life repurposing of used LFP cells for
+\vspace{-3.6em}
+Second-life repurposing of used lithium-iron-phosphate (LFP) cells for
 stationary energy storage is bottlenecked by characterisation cost:
 pack builders must estimate remaining useful life (RUL) with no
 beginning-of-life data and limited cycling. Pure PyBaMM~[1]
-reaction-limited SEI calibration requires $\approx$400 cycles per cell
-for $<3$\,pp SoH extrapolation error on used cells. Prior second-life
-optimisation~[3] and universal-differential-equation degradation~[4]
-work improves calibration quality without reducing the cycling budget.
-We ask: \emph{can one physics-informed neural network with fixed
-hyperparameters cut required characterisation across LFP manufacturers?}
+reaction-limited SEI calibration requires ${\approx}400$ cycles per
+cell for $<3$\,pp SoH extrapolation on used cells; prior work~[3,\,4]
+improves calibration quality but not the cycling budget. \emph{Can one
+physics-informed neural network with fixed hyperparameters cut required
+characterisation across LFP manufacturers?}
 
-\textbf{Method.} A joint PINN represents SoH as
+We train a joint PINN across all cells in a cohort:
 $\text{SoH}_\theta(n) = \text{SoH}_\text{init} -
-\text{softplus}(\text{NN}_\theta)$ (hard-monotonic decrement) with a
+\text{softplus}(\text{NN}_\theta)$ with hard-monotonic decrement and
 per-cell latent embedding. Physics constraint:
 $\text{d}\text{SoH}/\text{d}n = -k_\text{SEI}(i)\,\text{SoH}^{p(i)}$
-(Ramadass-canonical rxn-limited SEI~[5]), with per-cell learnable
+(Ramadass-canonical rxn-limited SEI~[5]) with per-cell learnable
 $(k_\text{SEI}, p)$ warm-started from a linear fit on the training
 window. Loss combines data MSE, physics MSE on collocation points
-across the full cycle domain, boundary anchoring, and monotonicity
-regularisation. Adam + cosine schedule, $\lambda_\text{phys}{=}2$, 10k
-epochs, $\approx$4~min on a single GPU.
+across the \emph{full} cycle domain, and boundary/monotonicity
+regularisation. Adam + cosine, 10k epochs, ${\approx}4$~min on a GPU.
 
-\textbf{Result.} 20 LFP cells across three manufacturers (7 MFR\_A,
-9 MFR\_C, 4 MFR\_B), \emph{identical} architecture and hyperparameters
-(K=50, $\approx$68k params): the joint PINN achieves held-out
-RMSE~$<3$\,pp on \textbf{18/20 cells} (Fig.~1a). On deep-second-life
-MFR\_A cells (15--25\,pp fade over 1000+ cy) where pure physics fails
-catastrophically (median 20\,pp), the PINN maintains
-\textbf{median 1.93\,pp} — a \textbf{10$\times$ reduction} and 7/7
-head-to-head wins (Fig.~1b). On near-fresh MFR\_B/MFR\_C cells
-(1--3\,pp fade) physics is already near-optimal ($<0.4$\,pp); the PINN
-matches without harm. \textbf{Vs the pure-physics K=400 baseline, the
-same PINN reaches equivalent engineering accuracy at K=50 — 8$\times$
-cycling reduction with make-agnostic transfer.}
+Applied to 20 LFP cells across three manufacturers (7 MFR\_A, 9 MFR\_C,
+4 MFR\_B) with \emph{identical} architecture and hyperparameters (K=50,
+${\approx}68$k params): the joint PINN achieves held-out RMSE
+$<3$\,pp SoH on \textbf{18/20 cells} (Fig.~1). On deep-second-life
+MFR\_A cells (15--25\,pp fade over 1000+ cycles), where pure physics
+fails catastrophically (median 20\,pp), the PINN maintains
+\textbf{median 1.93\,pp — a 10$\times$ reduction} and beats physics
+7/7 head-to-head (Fig.~2). On near-fresh MFR\_B/MFR\_C cells (1--3\,pp
+fade), physics is near-optimal ($<0.4$\,pp) and PINN matches without
+harm. \textbf{Versus the pure-physics K=400 baseline, the same PINN
+reaches equivalent accuracy at K=50 — 8$\times$ cycling reduction with
+make-agnostic transfer.}
 
-\vspace{-0.4em}
+% ── Figures side by side
+\vspace{-1.0em}
 \begin{figure}[h!]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \includegraphics[width=\linewidth]{anonymised_bar.png}
-    \caption{Per-cell held-out RMSE across 3 manufacturers (log scale).
-      MFR\_A physics towers above 3\,pp target; PINN matched or below across all makes.}
-    \label{fig:bar}
+    \caption*{\footnotesize Figure 1: Per-cell held-out RMSE across
+      3 manufacturers (log scale). MFR\_A physics bars tower above the
+      3\,pp target; PINN matched or below across all makes.}
   \end{subfigure}\hfill
   \begin{subfigure}[t]{0.49\textwidth}
     \includegraphics[width=\linewidth]{anonymised_mfr_a_grid.png}
-    \caption{MFR\_A trajectories (K=50). Physics dashed lines exit the frame with
-      impossible-SoH annotations; PINN green tracks measured.}
-    \label{fig:calb}
+    \caption*{\footnotesize Figure 2: MFR\_A trajectories (K=50).
+      Physics dashed lines exit the frame with impossible-SoH
+      annotations; PINN green tracks measured.}
   \end{subfigure}
 \end{figure}
 
-\vspace{-1.2em}
-\textbf{Scope \& PyBaMM usage.} Results hold for LFP at
-25\,$^{\circ}$C isothermal. Cells excluded by upstream shape filter
-(non-monotonic, three-regime, batch-transition data artefacts) remain
-out of scope — PINN cannot recover cells whose canonical trajectories
-don't correspond to a coherent lifetime. PyBaMM~\texttt{v26.4.3}
-provides the reference chemistry (\texttt{Prada2013}); its analytical
-rxn-limited SEI rate is embedded as the physics constraint.
+\vspace{0.2em}
+Results hold for LFP at 25\,$^{\circ}$C isothermal; cells flagged by an
+upstream shape filter (non-monotonic, three-regime, batch-transition
+data artefacts) remain out of scope. PyBaMM \texttt{v26.4.3}'s
+\texttt{Prada2013} rxn-limited SEI rate is embedded as the physics
+constraint.
 
-\vspace{-0.3em}
+\vspace{-0.1em}
 {\scriptsize
-\noindent\textbf{References.} \;
-[1] V. Sulzer et al., \emph{PyBaMM}, J. Open Res.\ Softw.\ 9(1) 14--21 (2021).\;
-[2] M. Prada et al., \emph{LiFePO$_4$-graphite Li-ion model}, J. Electrochem.\ Soc.\ 160(4) A616--A628 (2013).\;
-[3] O. Ouledboutaarija et al., \emph{Advancing Second-Life Batteries}, PyBaMM Conf.\ 2025, p.\ 19.\;
-[4] J. A. Kuzhiyil et al., \emph{Generalisability via UDE}, PyBaMM Conf.\ 2025, p.\ 12.\;
-[5] P. Ramadass et al., \emph{Capacity fade first-principles model}, J. Electrochem.\ Soc.\ 151(2) A196--A203 (2004).
+\noindent\textbf{References.}\;
+[1] V. Sulzer et al., \emph{Python Battery Mathematical Modelling
+(PyBaMM)}, J. Open Res. Softw. 9(1), 14--21 (2021).\;
+[2] M. Prada et al., \emph{Simplified electrochemical and thermal
+model of LiFePO$_4$-graphite Li-ion batteries}, J. Electrochem. Soc.
+160(4), A616--A628 (2013).\;
+[3] O. Ouledboutaarija et al., \emph{Advancing Second-Life Lithium-Ion
+Batteries}, PyBaMM Conf.\ 2025 Book of Abstracts, p.\ 19.\;
+[4] J. A. Kuzhiyil et al., \emph{Enhancing Generalisability of
+Physics-based Battery Degradation Using UDE}, PyBaMM Conf.\ 2025 Book
+of Abstracts, p.\ 12.\;
+[5] P. Ramadass et al., \emph{First-principles capacity fade model for
+Li-ion cells}, J. Electrochem. Soc. 151(2), A196--A203 (2004).
 \par}
+
 \end{document}
