@@ -71,30 +71,31 @@ Applied to 20 used LFP cells from three commercial suppliers
 (anonymised A/B/C for confidentiality --- 7, 9, 4 cells respectively),
 a single model trained on the first 50 cycles per cell predicts the
 remainder of each cell's life with held-out RMSE under 4 percentage
-points SoH on all 20 cells. One representative cell per supplier is
-shown in Fig.~1: on the deep-second-life supplier-A cell,
-linear-slope extrapolation exits the frame while the neural surrogate
-tracks measured across 1200+ cycles; on the light-fade supplier-B and
-supplier-C cells, both methods match measured to well under 1~pp.
-Relative to per-cell PyBaMM calibration at K=400, our approach
-reaches the same engineering accuracy from 50-cycle inputs --- an
-\textbf{8$\times$ reduction in required cycling budget, transferring
-across suppliers without per-supplier retraining}. In the talk we
-will discuss the failure modes of this transfer --- cells whose SoH
-trajectories violate the monotonic-fade assumption --- and outline
-extensions to non-isothermal operation and time-varying C-rate.
+points SoH on all 20 cells (all three suppliers stay under 1\,pp
+RMSE on their light-fade cohorts). Two representative cells are shown
+in Fig.~1: on the deep-second-life supplier-A cell, linear-slope
+extrapolation exits the frame while the neural surrogate tracks
+measured across 1200+ cycles; on the light-fade supplier-C cell, both
+methods sit under 0.2\,pp. Relative to per-cell PyBaMM calibration at
+K=400, our approach reaches the same engineering accuracy from
+50-cycle inputs --- an \textbf{8$\times$ reduction in required cycling
+budget, transferring across suppliers without per-supplier
+retraining}. In the talk we will discuss the failure modes of this
+transfer --- cells whose SoH trajectories violate the monotonic-fade
+assumption --- and outline extensions to non-isothermal operation and
+time-varying C-rate.
 
 \vspace{-0.5em}
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=\linewidth]{anonymised_best_per_supplier_v4.png}
-  \caption*{\footnotesize Figure 1: One representative cell per
-    supplier, ranked by peak deviation across the full held-out window
-    (K=50 training in orange, held-out in blue). On the
+  \includegraphics[width=0.78\linewidth]{anonymised_best_per_supplier_v4.png}
+  \caption*{\footnotesize Figure 1: Best-tracking cell per supplier
+    (ranked by peak deviation across the full held-out window). K=50
+    training window in orange, held-out in blue. On the
     deep-second-life supplier-A cell, linear-slope extrapolation
     (red-dashed) exits the frame while the neural surrogate (green)
     tracks measured across 1200+ cycles; on the light-fade supplier-C
-    and supplier-B cells both methods sit under 1\,pp.}
+    cell both methods sit under 0.2\,pp.}
 \end{figure}
 
 \vspace{-0.6em}
