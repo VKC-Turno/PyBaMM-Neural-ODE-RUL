@@ -17,6 +17,7 @@
 
 \usepackage{graphicx}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{microtype}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
@@ -70,27 +71,37 @@ Applied to 20 used LFP cells from three commercial suppliers
 (anonymised A/B/C for confidentiality --- 7, 9, 4 cells respectively),
 a single model trained on the first 50 cycles per cell predicts the
 remainder of each cell's life with held-out RMSE under 4 percentage
-points SoH on all 20 cells (Fig.~1). Direct linear-slope extrapolation
+points SoH on all 20 cells (Fig.~1a). Direct linear-slope extrapolation
 on the same 50-cycle window diverges: on the deep-second-life
 supplier-A cohort, its median error is ${\sim}20$~pp against the
-neural surrogate's 3~pp. Relative to per-cell PyBaMM calibration at
-K=400, our approach reaches the same engineering accuracy from
-50-cycle inputs --- an \textbf{8$\times$ reduction in required cycling
-budget, transferring across suppliers without per-supplier
-retraining}. In the talk we will discuss the failure modes of this
-transfer --- cells whose SoH trajectories violate the monotonic-fade
-assumption --- and outline extensions to non-isothermal operation and
-time-varying C-rate.
+neural surrogate's 3~pp (Fig.~1b). Relative to per-cell PyBaMM
+calibration at K=400, our approach reaches the same engineering
+accuracy from 50-cycle inputs --- an \textbf{8$\times$ reduction in
+required cycling budget, transferring across suppliers without
+per-supplier retraining}. In the talk we will discuss the failure
+modes of this transfer --- cells whose SoH trajectories violate the
+monotonic-fade assumption --- and outline extensions to non-isothermal
+operation and time-varying C-rate.
 
-\vspace{-0.5em}
+\vspace{-0.8em}
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.92\linewidth]{anonymised_bar_v3.png}
-  \caption*{\footnotesize Figure 1: Held-out RMSE per cell across three
-    LFP suppliers (log scale), from 50 training cycles. Linear-slope
-    extrapolation towers above the 3\,pp target on the deep-second-life
-    supplier-A cohort; the neural surrogate stays under 4\,pp on every
-    cell across all three suppliers.}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\linewidth]{anonymised_bar_v3.png}
+    \caption*{\footnotesize (a) Held-out RMSE per cell across three
+      LFP suppliers (log scale). Linear-slope extrapolation towers
+      above the 3\,pp target on the deep-second-life supplier-A
+      cohort; the neural surrogate stays under 4\,pp on every cell.}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[width=\linewidth]{anonymised_mfr_a_grid_v3.png}
+    \caption*{\footnotesize (b) Supplier-A trajectories from 50
+      training cycles (orange). Linear extrapolation (red) exits the
+      frame with impossible-SoH annotations; the neural surrogate
+      (green) tracks measured across 1000+ cycles.}
+  \end{subfigure}
+  \caption*{\footnotesize Figure 1: Held-out error at K=50 across the
+    20-cell used-LFP cohort.}
 \end{figure}
 
 \vspace{-0.6em}
