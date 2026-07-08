@@ -61,18 +61,17 @@ evolution that inherits PyBaMM's reaction-limited SEI ODE~[5] as a
 physics prior, grounded in the \texttt{Prada2013} LFP chemistry~[2].
 The network is shared across all cells in a cohort, with a small
 per-cell adjustment learned jointly so that a single set of
-hyperparameters covers cells from different suppliers. The ODE rate
-constant is initialised from a linear fit on the short measurement
-window and refined alongside the network. Training combines a data
-term on the measured window with a physics term that enforces PyBaMM's
-SEI rate across the full extrapolation domain.
+hyperparameters covers cells from different suppliers. Training
+combines a data term on the measured window with a physics term that
+enforces PyBaMM's SEI rate across the full extrapolation domain.
 
 Applied to 20 used LFP cells from three commercial suppliers
 (anonymised A/B/C for confidentiality --- 7, 9, 4 cells respectively),
-a single model trained on the first 50 cycles per cell predicts the
-remainder of each cell's life with held-out RMSE under 4 percentage
-points SoH on all 20 cells (all three suppliers stay under 1\,pp
-RMSE on their light-fade cohorts). Two representative cells are shown
+a single model trained on 50 cycles of per-cycle discharge-capacity
+data per cell (\emph{no DCIR, HPPC, GITT or OCV characterisation
+required}) predicts the remainder of each cell's life with held-out
+RMSE under 4 percentage points SoH on all 20 cells (all three
+suppliers stay under 1\,pp RMSE on their light-fade cohorts). Two representative cells are shown
 in Fig.~1: on the deep-second-life supplier-A cell, linear-slope
 extrapolation exits the frame while the neural surrogate tracks
 measured across 1200+ cycles; on the light-fade supplier-C cell, both
