@@ -73,24 +73,24 @@ Trained on the 300-sim corpus with $K=50$ input cycles, the operator
 predicts held-out synthetic trajectories to \textbf{1.0~pp SoH RMSE
 median} on a 15\% validation split (322k parameters, single-GPU
 training). Applied to a deep-second-life supplier-A cell at $K=50$,
-the model forecasts remaining useful life to a second-life EoSL
-threshold of $\text{SoH} = 0.40$ (below first-life $0.70{-}0.80$
-because repurposing pack builders run cells at low C-rates where
-usefulness extends further) --- a \textbf{1376-cycle RUL from 50
-measured cycles} (Fig.~1). This decouples the cycling budget from the
-extrapolation horizon.
+the model forecasts RUL to a second-life EoSL threshold of
+$\text{SoH} = 0.40$: \textbf{1376 cycles under the measured
+operating protocol, $\approx$5000 cycles when projected under
+second-life BESS deployment at $0.25$\,C} via an empirical LFP C-rate
+fade-rate scaling ($3.5\times$ slowdown, Fig.~1). Both projections
+decouple the cycling budget from the extrapolation horizon.
 
 \vspace{-0.5em}
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.75\linewidth]{anonymised_supplier_a_eosl_v5.png}
   \caption*{\footnotesize Figure 1: Neural-model RUL forecast for a
-    deep-second-life supplier-A cell. From $K=50$ measured cycles
-    (orange band), the model predicts across the held-out measurement
-    range (blue) and extrapolates past the last measurement (green) to
-    cross the second-life EoSL threshold ($\text{SoH} = 0.40$) at cycle
-    1428, forecasting a total RUL of 1376 cycles. Baseline uses our
-    warmstart PINN; the neural-operator formulation described here
+    deep-second-life supplier-A cell under two operating protocols.
+    From $K=50$ measured cycles (orange band), the green solid line
+    is the as-measured-protocol extrapolation reaching EoSL at cycle
+    1428 (RUL 1376 cy); the blue dashed line projects the same cell
+    under second-life BESS deployment at $0.25$\,C, reaching EoSL at
+    cycle $\sim$5000 (RUL 4941 cy). The neural-operator formulation
     retains the K=50 input budget and extends output to the full
     remaining-life horizon via PyBaMM-generated training trajectories.}
 \end{figure}
