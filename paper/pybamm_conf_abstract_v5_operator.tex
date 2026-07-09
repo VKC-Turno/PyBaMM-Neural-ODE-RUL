@@ -1,0 +1,113 @@
+% PyBaMM Conference 2026 — 1-page abstract, V5 (θ-conditioned neural operator)
+% Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
+% Deadline: 2026-07-15 UTC
+%
+% V5 changes vs V4: pivot from per-cell PINN to a θ-conditioned neural
+% operator, with PyBaMM as the physics-based data generator that
+% supplies the synthetic training corpus.
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[a4paper,top=1.8cm,bottom=1.8cm,left=1.8cm,right=1.8cm]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{setspace}
+\setstretch{1.08}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+
+\graphicspath{{../outputs/make_agnostic/}}
+
+\usepackage{titling}
+\setlength{\droptitle}{-2.6cm}
+\pagestyle{empty}
+
+\title{\vspace{-1.0cm}\textbf{\normalsize A physics-conditioned neural
+operator for used-LFP RUL:\\ PyBaMM as the synthetic-corpus generator,
+DCIR+RPT+50-cycle input}}
+\author{\normalsize \underline{Krishna Chaitanya Vaddepally}\\[-0.3em]
+  \small \emph{Turno (Blubble Pvt.\ Ltd.), India}}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\vspace{-3.6em}
+Second-life reuse of used lithium-iron-phosphate (LFP) cells for
+stationary energy storage is bottlenecked by characterisation cost.
+Per-cell PyBaMM~[1] calibration of degradation parameters against
+measured state-of-health (SoH) trajectories is reliable but requires
+$\gtrsim 400$ cycles per cell~[2]; below that, the fitted rates are
+under-determined. Prior second-life work~[3] and universal-differential-equation
+degradation~[4] improve calibration \emph{quality} without shrinking
+the cycling budget. We ask: \emph{can a physics-conditioned neural
+operator, pretrained on PyBaMM-generated synthetic trajectories,
+predict the full SoH curve of a new cell from a single characterisation
+snapshot plus a short cycling window?}
+
+We construct a two-stage pipeline. \emph{Stage 1 --- Physics corpus:}
+starting from PyBaMM's Prada2013 LFP chemistry with per-cell BOL
+parameters identified from OCV, GITT, HPPC and RPT on a
+supplier-B fresh-cell cohort (OCV RMSE 6.8~mV median, GITT R$^{2}$
+0.9999), we run a Sobol
+sweep of 300 simulations across five degradation channels ---
+$k_{\text{SEI}}$, SEI partial molar volume, lithium-plating exchange
+current, positive- and negative-electrode LAM rates --- producing 300
+synthetic SoH trajectories with paired ground-truth parameter vectors
+$\theta$. \emph{Stage 2 --- Neural operator:} a DeepONet~[5] variant
+whose branch consumes a five-stream fingerprint (DCIR profile, RPT
+capacity+IC-peak features, first-$K$ measured SoH values, the PyBaMM
+parameter vector $\theta$, and the cycling protocol) and whose trunk
+consumes the target cycle number; the output is
+$\text{SoH}(n) = \text{SoH}_{\text{init}} - \text{softplus}(\langle
+b, t \rangle)$, hard-monotonic by construction. The $\theta$-conditioning
+lets the operator absorb electrochemistry \emph{directly} from the
+Phase-1 param-ID step rather than reconstructing it from characterisation.
+
+Trained on the 300-sim corpus with $K=50$ input cycles, the operator
+predicts held-out synthetic trajectories to \textbf{1.0~pp SoH RMSE
+median} on a 15\% validation split (322k parameters, 500 epochs,
+$\sim$10~s per epoch on a single GPU). The talk will present three
+extensions being finalised: (i) an extended 300-sim $\times$
+1500-cycle corpus so the operator sees full end-of-life shape, not
+just early-window fade; (ii) fine-tuning on real cells from all three
+suppliers to correct any sim-to-real residual; (iii) evaluation of whether
+the operator's predictions transfer across three commercial LFP
+suppliers (anonymised A/B/C) without per-supplier retraining.
+
+\vspace{-0.5em}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.78\linewidth]{anonymised_best_per_supplier_v4.png}
+  \caption*{\footnotesize Figure 1: Best-tracking held-out cell per
+    supplier from our earlier PINN baseline (K=50, ranked by peak
+    deviation across the full held-out window). The neural-operator
+    reformulation retains this input budget while extending output to
+    the full remaining life; results on cells from all three suppliers
+    will be presented at the conference.}
+\end{figure}
+
+\vspace{-0.6em}
+{\scriptsize
+\noindent\textbf{References.}\;
+[1] V. Sulzer et al., \emph{PyBaMM}, J. Open Res. Softw. 9(1), 14--21 (2021).\;
+[2] M. Prada et al., \emph{Simplified electrochemical and thermal
+model of LiFePO$_4$-graphite Li-ion batteries}, J. Electrochem. Soc.
+160(4), A616--A628 (2013).\;
+[3] O. Ouledboutaarija et al., \emph{Advancing Second-Life Lithium-Ion
+Batteries}, PyBaMM Conf.\ 2025, p.\ 19.\;
+[4] J. A. Kuzhiyil et al., \emph{Enhancing Generalisability of
+Physics-based Battery Degradation Using UDE}, PyBaMM Conf.\ 2025,
+p.\ 12.\;
+[5] L. Lu et al., \emph{DeepONet: learning nonlinear operators for
+identifying differential equations}, Nat. Mach. Intell.\ 3, 218--229 (2021).
+\par}
+
+\end{document}
