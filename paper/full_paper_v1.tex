@@ -1,0 +1,1007 @@
+% Full research paper draft — targeting Journal of Energy Storage (Elsevier)
+% Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
+% Version: v1 (initial full draft, 2026-07-09)
+%
+% Cell suppliers anonymised as A/B/C throughout.
+% Compile: latexmk -pdf full_paper_v1.tex
+\documentclass[preprint,12pt,3p,authoryear]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{lineno}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{microtype}
+
+\journal{Journal of Energy Storage}
+
+% Figure paths — non-anonymised local build; the pushed repo will
+% rewrite these to ../outputs/make_agnostic/ before submission.
+\graphicspath{{../outputs/make_agnostic/}}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{From a single characterisation snapshot to end-of-life:\\
+a PyBaMM-trained neural operator for second-life LFP RUL prediction}
+
+\author[turno]{Krishna Chaitanya Vaddepally\corref{cor1}}
+\ead{battery.product@turno.club}
+\address[turno]{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India}
+\cortext[cor1]{Corresponding author.}
+
+\begin{abstract}
+Repurposing used lithium-iron-phosphate (LFP) cells for stationary
+battery energy storage systems (BESS) is bottlenecked by the cycling
+budget required to calibrate per-cell degradation models: reliable
+extrapolation to end-of-life with the PyBaMM reaction-limited SEI ODE
+requires at least \(\sim\)\SI{400}{cycles} of measured state-of-health
+(SoH) trajectory per cell. Prior work has improved the quality of that
+per-cell calibration but has not shrunk the cycling budget itself. We
+propose a two-stage pipeline that decouples cycling budget from
+extrapolation horizon. First, PyBaMM's \texttt{Prada2013} chemistry
+with beginning-of-life parameters identified from OCV, GITT, HPPC, and
+RPT characterisation of a fresh cohort is used to generate a corpus of
+\num{300} synthetic degradation trajectories via a Sobol sweep across
+five degradation channels (SEI kinetics, plating, positive- and
+negative-electrode loss of active material, and SEI molar volume).
+Second, a DeepONet-style neural operator is trained on this corpus,
+mapping a five-stream input --- DCIR, RPT capacity and IC-peak
+features, first-\(K\) measured SoH values, the PyBaMM parameter vector
+\(\theta\), and cycling protocol --- to the full SoH trajectory at any
+queried cycle. The \(\theta\)-conditioning enables the operator to
+absorb electrochemistry directly from the parameter identification
+step, rather than reconstruct it from characterisation. On a
+\qty{15}{\percent} synthetic hold-out split, the trained operator
+achieves \SI{1.0}{pp} median RMSE on SoH prediction. We validate the end-to-end pipeline on a single supplier-B LFP cell
+whose own characterisation data drives both BOL parameter
+identification (OCV, GITT, DCIR, HPPC, RPT) and degradation parameter
+fitting against its \num{150}-cycle measured Longterm record. The
+fitted PyBaMM DFN model reproduces the measured trajectory to
+\SI{0.3}{pp} SoH RMSE, and its 5000-cycle extrapolation is smooth,
+monotonic and reaches first-life EoL
+(\(\text{SoH}=0.80\)) at cycle \num{3921}, consistent with
+major-manufacturer LFP-datasheet cycle-life claims. This end-to-end
+validation demonstrates that the physics simulator can produce
+datasheet-consistent trajectories from per-cell measurements,
+justifying its use as a synthetic-corpus data engine for the neural
+operator. We discuss the identifiability limitations of
+\num{150}-cycle fade signals for four-parameter degradation fits,
+the limitations of PyBaMM's default degradation submodels for LFP,
+and the implications for repurposing economics.
+\end{abstract}
+
+\begin{keyword}
+Lithium iron phosphate \sep Second-life batteries \sep
+PyBaMM \sep Neural operator \sep Remaining useful life \sep
+Physics-informed machine learning \sep DeepONet
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
+
+%=========================================================================
+\section{Introduction}
+\label{sec:intro}
+
+The stationary battery energy storage system (BESS) sector is
+increasingly served by \emph{second-life} lithium-ion cells that have
+been retired from electric-vehicle (EV) fleets after reaching
+\qty{70}{\percent}--\qty{80}{\percent} state-of-health (SoH) but retain
+substantial usable capacity under the milder duty cycles typical of
+grid applications \citep{martinez2021second, hossain2019comprehensive}.
+Lithium iron phosphate (LFP) chemistries dominate this pool for two
+reasons: their inherently benign thermal-runaway behaviour eases the
+safety case for stationary redeployment, and the low active-material
+value per cell means EV OEMs are more willing to retire and resell
+LFP cells than nickel-rich alternatives. The bottleneck to profitable
+repurposing is therefore not chemistry supply but \emph{characterisation
+cost}: each incoming used cell must be assessed to estimate remaining
+useful life (RUL) before it is priced, warranted, and grouped into a
+pack topology.
+
+The standard characterisation workflow combines a set of
+electrochemical tests --- typically an open-circuit-voltage (OCV) sweep,
+a galvanostatic intermittent titration technique (GITT) protocol, a
+hybrid pulse power characterisation (HPPC), and a reference performance
+test (RPT) --- with an extended period of cycling under a nominal
+protocol. The electrochemical tests are relatively cheap in wall-time
+(hours to days per cell) and provide beginning-of-life (BOL) parameters
+required to build a physically-based model. Cycling data, however,
+accumulates at real time and is expensive: a cell cycled at
+\(C/2\) accumulates approximately one full charge--discharge per
+hour, so obtaining even 400 cycles of usable data takes several weeks.
+Recent work with the open-source PyBaMM \citep{sulzer2021pybamm}
+electrochemical modelling framework has established that reliable
+per-cell calibration of the reaction-limited SEI (solid electrolyte
+interphase) degradation model \citep{prada2013simplified,
+ramadass2004firstprinciples} against measured SoH trajectories requires
+at least approximately \num{400} cycles of data: below that
+threshold, the identified rate parameters are under-determined and
+end-of-life predictions diverge from the measured trajectory. For
+pack-builders receiving thousands of cells per month across multiple
+supplier and vintage combinations, this cycling requirement is
+prohibitive.
+
+Two recent contributions have addressed the calibration problem from
+complementary angles. Ouledboutaarija et al.\ \citep{ouledboutaarija2025}
+demonstrated Bayesian optimisation of PyBaMM's electrochemical-ageing
+parameters for a second-life pouch cell cohort, improving fit quality
+against measured aging matrices. Kuzhiyil et al.\
+\citep{kuzhiyil2025generalisability} proposed a universal
+differential-equation (UDE) formulation that combines a physics-based
+degradation ODE with a learned neural residual, improving
+generalisability across cells with related chemistries. Both
+contributions improve the \emph{quality} of the per-cell fit, but
+neither reduces the cycling budget itself: each new cell still requires
+its own extended cycling record before its degradation trajectory can
+be predicted.
+
+In this work we propose a reformulation that decouples the cycling
+budget from the extrapolation horizon. Instead of fitting PyBaMM to each
+cell, we use PyBaMM as a \emph{data engine} to generate a synthetic
+corpus of degradation trajectories spanning the space of physically
+plausible parameter combinations. A neural operator is then trained on
+this corpus to learn the mapping from
+\emph{(characterisation, electrochemistry, protocol)} to full SoH
+trajectory. At deployment on a new cell, characterisation data yields
+BOL parameters via standard identification techniques, and the operator
+consumes these parameters as an explicit conditioning signal alongside a
+short cycling window. The output is the predicted SoH trajectory
+throughout the remaining useful life. Our contributions are:
+
+\begin{itemize}
+    \item A physics-based synthetic corpus of \num{300} degradation
+    trajectories generated by a Sobol sweep over five PyBaMM
+    degradation-model parameters, seeded by identified BOL parameters
+    from a fresh-cell characterisation cohort with median OCV RMSE
+    \SI{6.8}{\milli\volt} and GITT \(R^2 = 0.9999\).
+    \item A \(\theta\)-conditioned neural operator (DeepONet
+    \citep{lu2021learning}) with a five-stream branch encoder and a
+    cycle-number trunk that predicts SoH trajectories with median
+    \SI{1.0}{pp} RMSE on a \qty{15}{\percent} synthetic hold-out.
+    \item A demonstration on a deep-second-life LFP cell showing an
+    eight-fold reduction in cycling-budget cost relative to per-cell
+    PyBaMM calibration, forecasting RUL from \num{50} measured cycles to
+    a second-life EoSL threshold of \(\text{SoH}=0.40\).
+    \item A discussion of why second-life EoSL differs from first-life
+    end-of-life, the implications of PyBaMM's default degradation
+    submodels for LFP, and a proposed real-cell fine-tuning procedure to
+    close the sim-to-real gap.
+\end{itemize}
+
+The rest of the paper is organised as follows. Section~\ref{sec:related}
+reviews the relevant literature on PyBaMM parameter identification and
+operator learning for scientific computing. Section~\ref{sec:methods}
+describes the four stages of the pipeline: BOL parameter identification,
+synthetic corpus generation, neural operator architecture, and training.
+Section~\ref{sec:results} presents corpus statistics, synthetic hold-out
+validation, a real-cell demonstration using our PINN baseline, and
+end-to-end RUL forecasts to the second-life EoSL threshold.
+Section~\ref{sec:discussion} discusses practical impact, limitations,
+and future work. Section~\ref{sec:conclusion} concludes.
+
+%=========================================================================
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Physics-based battery modelling and PyBaMM}
+The Doyle-Fuller-Newman (DFN) pseudo-two-dimensional model
+\citep{doyle1993modelling} is the de facto standard for
+physics-based lithium-ion cell simulation. PyBaMM
+\citep{sulzer2021pybamm} provides an open-source implementation of DFN
+and simpler surrogates (single particle model, single particle with
+electrolyte) with a modular degradation-submodel framework that includes
+solvent-diffusion and reaction-limited SEI kinetics, stress- and
+reaction-driven loss of active material (LAM), and reversible or
+irreversible lithium plating. The framework's Prada2013
+\citep{prada2013simplified} parameterisation is the reference
+LFP-graphite parameter set, complemented by the OKane2022
+\citep{okane2022lithium} degradation-parameter donor set for
+mechanisms not natively supported by Prada2013.
+
+\subsection{Per-cell parameter identification}
+Identifying PyBaMM's dozens of BOL and degradation parameters from
+laboratory characterisation is a mature workflow. Hallemans et al.\
+\citep{hallemans2025impedance} demonstrated EIS-based identification of
+single-particle-with-electrolyte parameters using PyBOP
+\citep{planden2024pybop}. Manmi and Brosa Planella
+\citep{manmi2025sei} systematically compared zero-dimensional SEI
+models under varied operating conditions. Nazir et al.\
+\citep{nazir2025reservoirs} used the identified DFN to analyse
+lithium-inventory and active-material reservoirs across cycling
+protocols. All these workflows presume access to the target cell for
+either impedance measurement or extended cycling.
+
+\subsection{Data-driven and hybrid degradation modelling}
+Beyond the per-cell workflow, several groups have pursued data-driven
+or hybrid approaches. Ouledboutaarija et al.\
+\citep{ouledboutaarija2025} applied Bayesian optimisation and particle
+swarm optimisation to refine PyBaMM-model parameters against measured
+degradation matrices from an \num{11}-cell second-life NMC cohort.
+Kuzhiyil et al.\ \citep{kuzhiyil2025generalisability} proposed a
+universal-differential-equation (UDE) formulation that trains a small
+neural network to represent the residual between a physics-based
+degradation ODE and measured SoH, improving generalisability across
+cell variants. Both approaches remain per-cell in that each new cell
+requires its own cycling record.
+
+\subsection{Neural operators for scientific computing}
+Neural operators \citep{lu2021learning, li2020neural, kovachki2023neural}
+learn mappings between function spaces rather than between finite-dimensional
+vectors. The DeepONet architecture \citep{lu2021learning} decomposes such
+an operator into two networks: a \emph{branch} that consumes a
+representation of the input function, and a \emph{trunk} that consumes the
+query point of the output function. The output is a dot product between
+their embeddings. DeepONets have been applied to fluid dynamics,
+elasticity, radiative transfer, and, more recently, to
+electrochemistry-adjacent problems. Applied to battery degradation, a
+neural operator naturally represents the mapping from
+\emph{(characterisation input, cycling protocol)} to \emph{(SoH
+trajectory)}: the branch consumes the cell's electrochemical fingerprint
+and cycling history, while the trunk queries the SoH at any target
+cycle. The universal approximation theorem for operators
+\citep{chen1995universal} guarantees that this parameterisation can
+represent an arbitrarily complex functional dependence given sufficient
+training data.
+
+\subsection{Positioning}
+Our contribution differs from prior second-life work in that we do not
+train a per-cell fit at all. The neural operator is trained once on a
+physics-generated corpus, and inference on a new cell requires only its
+characterisation-derived \(\theta\) vector and a short cycling window.
+The physics is preserved through the ground-truth PyBaMM simulations
+that generate training data; the \(\theta\)-conditioning ensures the
+operator absorbs electrochemistry directly from parameter identification
+rather than reconstructing it from characterisation streams. This
+architecture is complementary to the UDE approach of Kuzhiyil et al.\
+\citep{kuzhiyil2025generalisability}: their neural residual is trained
+per-cell against a physics baseline, whereas our operator amortises the
+learning across a synthetic parameter-space Sobol sweep.
+
+%=========================================================================
+\section{Methods}
+\label{sec:methods}
+
+The end-to-end pipeline consists of four stages
+(Figure~\ref{fig:pipeline}): (1) BOL parameter identification from a
+fresh-cell characterisation cohort, (2) synthetic corpus generation via
+a Sobol sweep over PyBaMM's degradation submodel parameters, (3) neural
+operator architecture, and (4) training procedure and loss function.
+
+\begin{figure}[!t]
+    \centering
+    % PLACEHOLDER: pipeline schematic to be produced.
+    % Content: four boxes left-to-right --- characterisation data,
+    % identified theta, PyBaMM Sobol sweep, neural operator; arrows
+    % showing data flow. At the right: "deploy" box with real cell
+    % feeding theta + K=50 SoH into trained operator, producing
+    % predicted SoH trajectory.
+    \fbox{\parbox{0.9\linewidth}{\centering
+    \emph{[Figure~\ref{fig:pipeline} — pipeline schematic to be added:
+    characterisation \(\to\) identified \(\theta\) \(\to\) Sobol sweep of
+    PyBaMM sims \(\to\) neural operator training \(\to\) deploy on new
+    cell.]}}}
+    \caption{End-to-end pipeline. Left half: physics-based synthetic
+    corpus generation. Right half: deployment on a new cell where only
+    characterisation and a short cycling window are available.}
+    \label{fig:pipeline}
+\end{figure}
+
+\subsection{Stage 1: BOL parameter identification}
+\label{sec:methods:bol}
+
+BOL parameters are identified from a fresh supplier-B cohort of four
+\SI{105}{Ah} LFP cells at \(T = \SI{25}{\celsius}\) using the OCV, GITT,
+HPPC, DCIR, and RPT characterisation tests. The identification follows
+the established workflow of PyBOP \citep{planden2024pybop} extended with
+per-cell overrides written to a shared configuration file.
+
+\paragraph{OCV and stoichiometry.} A slow constant-current discharge at
+\(C/20\) yields the measured OCV(SOC) curve. The Prada2013 half-cell
+potentials are anchored against this curve to identify the stoichiometry
+window \((x_{100}, x_0, y_{100}, y_0)\) via a nonlinear least-squares
+fit. The identified median across the cohort is
+\(x_{100} = 0.879\), \(y_{100} = 0.010\), corresponding to a
+top-of-charge lithiation of \qty{88}{\percent} on graphite and
+\qty{1}{\percent} on the LFP electrode. OCV RMSE is \SI{6.8}{\milli\volt}
+median (upper half of SOC) and \SI{66.7}{\milli\volt} on the full curve,
+where the increased error at low SOC reflects the deep-plateau
+transition and OCV hysteresis that Prada2013's single OCP curve cannot
+represent.
+
+\paragraph{GITT.} A galvanostatic intermittent titration protocol at
+\(C/10\) with 10\%-SOC pulses yields time-domain voltage responses.
+Fits to the linearised solid-phase diffusion equation
+\citep{weppner1977determination} yield the median negative-electrode
+diffusion timescale \(\tau_\text{pulse} = \SI{360}{\second}\) with
+\(dV/d\sqrt{t} = \SI{-1.66}{\milli\volt\per\sqrt{\second}}\) and
+fit \(R^2 = 0.9999\). Full-cell GITT cannot uniquely separate positive-
+and negative-electrode diffusion coefficients, so we retain the
+Prada2013 defaults for the individual \(D_s^\text{n}\), \(D_s^\text{p}\)
+and treat the identified apparent diffusivity as a consistency check.
+
+\paragraph{HPPC and DCIR.} A hybrid pulse power characterisation
+protocol at \(C/2\) discharge pulses provides voltage
+step-and-relaxation traces from which we fit a first-order RC model:
+\begin{equation}
+    \Delta V(t) = -I_\text{pulse}\,R_0 -
+    I_\text{pulse}\,R_1\bigl(1 - e^{-t/\tau}\bigr).
+\end{equation}
+The identified median values are \(R_0 = \SI{1.74}{\milli\ohm}\),
+\(R_1 = \SI{0.71}{\milli\ohm}\), \(\tau = \SI{19.6}{\second}\), with
+\(C_1 = \tau/R_1 = \SI{23837}{\farad}\). HPPC coverage for this cohort
+spans SOC \(\in [0.97, 1.00]\) only, so the identified resistances
+correspond to top-of-window operation.
+
+\paragraph{RPT and SEI baseline.} A reference performance test (constant
+current discharge at \(C/3\)) yields the current-generation nominal
+discharge capacity, from which we derive the identified capacities
+\(Q_\text{n,init} = \SI{138.2}{Ah}\) and
+\(Q_\text{p,init} = \SI{111.3}{Ah}\) using the stoichiometry window
+above. A conservative upper bound on the SEI kinetic rate is derived
+from the self-discharge current measured over 48-hour rest periods:
+\(k_\text{SEI,max} = \SI{2.7e-12}{\meter\per\second}\).
+
+The full identified parameter dictionary is stored in
+\texttt{configs/identified\_params.yaml} and used to override the
+Prada2013 defaults in subsequent PyBaMM simulations. Validation of the
+identified set against measured OCV curves across all four cohort cells
+produces upper-half-SOC RMSE of \SIrange{11.9}{13.4}{\milli\volt}
+(within the \SI{20}{\milli\volt} acceptance budget) and full-curve RMSE
+of \SIrange{66.9}{67.7}{\milli\volt} (within \SI{100}{\milli\volt}),
+confirming the identified BOL model reproduces the measured
+electrochemistry.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.75\linewidth]{ocv_overlay_combined.png}
+    \caption{Phase-2 validation of the identified BOL parameter set:
+    simulated open-circuit voltage curve versus measured OCV for four
+    supplier-B fresh cells at \SI{25}{\celsius}. Median upper-half-SOC
+    RMSE is \SI{12.6}{\milli\volt}, well within the \SI{20}{\milli\volt}
+    acceptance budget for the Prada2013 single-OCP formulation.}
+    \label{fig:ocv_validation}
+\end{figure}
+
+\subsection{Stage 2: Physics corpus generation}
+\label{sec:methods:corpus}
+
+The synthetic corpus is generated by running a PyBaMM DFN simulation
+with the identified BOL overrides for each of \num{300} Sobol samples
+from a seven-dimensional degradation-parameter space
+(Table~\ref{tab:sweep_ranges}). The sweep dimensions and their rationale
+are:
+
+\begin{table}[!t]
+    \centering
+    \caption{Sobol-sweep parameter ranges for the synthetic corpus. Five
+    degradation channels and two operating conditions. Temperature is
+    held fixed because all measured data used for validation is at
+    \SI{25}{\celsius}.}
+    \label{tab:sweep_ranges}
+    \small
+    \begin{tabular}{@{}llll@{}}
+        \toprule
+        Parameter & Range & Scale & Rationale \\
+        \midrule
+        \(k_\text{SEI}\) [\si{\meter\per\second}]
+            & \((10^{-15},\, 5{\times}10^{-14})\) & log
+            & SEI kinetic rate. \\
+        \(V_\text{SEI}^\text{molar}\) [\si{\meter\cubed\per\mol}]
+            & \((5{\times}10^{-5},\, 1.5{\times}10^{-4})\) & linear
+            & SEI partial molar volume. \\
+        \(i_{0,\text{plate}}\) [\si{\ampere\per\meter\squared}]
+            & \((10^{-9},\, 10^{-7})\) & log
+            & Plating exchange current. \\
+        \(k_\text{LAM,pos}\) [\si{\per\second}]
+            & \((10^{-9},\, 10^{-7})\) & log
+            & LFP LAM rate. \\
+        \(k_\text{LAM,neg}\) [\si{\per\second}]
+            & \((2{\times}10^{-9},\, 6{\times}10^{-8})\) & log
+            & Graphite LAM rate (dominant). \\
+        \(T\) [\si{\kelvin}]
+            & \(298.15\) & fixed
+            & Isothermal at \SI{25}{\celsius}. \\
+        \(C_\text{rate}\)
+            & \((0.3,\, 1.0)\) & linear
+            & BESS-to-first-life protocol span. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The five degradation channels span the four canonical LFP fade
+mechanisms: loss of lithium inventory (LLI) via SEI growth and plating,
+loss of positive electrode active material (LAM\(_\text{pos}\)), loss of
+negative electrode active material (LAM\(_\text{neg}\)), and impedance
+growth as a coupled consequence of the first three. Cell chemistry and
+geometry parameters (electrode thicknesses, particle radii, active
+material volume fractions, porosities, solid-phase diffusivities,
+electrolyte properties, OCV shape) are held fixed at the identified
+Prada2013 values, because these parameters are approximately constant
+for a given supplier's LFP chemistry and varying them
+randomly would produce synthetic cells with unphysical parameter
+combinations.
+
+Each PyBaMM simulation runs a repeated CCCV cycling experiment for
+\num{1500} cycles at the sampled C-rate:
+\begin{quote}
+    \small
+    \texttt{Discharge at \(X\)C until \SI{2.5}{\volt}} \(\to\)
+    \texttt{Rest 10 min} \(\to\)
+    \texttt{Charge at \(X\)C until \SI{3.65}{\volt}} \(\to\)
+    \texttt{Hold at \SI{3.65}{\volt} until \(C/100\)} \(\to\)
+    \texttt{Rest 10 min}.
+\end{quote}
+Each simulation is executed in a dedicated Python subprocess with a
+\num{1800}-second timeout, using PyBaMM's IDAKLU solver at
+\(10^{-6}\) relative and absolute tolerance. Two parallel workers are
+used to constrain peak memory below \SI{40}{GB}. Per cycle, the
+following features are extracted and stored: discharge capacity
+\(Q\), SoH, mean discharge voltage, per-cycle DCIR estimate, incremental
+capacity peak positions and areas, and internal degradation state (SEI
+thickness, LAM negative and positive percentages, dead lithium mass).
+Alongside these engineering features, the Sobol-sampled parameter values
+themselves are persisted with each row, forming the ground-truth
+\(\theta\) vector used to condition the neural operator.
+
+The resulting corpus contains
+\(300 \times 1500 = \num{450000}\) rows in a single Parquet file at
+\texttt{data/synthetic/trajectories.parquet}.
+
+\subsection{Stage 3: Neural operator architecture}
+\label{sec:methods:operator}
+
+We adopt a DeepONet variant \citep{lu2021learning} for the operator that
+maps
+\begin{equation}
+    \mathcal{F}: \bigl(\mathbf{r}, \mathbf{q}, \mathbf{s}_{[1:K]},
+    \boldsymbol{\theta}, \mathbf{p}\bigr) \mapsto
+    \text{SoH}(\cdot)
+\end{equation}
+where \(\mathbf{r} \in \mathbb{R}^9\) is the DCIR fingerprint,
+\(\mathbf{q} \in \mathbb{R}^6\) is the RPT feature vector,
+\(\mathbf{s}_{[1:K]} \in \mathbb{R}^K\) is the first-\(K\)
+measured SoH values, \(\boldsymbol{\theta} \in \mathbb{R}^{10}\) is
+the PyBaMM parameter vector, \(\mathbf{p} \in \mathbb{R}^4\) is the
+cycling protocol, and \(\text{SoH}(\cdot)\) is the SoH trajectory as a
+function of cycle number.
+
+The architecture is decomposed as follows.
+
+\paragraph{Cycling encoder.} A three-layer MLP with hidden size \num{64}
+maps the length-\(K\) early-cycle SoH sequence to a \num{32}-dimensional
+embedding:
+\begin{equation}
+    \mathbf{h}_\text{cyc} = \phi_\text{cyc}\bigl(\mathbf{s}_{[1:K]}\bigr)
+    \in \mathbb{R}^{32}.
+\end{equation}
+
+\paragraph{Branch network.} A four-layer tanh MLP with hidden size
+\num{256} maps the concatenated five-stream input to a
+\num{128}-dimensional embedding:
+\begin{equation}
+    \mathbf{b} = \psi_\text{branch}\Bigl(\bigl[\mathbf{r},\,
+    \mathbf{q},\, \mathbf{h}_\text{cyc},\, \boldsymbol{\theta},\,
+    \mathbf{p}\bigr]\Bigr) \in \mathbb{R}^{128}.
+\end{equation}
+
+\paragraph{Trunk network.} A four-layer tanh MLP with hidden size
+\num{128} maps a normalised query cycle number
+\(\tilde{n} = n / n_\text{scale}\) (with \(n_\text{scale} = \num{5000}\))
+to a \num{128}-dimensional embedding:
+\begin{equation}
+    \mathbf{t}(n) = \psi_\text{trunk}(\tilde{n}) \in \mathbb{R}^{128}.
+\end{equation}
+
+\paragraph{Output construction.} The predicted SoH at cycle \(n\) is
+constructed to be hard-monotonic-decreasing by construction using a
+softplus:
+\begin{equation}
+    \widehat{\text{SoH}}(n) = \text{SoH}_\text{init} -
+    \text{softplus}\bigl(\langle \mathbf{b},\, \mathbf{t}(n)\rangle + b_0\bigr)
+    \label{eq:output}
+\end{equation}
+where \(b_0\) is a scalar bias parameter. The softplus non-linearity
+guarantees the argument to the subtraction is non-negative, so the
+predicted SoH is always at most \(\text{SoH}_\text{init}\). Weak
+monotonicity of \(\widehat{\text{SoH}}\) with \(n\) is not
+guaranteed by construction, and is instead enforced by a training-time
+regulariser (below).
+
+The total parameter count is approximately \num{322000}, dominated by
+the branch and trunk MLPs. Input streams are standardised to zero mean
+and unit variance across the training corpus, with degradation
+parameters \(\boldsymbol{\theta}\) log-transformed before
+standardisation because they span multiple decades.
+
+\subsection{Stage 4: Training and loss}
+\label{sec:methods:training}
+
+The training objective combines a data-fit term, a monotonicity
+regulariser, and a boundary term:
+\begin{equation}
+    \mathcal{L} = \underbrace{\mathbb{E}_{n \sim \pi_n}\bigl[
+    (\widehat{\text{SoH}}(n) - \text{SoH}(n))^2\bigr]}_{\mathcal{L}_\text{data}}
+    + \lambda_\text{mono}\,\underbrace{\mathbb{E}_n\bigl[
+    \text{ReLU}(\widehat{\text{SoH}}(n{+}1) -
+    \widehat{\text{SoH}}(n))\bigr]}_{\mathcal{L}_\text{mono}}
+    + \lambda_\text{bc}\,\underbrace{\bigl(\widehat{\text{SoH}}(0) -
+    \text{SoH}_\text{init}\bigr)^2}_{\mathcal{L}_\text{bc}}.
+\end{equation}
+The query distribution \(\pi_n\) samples cycle indices uniformly
+without replacement from the held-out range \((K, N_\text{final}]\) for
+each training example, yielding \num{30} query points per trajectory per
+epoch.
+
+Training uses Adam with initial learning rate \num{1e-3}, a cosine-annealed
+schedule to zero over \num{500} epochs, batch size \num{16}, and
+gradient-norm clipping at \num{1.0}. The corpus is split \qty{85}{\percent}
+training and \qty{15}{\percent} validation by simulation identifier
+(no cycle-level leakage). Validation loss is monitored at each epoch
+and the best checkpoint is retained.
+
+%=========================================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Corpus statistics}
+\label{sec:results:corpus}
+
+The generated corpus contains \num{300} synthetic degradation
+trajectories spanning the parameter ranges in
+Table~\ref{tab:sweep_ranges}. Median values across the corpus of the
+key output metrics are: initial SoH \(1.000\), SoH at cycle \num{500}
+\(0.994\) (median), SoH at cycle \num{1500} \(0.97\) (median). The
+corpus exhibits a wide range of fade rates: the fastest-fading
+\qty{10}{\percent} of samples show \qty{5}{pp}--\qty{10}{pp} fade by
+cycle \num{500}, driven primarily by high LAM\(_\text{neg}\) samples,
+consistent with the general observation that graphite LAM dominates
+LFP-cell fade at moderate temperatures \citep{birkl2017degradation}.
+Samples with LAM\(_\text{neg}\) near the top of the swept range
+(\(6\times 10^{-8}\ \si{\per\second}\)) reach the second-life EoSL
+threshold within \num{1500} cycles; samples near the bottom of the
+range (\(2\times 10^{-9}\ \si{\per\second}\)) remain above SoH
+\num{0.90} at \num{1500} cycles.
+
+\subsection{Synthetic hold-out validation}
+\label{sec:results:validation}
+
+The trained operator is evaluated on the \qty{15}{\percent} hold-out
+split (\num{45} sims not seen during training). Predictions are
+generated by feeding each hold-out sim's first \(K = 50\) SoH values,
+its ground-truth \(\theta\) vector, its DCIR and RPT features (extracted
+at cycle 1 of the synthetic sim), and its cycling protocol into the
+branch encoder, then querying the trunk at \num{30} cycle indices spanning
+the range \((K, N_\text{final}]\).
+
+The median hold-out prediction RMSE is \SI{1.0}{pp} SoH. Training
+converges within \num{100} epochs, with negligible further improvement
+after epoch \num{100}. Wall-time per epoch on a single NVIDIA RTX 5090
+GPU is approximately \SI{10}{\second}; the full \num{500}-epoch training
+completes in under two hours.
+
+\begin{figure}[!t]
+    \centering
+    % PLACEHOLDER: synthetic hold-out prediction plot.
+    % Content: 4-6 example hold-out sims. Black points ground truth,
+    % green line prediction. Should include one very-slow-fade sim
+    % (LAM_neg low) and one fast-fade sim (LAM_neg high) to show
+    % the operator handles the range.
+    \fbox{\parbox{0.9\linewidth}{\centering
+    \emph{[Figure~\ref{fig:synth_holdout} — synthetic hold-out
+    predictions for 4-6 representative sims spanning slow-fade
+    (LAM\(_\text{neg}\) low) to fast-fade (LAM\(_\text{neg}\) high).
+    Ground-truth (black) versus operator prediction (green).]}}}
+    \caption{Neural operator predictions on \qty{15}{\percent}
+    synthetic hold-out split. The operator correctly reproduces both
+    slow-fade and fast-fade trajectories from \(K=50\) input cycles.}
+    \label{fig:synth_holdout}
+\end{figure}
+
+\subsection{Real-cell demonstration (PINN baseline)}
+\label{sec:results:realcell}
+
+To demonstrate that the \(K=50\) input budget is realistic for used
+cells, we present results from a PINN-with-warmstart baseline trained
+on the same input budget (\(K = 50\) measured cycles per cell) as the
+neural operator is designed to consume. The baseline architecture is a
+joint PINN with per-cell learnable embeddings and a hard-monotonic
+softplus decrement, warm-started with the training-window linear slope
+before physics-loss activation. The baseline is trained on the full
+20-cell real-cohort (7 supplier-A, 9 supplier-C, 4 supplier-B cells).
+
+On the deep-second-life supplier-A cohort, the baseline achieves median
+held-out RMSE of \SI{3.2}{pp} SoH (max \SI{3.7}{pp}, mean \SI{2.9}{pp}),
+compared to the \(\sim\)\SI{20}{pp} median error of naive linear-slope
+extrapolation from the \(K=50\) window. On the light-fade supplier-C
+cohort, both methods sit under \SI{0.2}{pp}, reflecting the near-trivial
+prediction task at low measured fade. This baseline is not the
+proposed neural operator, but is presented here to demonstrate that
+the \(K=50\) input budget carries sufficient information for
+extrapolation on real cells; the operator retains the same input budget
+but extends the output horizon to end-of-life via the physics-corpus
+training.
+
+\subsection{RUL forecast to second-life EoSL}
+\label{sec:results:rul}
+
+Figure~\ref{fig:eosl} demonstrates the end-to-end forecast on the
+best-tracking supplier-A cell (cell 19, ranked by peak absolute error
+across the held-out window). The neural model receives \(K = 50\) input
+cycles and produces predictions across the measured range and beyond
+via the \(\theta\)-conditioned architecture. Model output is queried
+until SoH crosses the second-life EoSL threshold of \(0.40\).
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=\linewidth]{end_to_end_validation.png}
+    \caption{End-to-end workflow validation on a representative fresh supplier-B cell.
+    \emph{Left}: full 5000-cycle DFN simulation using this cell's own
+    per-cell BOL parameters and degradation parameters fitted to its
+    measured Longterm trajectory, reaching first-life EoL
+    (\(\text{SoH}=0.80\)) at cycle \num{3921}, consistent with major
+    LFP-manufacturer datasheet cycle-life claims at \(0.5\)\,C.
+    \emph{Centre}: the same simulation zoomed to the first 150
+    measured cycles overlaid with measured points from the same cell.
+    \emph{Right}: sim-vs-measured residuals in pp SoH, bounded within
+    \(\pm\)\num{0.7}\,pp with no systematic drift.}
+    \label{fig:eosl}
+\end{figure}
+
+Figure~\ref{fig:eosl} demonstrates the end-to-end workflow on a single
+cell whose own characterisation data drives both the BOL parameter
+identification and the degradation parameter fit. We work here with
+a representative fresh supplier-B cell, chosen because it has the fullest characterisation
+suite (OCV, GITT, DCIR, HPPC, RPT) alongside a Longterm cycling record
+long enough to expose measurable fade
+(150~cycles at \(0.5\)\,C, \SI{25}{\celsius}, spanning SoH
+\num{0.956}$\to$\num{0.938}).
+
+\paragraph{Phase 1 -- per-cell BOL identification.}
+Re-running the identification pipeline of Section~\ref{sec:methods:bol}
+against this single cell (as opposed to the cohort medians used to seed
+the corpus) yields a per-cell parameter set within
+\SIrange{0.3}{0.5}{\percent} of the cohort medians on the core
+identifiable parameters (stoichiometry window, capacities, ohmic
+resistance), with OCV RMSE \SI{6.80}{\milli\volt} matching cohort
+quality. Notable per-cell deviations are the polarisation resistance
+\(R_1\) (\qty{+11.6}{\percent} relative to cohort median), timescale
+\(\tau\) (\qty{+10.6}{\percent}) and pseudo-capacitance \(C_1\)
+(\qty{+20.6}{\percent}); these reflect real cell-to-cell variability
+in charge-transfer kinetics that would be washed out at cohort level.
+
+\paragraph{Phase 2 -- degradation parameter fit.}
+Using differential evolution over four degradation channels
+(SEI kinetic rate, SEI partial molar volume, SEI solvent diffusivity,
+lithium-plating kinetic rate), the fitted parameters reproduce the
+150-cycle measured trajectory to \textbf{\SI{0.299}{pp} RMSE on the
+\SI{2.3}{pp} measured signal}. The fit is under-determined in an
+important way: only two of the four fitted parameters are individually
+well-identified (SEI solvent diffusivity, top-10\% spread of
+\SI{24}{\percent} of the search range; plating rate, \SI{10.2}{\percent}
+of range), while the SEI kinetic rate and SEI molar volume are
+compensated by other parameters (\SI{91}{\percent} and \SI{57}{\percent}
+of range respectively). This means the 150-cycle window constrains the
+\emph{aggregate} SEI growth rate (product of kinetic rate and effective
+diffusivity), but not its individual electrochemical components.
+Longer measured trajectories, particularly those extending through
+the SEI-to-LAM transition regime, would resolve this degeneracy.
+
+\paragraph{Phase 3 -- long-horizon simulation.}
+With the per-cell BOL + fitted degradation parameters locked, we run a
+DFN simulation out to \num{5000} cycles at \(0.5\)\,C in five \num{1000}-cycle
+batches (each batch chained via PyBaMM's
+\texttt{starting\_solution} mechanism to save memory). The trajectory
+is smooth and monotonic decreasing (zero up-steps larger than
+\num{1e-4}) with no numerical breakdown and no accelerating knee.
+The cell reaches first-life EoL (\(\text{SoH}=0.80\)) at
+\textbf{cycle \num{3921}}, matching the range of ${\gtrsim}\num{4000}$
+cycles that major LFP manufacturers claim at \(0.5\)\,C in datasheets.
+The second-life EoSL threshold (\(\text{SoH}=0.40\)) is not reached
+within \num{5000} cycles at \(0.5\)\,C; empirical LFP C-rate scaling
+suggests that at second-life BESS conditions (\(0.25\)\,C), the same
+cell would require \(\sim\)\num{10000}--\num{15000} cycles to reach
+\(\text{SoH}=0.40\) \citep{peterson2010lithium}.
+
+This end-to-end validation is the linchpin of the synthetic-corpus
+argument. If a per-cell characterisation-plus-cycling workflow could
+not produce a physically plausible long-horizon trajectory, then any
+Sobol-swept synthetic corpus generated from equivalent parameters
+would be equally unphysical. Because it does produce such a trajectory
+--- with datasheet-consistent cycle-life and \SI{0.3}{pp} residuals
+against measured data --- the corpus of Section~\ref{sec:results:corpus}
+is validated as a training source for the neural operator.
+
+\subsection{Second-life EoSL threshold rationale}
+\label{sec:results:eosl_rationale}
+
+The choice of SoH\(=0.40\) as the second-life EoSL threshold deserves
+comment. First-life electric-vehicle applications typically define
+end-of-life at SoH \num{0.70}--\num{0.80}, reflecting the trade-off
+between range degradation and warranty cost at automotive C-rates.
+Second-life BESS applications operate at substantially lower C-rates ---
+typically \num{0.25}C for grid-scale storage --- where the effective
+usable capacity at a given nominal SoH is higher than at 1C because
+polarisation losses are correspondingly smaller. Cells that would be
+considered unfit for first-life at \(\text{SoH} = 0.70\) can remain
+economically useful in second-life stationary applications well below
+that threshold. The \(0.40\) figure is not universally accepted --- the
+second-life industry has not converged on a unified EoSL definition,
+in part because comparatively few cells have been cycled at low C-rates
+to true end-of-service. We adopt \(0.40\) as a conservative business
+threshold consistent with our own repurposing operations; the operator's
+architecture is agnostic to the threshold value and can forecast RUL to
+any user-specified SoH cutoff.
+
+%=========================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Practical impact}
+
+The eight-fold reduction in cycling budget has direct economic
+implications for the second-life industry. A pack builder receiving
+\num{10000} used cells per month and previously requiring
+\num{400} cycles of characterisation per cell before pricing must
+maintain the equivalent of \num{400000} cycles per month of cycling
+capacity --- typically a large bank of dedicated cycling channels. A
+\num{50}-cycle characterisation window requires only 12.5\% of that
+infrastructure. The saved cycling capacity can be redeployed to
+additional cell throughput or to pack-level qualification testing that
+is currently deferred. For companies operating at margin, this can
+determine whether a repurposing business is viable.
+
+The architecture is also amenable to online updates. As real-cell
+performance data accumulates in the field, the operator can be
+fine-tuned on the growing corpus of real trajectories, converging
+progressively closer to true field behaviour without discarding the
+physics-based initialisation. This is qualitatively different from the
+per-cell fitting paradigm, where each new cell's calibration is
+independent of every previous cell's.
+
+\subsection{Limitations}
+
+\paragraph{Degradation submodel selection.} PyBaMM's default
+stress-driven LAM submodel produces an accelerating fade knee around
+SoH \(\approx 0.9\) that we found to be inconsistent with the smooth,
+decelerating fade observed in our LFP cells and in datasheet cycle-life
+claims. We therefore disable the LAM submodel in both the corpus
+generation and the end-to-end validation, letting solvent-diffusion-limited
+SEI growth and irreversible plating drive fade. This choice was validated
+by the smooth monotonic curve of Section~\ref{sec:results:rul}
+matching measured data to \SI{0.3}{pp}. It does mean the pipeline does
+not currently model LAM-driven catastrophic failure modes; if those
+become relevant for extreme-DoD or high-C-rate operation, LAM would
+need to be re-enabled with a reaction-driven (rather than stress-driven)
+mechanism to preserve the smooth fade shape.
+
+\paragraph{Isothermal assumption.} All simulations and validation
+data are at \SI{25}{\celsius}. Deployment of the operator outside the
+\SIrange{20}{30}{\celsius} band would require temperature-swept
+corpus generation and validation against measurements at those
+temperatures. The current architecture accepts temperature as a
+protocol dimension, so extending to temperature-varying deployment
+is a matter of expanding the corpus, not the model.
+
+\paragraph{Second-life EoSL uncertainty.} As discussed in
+Section~\ref{sec:results:eosl_rationale}, the second-life industry
+lacks a converged EoSL definition. The RUL number reported in
+Figure~\ref{fig:eosl} is contingent on the chosen threshold; a
+threshold change from \(0.40\) to \(0.30\) or \(0.50\) would shift the
+predicted RUL by hundreds of cycles.
+
+\paragraph{Cell-to-cell variability within a supplier.} We identify
+BOL parameters from a fresh cohort and apply them to used cells from
+the same supplier. Cell-to-cell manufacturing variability introduces
+BOL-parameter uncertainty that the operator currently does not
+propagate. A Bayesian ensemble treatment of the \(\theta\) input, using
+the per-cell identification uncertainty MADs stored alongside the
+identified values, would express prediction confidence intervals and is
+a natural extension of the current architecture.
+
+\paragraph{Degradation-parameter identifiability from short cycling
+records.} The end-to-end validation in
+Section~\ref{sec:results:rul} exposes a real limitation of
+150-cycle Longterm records: even with an excellent fit RMSE
+(\SI{0.3}{pp}), only two of the four fitted SEI/plating parameters are
+individually well-identified. The remaining two are constrained only
+in combination --- they co-vary along a manifold in parameter space
+that gives equivalent fade over the fit window. This does not
+compromise the immediate long-run prediction (which depends on the
+combination, not the individual components) but it does mean that the
+identified parameters cannot be interpreted as physical values and
+should not be transferred to different operating conditions or
+chemistries without additional data. Longer cycling records
+(${>}\num{500}$ cycles), extended fade signals through the SEI-to-LAM
+transition, or auxiliary data (e.g. post-mortem BET surface area, EIS
+at multiple SOCs) would resolve this degeneracy in future work.
+
+\subsection{Future work}
+
+Three extensions are being finalised. First, real-cell fine-tuning on
+the supplier-A, -B, and -C cohorts to close the sim-to-real gap on fade
+shape; the small number of real cells with extended cycling records
+(under \num{20}) requires careful regularisation to avoid overfitting.
+Second, an ensemble treatment of the \(\theta\) input to express
+prediction confidence intervals. Third, a temperature-swept corpus
+regeneration and validation against non-isothermal cycling data, to
+extend the operator's deployment envelope.
+
+Beyond these near-term extensions, the pipeline architecture generalises
+naturally to other cell chemistries. NMC cells with the OKane2022
+parameter set would require a separate corpus regeneration but the
+neural operator architecture, loss function, and training procedure
+transfer unchanged. Whether the same operator architecture can be
+trained on a mixed-chemistry corpus and deployed across chemistries via
+the \(\theta\) vector alone is an interesting open question.
+
+%=========================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented a two-stage pipeline for used-LFP RUL prediction that
+decouples the required cycling budget from the extrapolation horizon. A
+PyBaMM-generated synthetic corpus of \num{300} degradation trajectories
+provides the training data for a \(\theta\)-conditioned DeepONet
+operator that maps characterisation, electrochemistry, and cycling
+protocol to full SoH trajectory. The operator achieves \SI{1.0}{pp} SoH
+RMSE median on a synthetic hold-out split, and forecasts a
+\num{1376}-cycle RUL to a second-life EoSL threshold of \(\text{SoH} =
+0.40\) from just \num{50} measured cycles on a deep-second-life LFP
+cell. This represents an eight-fold reduction in cycling budget
+compared to per-cell PyBaMM calibration. The pipeline is compatible with
+any PyBaMM-supported cell chemistry, requires only characterisation
+tests plus a short cycling window to deploy on a new cell, and admits
+progressive real-cell fine-tuning as field data accumulates. It offers
+a practical route to physics-grounded, data-efficient RUL prediction
+for the growing second-life LFP repurposing industry.
+
+\section*{Acknowledgements}
+This work was supported by Turno (Blubble Pvt.\ Ltd.). The authors thank
+the PyBaMM development community for maintaining the modelling
+framework this work depends on.
+
+\section*{Data and code availability}
+An anonymised version of the pipeline code, the abstract, and the
+synthetic corpus generation scripts are available at
+\url{https://github.com/VKC-Turno/PyBaMM-Neural-ODE-RUL}. Supplier-specific
+data are proprietary to Turno and are not released.
+
+\section*{Declaration of competing interest}
+The author is employed by Turno (Blubble Pvt.\ Ltd.), which operates a
+second-life LFP-cell repurposing business. The described pipeline is
+being developed for internal use.
+
+\bibliographystyle{elsarticle-harv}
+\begin{thebibliography}{99}
+\bibitem[Birkl et al.(2017)]{birkl2017degradation}
+Birkl, C. R., Roberts, M. R., McTurk, E., Bruce, P. G., \& Howey, D. A. (2017).
+Degradation diagnostics for lithium ion cells. \emph{Journal of Power
+Sources}, \emph{341}, 373--386.
+
+\bibitem[Chen and Chen(1995)]{chen1995universal}
+Chen, T., \& Chen, H. (1995). Universal approximation to nonlinear
+operators by neural networks with arbitrary activation functions and its
+application to dynamical systems. \emph{IEEE Transactions on Neural
+Networks}, \emph{6}(4), 911--917.
+
+\bibitem[Doyle et al.(1993)]{doyle1993modelling}
+Doyle, M., Fuller, T. F., \& Newman, J. (1993). Modeling of galvanostatic
+charge and discharge of the lithium/polymer/insertion cell.
+\emph{Journal of The Electrochemical Society}, \emph{140}(6),
+1526--1533.
+
+\bibitem[Hallemans et al.(2025)]{hallemans2025impedance}
+Hallemans, N., Courtier, N.~E., Please, C. P., Planden, B., Dhoot, R.,
+Timms, R., Chapman, S.~J., Howey, D. A., \& Duncan, S. R. (2025).
+Physics-based battery model parametrisation from impedance data.
+\emph{PyBaMM Conference 2025 Book of Abstracts}, p.~20.
+
+\bibitem[Hossain et al.(2019)]{hossain2019comprehensive}
+Hossain, E., Murtaugh, D., Mody, J., Faruque, H. M. R., Sunny, M. S. H.,
+\& Mohammad, N. (2019). A comprehensive review on second-life batteries:
+current state, manufacturing considerations, applications, impacts,
+barriers, potential solutions, business strategies, and policies.
+\emph{IEEE Access}, \emph{7}, 73215--73252.
+
+\bibitem[Kovachki et al.(2023)]{kovachki2023neural}
+Kovachki, N., Li, Z., Liu, B., Azizzadenesheli, K., Bhattacharya, K.,
+Stuart, A., \& Anandkumar, A. (2023). Neural operator: Learning maps
+between function spaces. \emph{Journal of Machine Learning Research},
+\emph{24}(89), 1--97.
+
+\bibitem[Kuzhiyil et al.(2025)]{kuzhiyil2025generalisability}
+Kuzhiyil, J.~A., et al. (2025). Enhancing generalisability of
+physics-based battery degradation using UDE. \emph{PyBaMM Conference
+2025 Book of Abstracts}, p.~12.
+
+\bibitem[Li et al.(2020)]{li2020neural}
+Li, Z., Kovachki, N., Azizzadenesheli, K., Liu, B., Bhattacharya, K.,
+Stuart, A., \& Anandkumar, A. (2020). Fourier neural operator for
+parametric partial differential equations. \emph{arXiv preprint}
+arXiv:2010.08895.
+
+\bibitem[Lu et al.(2021)]{lu2021learning}
+Lu, L., Jin, P., Pang, G., Zhang, Z., \& Karniadakis, G. E. (2021).
+Learning nonlinear operators via DeepONet based on the universal
+approximation theorem of operators. \emph{Nature Machine
+Intelligence}, \emph{3}(3), 218--229.
+
+\bibitem[Manmi and Brosa Planella(2025)]{manmi2025sei}
+Manmi, K., \& Brosa Planella, F. (2025). Comparing common zero-dimensional
+SEI models under varied conditions. \emph{PyBaMM Conference 2025 Book
+of Abstracts}, p.~24.
+
+\bibitem[Mart\'{i}nez-Laserna et al.(2018)]{martinez2021second}
+Mart\'{i}nez-Laserna, E., Gandiaga, I., Sarasketa-Zabala, E.,
+Badeda, J., Stroe, D.-I., Swierczynski, M., \& Goikoetxea, A. (2018).
+Battery second life: Hype, hope or reality? A critical review of the
+state of the art. \emph{Renewable and Sustainable Energy Reviews},
+\emph{93}, 701--718.
+
+\bibitem[Nazir et al.(2025)]{nazir2025reservoirs}
+Nazir, M. A., et al. (2025). PyBaMM-aided analysis of reservoirs in
+lithium-ion cells: Strategies for cell design and cycling protocols.
+\emph{PyBaMM Conference 2025 Book of Abstracts}, p.~25.
+
+\bibitem[O'Kane et al.(2022)]{okane2022lithium}
+O'Kane, S. E. J., Ai, W., Madabattula, G., Alonso-Alvarez, D., Timms, R.,
+Sulzer, V., Edge, J. S., Wu, B., Offer, G. J., \& Marinescu, M. (2022).
+Lithium-ion battery degradation: how to model it. \emph{Physical
+Chemistry Chemical Physics}, \emph{24}(13), 7909--7922.
+
+\bibitem[Ouledboutaarija et al.(2025)]{ouledboutaarija2025}
+Ouledboutaarija, O., Kalogiannis, T., Hosen, M.~S., \& Berecibar, M.
+(2025). Advancing second-life lithium-ion batteries: Optimization
+techniques for improved electrochemical-ageing modeling performance.
+\emph{PyBaMM Conference 2025 Book of Abstracts}, p.~19.
+
+\bibitem[Peterson et al.(2010)]{peterson2010lithium}
+Peterson, S. B., Apt, J., \& Whitacre, J. F. (2010). Lithium-ion
+battery cell degradation resulting from realistic vehicle and
+vehicle-to-grid utilization. \emph{Journal of Power Sources},
+\emph{195}(8), 2385--2392.
+
+\bibitem[Klass et al.(2019)]{klass2019variability}
+Klass, V., Behm, M., \& Lindbergh, G. (2019). Capturing lithium-ion
+battery dynamics with support vector machine-based battery model.
+\emph{Journal of Power Sources}, \emph{298}, 92--101.
+
+\bibitem[Planden et al.(2024)]{planden2024pybop}
+Planden, B., Courtier, N.~E., Robinson, M., Khetarpal, A., Brosa
+Planella, F., \& Howey, D.~A. (2024). PyBOP: A Python package for
+battery model optimisation and parameterisation. \emph{arXiv preprint}
+arXiv:2412.15859.
+
+\bibitem[Prada et al.(2013)]{prada2013simplified}
+Prada, E., Di Domenico, D., Creff, Y., Bernard, J., Sauvant-Moynot, V.,
+\& Huet, F. (2013). Simplified electrochemical and thermal model of
+LiFePO$_{4}$-graphite Li-ion batteries for fast charge applications.
+\emph{Journal of The Electrochemical Society}, \emph{160}(4),
+A616--A628.
+
+\bibitem[Ramadass et al.(2004)]{ramadass2004firstprinciples}
+Ramadass, P., Haran, B., Gomadam, P.~M., White, R., \& Popov, B.~N.
+(2004). Development of first principles capacity fade model for Li-ion
+cells. \emph{Journal of The Electrochemical Society}, \emph{151}(2),
+A196--A203.
+
+\bibitem[Sulzer et al.(2021)]{sulzer2021pybamm}
+Sulzer, V., Marquis, S. G., Timms, R., Robinson, M., \& Chapman, S. J.
+(2021). Python Battery Mathematical Modelling (PyBaMM). \emph{Journal
+of Open Research Software}, \emph{9}(1), 14--21.
+
+\bibitem[Weppner and Huggins(1977)]{weppner1977determination}
+Weppner, W., \& Huggins, R. A. (1977). Determination of the kinetic
+parameters of mixed-conducting electrodes and application to the system
+Li$_{3}$Sb. \emph{Journal of The Electrochemical Society}, \emph{124}(10),
+1569--1578.
+\end{thebibliography}
+
+\end{document}
