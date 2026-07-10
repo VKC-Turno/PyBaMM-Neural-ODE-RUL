@@ -1,10 +1,13 @@
-% PyBaMM Conference 2026 — 1-page abstract, V5 (θ-conditioned neural operator)
+% PyBaMM Conference 2026 --- 1-page abstract, V5 (theta-conditioned neural operator)
 % Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
 % Deadline: 2026-07-15 UTC
 %
-% V5 changes vs V4: pivot from per-cell PINN to a θ-conditioned neural
-% operator, with PyBaMM as the physics-based data generator that
-% supplies the synthetic training corpus.
+% V5 (revised): rewritten in the Book of Abstracts style --- three flowing
+% paragraphs, no equations, no implementation minutiae. Central result
+% updated to the end-to-end validation from a single characterised cell.
+% Layout matches the accepted talk abstracts on pp. 6, 17, 19, 24 of the
+% PyBaMM Conf. 2025 Book of Abstracts: bold centred title, single author
+% block, three flowing paragraphs, numbered references at the foot.
 \documentclass[12pt,a4paper]{article}
 
 \usepackage[T1]{fontenc}
@@ -20,97 +23,76 @@
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
-\setstretch{1.08}
+\usepackage{enumitem}
+\setstretch{1.05}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.4em}
+\setlength{\parskip}{0.45em}
 
-\graphicspath{{../outputs/make_agnostic/}}
-
-\usepackage{titling}
-\setlength{\droptitle}{-2.6cm}
 \pagestyle{empty}
 
-\title{\vspace{-1.0cm}\textbf{\normalsize From a single characterisation
-snapshot to end-of-life:\\ a PyBaMM-trained neural operator for
-second-life LFP RUL}}
-\author{\normalsize \underline{Krishna Chaitanya Vaddepally}\\[-0.3em]
-  \small \emph{Turno (Blubble Pvt.\ Ltd.), India}}
-\date{}
-
 \begin{document}
-\maketitle
-\thispagestyle{empty}
 
-\vspace{-3.6em}
+\begin{center}
+{\large\textbf{From a single characterisation snapshot to end-of-life:\\
+a PyBaMM-trained neural operator for second-life LFP RUL}}\\[0.55em]
+\underline{Krishna Chaitanya Vaddepally}\\
+\emph{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India}\\
+\texttt{krishna.vaddepally@turno.club}
+\end{center}
+
+\vspace{0.15em}
+
 Second-life reuse of used lithium-iron-phosphate (LFP) cells for
-stationary energy storage is bottlenecked by characterisation cost:
-per-cell PyBaMM~[1] calibration of degradation parameters against
-measured state-of-health (SoH) trajectories requires
-$\gtrsim 400$ cycles per cell~[2]. Prior second-life work~[3] and
-universal-differential-equation degradation~[4] improve calibration
-\emph{quality} without shrinking the cycling budget. We ask:
-\emph{can a physics-conditioned neural operator, pretrained on
-PyBaMM-generated trajectories, predict the full SoH curve of a new
-cell from a single characterisation snapshot plus a short cycling
-window?}
+stationary energy storage is bottlenecked by characterisation cost.
+Per-cell PyBaMM~[1] calibration of degradation parameters against
+measured state-of-health (SoH) trajectories requires at least 400
+cycles per cell~[2] to reliably extrapolate to end-of-life; below
+that, the fitted rates become under-determined. Prior second-life
+work~[3] and universal-differential-equation degradation~[4] improve
+the quality of the per-cell fit but do not shrink the cycling budget
+itself. Reducing that budget requires transferring knowledge from a
+synthetic parameter-space corpus to individual cells rather than
+fitting each from scratch.
 
-We construct a two-stage pipeline. \emph{Stage 1 --- Physics corpus:}
-starting from PyBaMM's Prada2013 LFP chemistry with per-cell BOL
-parameters identified from OCV/GITT/HPPC/RPT on a supplier-B
-fresh-cell cohort (OCV RMSE 6.8~mV median), we Sobol-sweep 300
-simulations across five degradation channels (SEI kinetics, plating,
-LAM$_{\text{pos}}$, LAM$_{\text{neg}}$), producing 300 synthetic SoH
-trajectories with paired ground-truth $\theta$. \emph{Stage 2 ---
-Neural operator:} a DeepONet~[5] variant whose branch consumes a
-five-stream fingerprint (DCIR, RPT, first-$K$ measured SoH, $\theta$,
-protocol) and whose trunk consumes the target cycle number; output
-$\text{SoH}(n) = \text{SoH}_{\text{init}} - \text{softplus}(\langle b,
-t \rangle)$ is hard-monotonic by construction. $\theta$-conditioning
-lets the operator absorb electrochemistry \emph{directly} from
-Phase-1 param-ID rather than reconstructing it from characterisation.
+The approach has two stages. A corpus of 300 synthetic degradation
+trajectories is first generated with PyBaMM's DFN model using the
+Prada2013~[2] LFP chemistry and per-cell beginning-of-life parameters
+identified from OCV, GITT, HPPC and RPT tests on a fresh supplier-B
+cohort. A Sobol sweep across five degradation channels --- SEI
+kinetics, plating current, positive- and negative-electrode
+active-material loss, and SEI molar volume --- spans the
+physically-plausible parameter space at 25\,\textdegree C, producing
+300 trajectories paired with the degradation-parameter vector
+$\theta$ that generated each. A DeepONet~[5] variant is then trained
+to map a five-stream fingerprint (DCIR, RPT features, the first-$K$
+measured SoH values, $\theta$, and cycling protocol) onto the SoH
+trajectory at any queried cycle. Conditioning on $\theta$ lets the
+operator absorb electrochemistry directly from the identification
+step rather than reconstructing it from characterisation alone.
 
-Trained on the 300-sim corpus with $K=50$ input cycles, the operator
-predicts held-out synthetic trajectories to \textbf{1.0~pp SoH RMSE
-median} on a 15\% validation split (322k parameters, single-GPU
-training). Applied to a supplier-A LFP cell at second-life BESS
-operating conditions ($0.25$\,C, 25\,\textdegree C) with only $K=50$
-measured cycles as input, the model forecasts a remaining useful life
-of \textbf{$\approx$4400 cycles} to a second-life EoSL threshold of
-$\text{SoH} = 0.40$ (below first-life $0.70{-}0.80$ because
-repurposing packs run cells at low C-rates where usefulness extends
-further, consistent with LFP-datasheet fade behaviour at equivalent
-conditions, Fig.~1). This decouples the cycling budget from the
-extrapolation horizon.
+End-to-end validation on a single supplier-B cell drives both the BOL
+identification and the degradation-parameter fit from that cell's own
+data. Fitting the four SEI and plating parameters against its
+150-cycle measured Longterm record yields \textbf{0.3\,pp SoH RMSE};
+the resulting PyBaMM long-run reaches first-life end-of-life
+($\text{SoH}=0.80$) at \textbf{cycle 3921} with a smooth monotonic
+fade, consistent with major LFP manufacturer datasheet cycle-life
+claims at 0.5\,C. In this presentation the trained operator's
+predictions on 20 held-out cells across three commercial LFP
+suppliers will be shown, together with the identifiability limits of
+parameter fitting from short cycling records and extensions to
+non-isothermal deployment.
 
-\vspace{-0.5em}
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.75\linewidth]{anonymised_supplier_a_eosl_v5.png}
-  \caption*{\footnotesize Figure 1: Neural-model RUL forecast for a
-    supplier-A LFP cell at second-life BESS operating conditions
-    ($0.25$\,C, 25\,\textdegree C). From $K=50$ measured cycles
-    (orange band, black points), the model (green) predicts SoH
-    smoothly across the extrapolation range and crosses the second-life
-    EoSL threshold ($\text{SoH} = 0.40$, red dashed) at cycle
-    $\sim$4400. The neural-operator formulation retains this $K=50$
-    input budget and extends output to the full remaining-life horizon
-    via PyBaMM-generated training trajectories.}
-\end{figure}
-
-\vspace{-0.6em}
-{\scriptsize
-\noindent\textbf{References.}\;
-[1] V. Sulzer et al., \emph{PyBaMM}, J. Open Res. Softw. 9(1), 14--21 (2021).\;
-[2] M. Prada et al., \emph{Simplified electrochemical and thermal
-model of LiFePO$_4$-graphite Li-ion batteries}, J. Electrochem. Soc.
-160(4), A616--A628 (2013).\;
-[3] O. Ouledboutaarija et al., \emph{Advancing Second-Life Lithium-Ion
-Batteries}, PyBaMM Conf.\ 2025, p.\ 19.\;
-[4] J. A. Kuzhiyil et al., \emph{Enhancing Generalisability of
-Physics-based Battery Degradation Using UDE}, PyBaMM Conf.\ 2025,
-p.\ 12.\;
-[5] L. Lu et al., \emph{DeepONet: learning nonlinear operators for
-identifying differential equations}, Nat. Mach. Intell.\ 3, 218--229 (2021).
+\vspace{0.4em}
+{\footnotesize
+\textbf{References}
+\begin{enumerate}[leftmargin=1.6em,itemsep=-0.15em,topsep=0.15em,labelsep=0.4em]
+\item V. Sulzer \emph{et al.}, PyBaMM, \emph{J. Open Res. Softw.}\ \textbf{9}(1), 14--21 (2021).
+\item M. Prada \emph{et al.}, Simplified electrochemical and thermal model of LiFePO$_4$-graphite Li-ion batteries, \emph{J. Electrochem. Soc.}\ \textbf{160}(4), A616--A628 (2013).
+\item O. Ouledboutaarija \emph{et al.}, Advancing Second-Life Lithium-Ion Batteries, PyBaMM Conf.\ 2025, p.\ 19.
+\item J. A. Kuzhiyil \emph{et al.}, Enhancing Generalisability of Physics-based Battery Degradation Using UDE, PyBaMM Conf.\ 2025, p.\ 12.
+\item L. Lu \emph{et al.}, DeepONet: learning nonlinear operators for identifying differential equations, \emph{Nat. Mach. Intell.}\ \textbf{3}, 218--229 (2021).
+\end{enumerate}
 \par}
 
 \end{document}
