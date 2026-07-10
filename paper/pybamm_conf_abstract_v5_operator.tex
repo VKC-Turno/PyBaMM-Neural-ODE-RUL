@@ -24,9 +24,9 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
 \usepackage{enumitem}
-\setstretch{1.05}
+\setstretch{1.02}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.45em}
+\setlength{\parskip}{0.30em}
 
 \pagestyle{empty}
 
@@ -54,21 +54,25 @@ itself. Reducing that budget requires transferring knowledge from a
 synthetic parameter-space corpus to individual cells rather than
 fitting each from scratch.
 
-The approach has two stages. A corpus of 300 synthetic degradation
-trajectories is first generated with PyBaMM's DFN model using the
-Prada2013~[2] LFP chemistry and per-cell beginning-of-life parameters
-identified from OCV, GITT, HPPC and RPT tests on a fresh supplier-B
-cohort. A Sobol sweep across five degradation channels --- SEI
-kinetics, plating current, positive- and negative-electrode
-active-material loss, and SEI molar volume --- spans the
-physically-plausible parameter space at 25\,\textdegree C, producing
-300 trajectories paired with the degradation-parameter vector
-$\theta$ that generated each. A DeepONet~[5] variant is then trained
-to map a five-stream fingerprint (DCIR, RPT features, the first-$K$
-measured SoH values, $\theta$, and cycling protocol) onto the SoH
-trajectory at any queried cycle. Conditioning on $\theta$ lets the
-operator absorb electrochemistry directly from the identification
-step rather than reconstructing it from characterisation alone.
+The approach has two stages: an offline physics corpus built with
+PyBaMM's DFN model on the Prada2013~[2] LFP chemistry and per-cell
+beginning-of-life parameters identified from OCV, GITT, HPPC and RPT
+tests on a fresh supplier-B cohort; and an online neural operator ---
+a DeepONet~[5] variant conditioned on the identified degradation
+vector $\theta$ --- that maps a five-stream characterisation
+fingerprint to the SoH trajectory at any queried cycle. Figure~1
+summarises the flow.
+
+\begingroup
+\centering
+\vspace{-0.1em}
+\includegraphics[width=0.72\linewidth]{pipeline_infographic.png}\\[0.1em]
+\parbox{0.92\linewidth}{\footnotesize \textbf{Figure 1.} Two-stage
+pipeline: a 300-trajectory PyBaMM Sobol corpus (five degradation
+channels, 25\,\textdegree C) trains a $\theta$-conditioned DeepONet
+that predicts SoH from a single characterisation snapshot.}\par
+\vspace{-0.2em}
+\endgroup
 
 End-to-end validation on a single supplier-B cell drives both the BOL
 identification and the degradation-parameter fit from that cell's own
@@ -83,10 +87,10 @@ suppliers will be shown, together with the identifiability limits of
 parameter fitting from short cycling records and extensions to
 non-isothermal deployment.
 
-\vspace{0.4em}
+\vspace{0.2em}
 {\footnotesize
 \textbf{References}
-\begin{enumerate}[leftmargin=1.6em,itemsep=-0.15em,topsep=0.15em,labelsep=0.4em]
+\begin{enumerate}[leftmargin=1.6em,itemsep=-0.35em,topsep=0.0em,labelsep=0.4em,parsep=0pt]
 \item V. Sulzer \emph{et al.}, PyBaMM, \emph{J. Open Res. Softw.}\ \textbf{9}(1), 14--21 (2021).
 \item M. Prada \emph{et al.}, Simplified electrochemical and thermal model of LiFePO$_4$-graphite Li-ion batteries, \emph{J. Electrochem. Soc.}\ \textbf{160}(4), A616--A628 (2013).
 \item O. Ouledboutaarija \emph{et al.}, Advancing Second-Life Lithium-Ion Batteries, PyBaMM Conf.\ 2025, p.\ 19.
