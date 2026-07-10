@@ -82,4 +82,4 @@ the author.
 
 ## Contact
 
-Krishna Chaitanya Vaddepally · `battery.product@turno.club`
+Krishna Chaitanya Vaddepally · `krishna.vaddepally@turno.club`
