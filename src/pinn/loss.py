@@ -62,7 +62,7 @@ def _ode_derivative_along_trajectory(model, soh_traj_pred: torch.Tensor,
                                      n_traj: torch.Tensor,
                                      x_health: torch.Tensor) -> torch.Tensor:
     """
-    Re-query the ODE network at mfr_bry observed (n_t, SOH_pred_t) point to
+    Re-query the ODE network at every observed (n_t, SOH_pred_t) point to
     get the model's instantaneous dSOH/dn there. This is what `L_physics`
     compares against the finite-difference target.
     """
@@ -127,3 +127,88 @@ def batch_loss(model, batch: dict, weights: LossWeights) -> LossBreakdown:
     phys = torch.stack([p.physics for p in parts]).mean()
     mono = torch.stack([p.monotonicity for p in parts]).mean()
     return LossBreakdown(total=total, data=data, physics=phys, monotonicity=mono)
+
+
+# ---------------------------------------------------------------------------
+# Phase 3 censored / Tobit loss
+# ---------------------------------------------------------------------------
+
+BIN_EDGES_CY = torch.tensor(
+    [302, 478, 618, 793, 1001, 1134, 1297, 1448, 1643, 1898, 2188],
+    dtype=torch.float32,
+)
+BIN_WEIGHTS = torch.tensor(
+    [0.51, 1.08, 1.14, 1.14, 1.14, 1.20, 1.08, 1.14, 1.08, 0.51],
+    dtype=torch.float32,
+)
+CENSORED_W = 1.00
+LAMBDA_TOBIT = 1.0
+LAMBDA_MONO = 0.3
+SOH_EOL = 0.80
+HORIZON_CY = 2500
+
+
+def cycle_bin_weight(tgt_eol_cy: torch.Tensor) -> torch.Tensor:
+    edges = BIN_EDGES_CY.to(tgt_eol_cy.device)
+    idx = torch.bucketize(tgt_eol_cy, edges).clamp(1, 10) - 1
+    return BIN_WEIGHTS.to(tgt_eol_cy.device)[idx]
+
+
+def phase3_loss(pred_soh_traj: torch.Tensor,
+                pred_eol_cy: torch.Tensor,
+                tgt_eol_cy: torch.Tensor,
+                soh_at_horizon: torch.Tensor,
+                is_censored: torch.Tensor) -> torch.Tensor:
+    """
+    Censored Phase-3 loss.
+
+    Shapes:
+      pred_soh_traj  : (B, T)   SoH trajectory from odeint over cycle grid
+      pred_eol_cy    : (B,)     predicted cycle where SoH crosses SOH_EOL
+      tgt_eol_cy     : (B,)     target EoL cycle (NaN if censored)
+      soh_at_horizon : (B,)     predicted SoH at HORIZON_CY
+      is_censored    : (B,) bool  True if sim ran full HORIZON_CY without EoL
+    """
+    reach = ~is_censored
+    if reach.any():
+        w_reach = cycle_bin_weight(tgt_eol_cy[reach])
+        l_reach = (w_reach * F.smooth_l1_loss(
+            pred_eol_cy[reach], tgt_eol_cy[reach], reduction="none")).mean()
+    else:
+        l_reach = torch.zeros((), device=pred_soh_traj.device,
+                              dtype=pred_soh_traj.dtype)
+
+    if is_censored.any():
+        l_tobit = CENSORED_W * F.relu(SOH_EOL - soh_at_horizon[is_censored]).mean()
+    else:
+        l_tobit = torch.zeros((), device=pred_soh_traj.device,
+                              dtype=pred_soh_traj.dtype)
+
+    dsoh = pred_soh_traj[:, 1:] - pred_soh_traj[:, :-1]
+    l_mono = F.relu(dsoh).mean()
+
+    return l_reach + LAMBDA_TOBIT * l_tobit + LAMBDA_MONO * l_mono
+
+
+if __name__ == "__main__":
+    torch.manual_seed(0)
+    B, T = 4, 100
+
+    # Dummy differentiable trajectory: decreasing SoH with a learnable scale
+    scale = torch.nn.Parameter(torch.tensor(1.0))
+    base = torch.linspace(1.0, 0.7, T).unsqueeze(0).expand(B, T)
+    pred_soh_traj = 1.0 - scale * (1.0 - base)
+
+    # Half reach EoL, half censored
+    is_censored = torch.tensor([False, False, True, True])
+    tgt_eol_cy = torch.tensor([800.0, 1500.0, float("nan"), float("nan")])
+    pred_eol_cy = scale * torch.tensor([850.0, 1450.0, 0.0, 0.0])
+    soh_at_horizon = pred_soh_traj[:, -1]
+
+    loss = phase3_loss(pred_soh_traj, pred_eol_cy, tgt_eol_cy,
+                       soh_at_horizon, is_censored)
+    assert torch.isfinite(loss), f"loss not finite: {loss}"
+    loss.backward()
+    assert scale.grad is not None and torch.isfinite(scale.grad), \
+        f"grad not finite: {scale.grad}"
+    print(f"phase3_loss smoke OK: loss={float(loss):.6f} grad={float(scale.grad):.6f}")

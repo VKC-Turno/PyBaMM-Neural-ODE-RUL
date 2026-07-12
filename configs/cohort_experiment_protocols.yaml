@@ -1,0 +1,263 @@
+version: 1
+source: cohort_experiment_protocols.ipynb (Athena cycle table)
+defaults:
+  V_charge_cutoff: 3.65
+  V_discharge_cutoff: 2.5
+  rest_minutes: 10
+  cv_tail_current: C/50
+protocols:
+  CALB_0.25C_0.25D_0_100:
+    make: CALB
+    nominal_capacity_Ah: 72
+    c_charge: 0.25
+    c_discharge: 0.25
+    soc_low: 0.0
+    soc_high: 1.0
+    dod_frac: 1.0
+    cycle_time_charge_h: 4.0
+    cycle_time_discharge_h: 4.0
+    source_labels:
+      crate: 0.25C
+      drate: 0.25D
+      dod: '0_100'
+    experiment_steps:
+    - Charge at 0.25C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.25C until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0010'
+  CALB_0.25C_0.25D_15_100:
+    make: CALB
+    nominal_capacity_Ah: 72
+    c_charge: 0.25
+    c_discharge: 0.25
+    soc_low: 0.15
+    soc_high: 1.0
+    dod_frac: 0.85
+    cycle_time_charge_h: 3.4
+    cycle_time_discharge_h: 3.4
+    source_labels:
+      crate: 0.25C
+      drate: 0.25D
+      dod: '15_100'
+    experiment_steps:
+    - Charge at 0.25C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.25C for 3.400 hours or until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - 0008
+    - 0009
+  CALB_0.5C_0.5D_0_100:
+    make: CALB
+    nominal_capacity_Ah: 72
+    c_charge: 0.5
+    c_discharge: 0.5
+    soc_low: 0.0
+    soc_high: 1.0
+    dod_frac: 1.0
+    cycle_time_charge_h: 2.0
+    cycle_time_discharge_h: 2.0
+    source_labels:
+      crate: 0.5C
+      drate: 0.5D
+      dod: '0_100'
+    experiment_steps:
+    - Charge at 0.5C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.5C until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0015'
+  CALB_0.5C_0.5D_15_100:
+    make: CALB
+    nominal_capacity_Ah: 72
+    c_charge: 0.5
+    c_discharge: 0.5
+    soc_low: 0.15
+    soc_high: 1.0
+    dod_frac: 0.85
+    cycle_time_charge_h: 1.7
+    cycle_time_discharge_h: 1.7
+    source_labels:
+      crate: 0.5C
+      drate: 0.5D
+      dod: '15_100'
+    experiment_steps:
+    - Charge at 0.5C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.5C for 1.700 hours or until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0003'
+  EVE_0.5C_0.5D_0_100:
+    make: EVE
+    nominal_capacity_Ah: 105
+    c_charge: 0.5
+    c_discharge: 0.5
+    soc_low: 0.0
+    soc_high: 1.0
+    dod_frac: 1.0
+    cycle_time_charge_h: 2.0
+    cycle_time_discharge_h: 2.0
+    source_labels:
+      crate: 0.5C
+      drate: 0.5D
+      dod: '0_100'
+    experiment_steps:
+    - Charge at 0.5C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.5C until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0002'
+  EVE_0.5C_0.5D_2_100:
+    make: EVE
+    nominal_capacity_Ah: 105
+    c_charge: 0.5
+    c_discharge: 0.5
+    soc_low: 0.02
+    soc_high: 1.0
+    dod_frac: 0.98
+    cycle_time_charge_h: 1.96
+    cycle_time_discharge_h: 1.96
+    source_labels:
+      crate: 0.5C
+      drate: 0.5D
+      dod: '2_100'
+    experiment_steps:
+    - Charge at 0.5C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.5C for 1.960 hours or until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0004'
+  EVE_0.5C_0.5D_2_90:
+    make: EVE
+    nominal_capacity_Ah: 105
+    c_charge: 0.5
+    c_discharge: 0.5
+    soc_low: 0.02
+    soc_high: 0.9
+    dod_frac: 0.88
+    cycle_time_charge_h: 1.76
+    cycle_time_discharge_h: 1.76
+    source_labels:
+      crate: 0.5C
+      drate: 0.5D
+      dod: '2_90'
+    experiment_steps:
+    - Charge at 0.5C for 1.760 hours or until 3.65 V
+    - Rest for 10 minutes
+    - Discharge at 0.5C for 1.760 hours or until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - 0008
+  REPT_0.25C_0.25D_0_100:
+    make: REPT
+    nominal_capacity_Ah: 150
+    c_charge: 0.25
+    c_discharge: 0.25
+    soc_low: 0.0
+    soc_high: 1.0
+    dod_frac: 1.0
+    cycle_time_charge_h: 4.0
+    cycle_time_discharge_h: 4.0
+    source_labels:
+      crate: 0.25C
+      drate: 0.25D
+      dod: '0_100'
+    experiment_steps:
+    - Charge at 0.25C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.25C until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0007'
+  REPT_0.25C_0.25D_0_80:
+    make: REPT
+    nominal_capacity_Ah: 150
+    c_charge: 0.25
+    c_discharge: 0.25
+    soc_low: 0.0
+    soc_high: 0.8
+    dod_frac: 0.8
+    cycle_time_charge_h: 3.2
+    cycle_time_discharge_h: 3.2
+    source_labels:
+      crate: 0.25C
+      drate: 0.25D
+      dod: 0_80
+    experiment_steps:
+    - Charge at 0.25C for 3.200 hours or until 3.65 V
+    - Rest for 10 minutes
+    - Discharge at 0.25C until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0004'
+    - '0012'
+  REPT_0.5C_0.5D_0_100:
+    make: REPT
+    nominal_capacity_Ah: 150
+    c_charge: 0.5
+    c_discharge: 0.5
+    soc_low: 0.0
+    soc_high: 1.0
+    dod_frac: 1.0
+    cycle_time_charge_h: 2.0
+    cycle_time_discharge_h: 2.0
+    source_labels:
+      crate: 0.5C
+      drate: 0.5D
+      dod: '0_100'
+    experiment_steps:
+    - Charge at 0.5C until 3.65 V
+    - Hold at 3.65 V until C/50
+    - Rest for 10 minutes
+    - Discharge at 0.5C until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0057'
+  REPT_0.5C_0.5D_0_80:
+    make: REPT
+    nominal_capacity_Ah: 150
+    c_charge: 0.5
+    c_discharge: 0.5
+    soc_low: 0.0
+    soc_high: 0.8
+    dod_frac: 0.8
+    cycle_time_charge_h: 1.6
+    cycle_time_discharge_h: 1.6
+    source_labels:
+      crate: 0.5C
+      drate: 0.5D
+      dod: 0_80
+    experiment_steps:
+    - Charge at 0.5C for 1.600 hours or until 3.65 V
+    - Rest for 10 minutes
+    - Discharge at 0.5C until 2.5 V
+    - Rest for 10 minutes
+    cohort_cells:
+    - '0046'
+cell_to_protocol:
+  CALB_0003: CALB_0.5C_0.5D_15_100
+  CALB_0008: CALB_0.25C_0.25D_15_100
+  CALB_0009: CALB_0.25C_0.25D_15_100
+  CALB_0010: CALB_0.25C_0.25D_0_100
+  CALB_0015: CALB_0.5C_0.5D_0_100
+  EVE_0002: EVE_0.5C_0.5D_0_100
+  EVE_0004: EVE_0.5C_0.5D_2_100
+  EVE_0008: EVE_0.5C_0.5D_2_90
+  REPT_0004: REPT_0.25C_0.25D_0_80
+  REPT_0007: REPT_0.25C_0.25D_0_100
+  REPT_0012: REPT_0.25C_0.25D_0_80
+  REPT_0046: REPT_0.5C_0.5D_0_80
+  REPT_0057: REPT_0.5C_0.5D_0_100

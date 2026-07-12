@@ -1,12 +1,12 @@
 """
 pybamm_tuning
 =============
-Parameter-identification + simulation foundation.
+Voltaris parameter-identification + simulation foundation.
 
 A focused package for tuning PyBaMM parameters against real characterization
 test data and validating predictions against longterm cycling measurements.
-Provides Step 1 (parameter ID) and Step 2 (synthetic-trajectory generation)
-of the physics-guided Neural-ODE RUL workflow.
+Serves as Step 1 (parameter ID) and Step 2 (synthetic-trajectory generation)
+of the Voltaris physics-informed-neural-network workflow.
 
 Public API:
     load_characterization(path, manufacturer=..., cell_id=..., aggregate=...)

@@ -1,7 +1,7 @@
 """
 Characterization data loader for the PyBaMM tuning package.
 
-The characterisation workbook workbook stores array-valued columns as bracketed
+The Char_Consolidated workbook stores array-valued columns as bracketed
 strings; this module parses them back to numpy arrays and exposes a clean
 Characterization dataclass that downstream modules can consume.
 """
@@ -16,12 +16,12 @@ import numpy as np
 import pandas as pd
 
 
-DEFAULT_CHAR_PATH = Path("data/char_consolidated.xlsx")
-KNOWN_SHEETS = ("MFR_B_A", "MFR_C")
+DEFAULT_CHAR_PATH = Path("Cell_to_Pack/data/Char_Consolidated_VKC_SoC.xlsx")
+KNOWN_SHEETS = ("EVE_CALB", "REPT_Montra")
 
 
 def _parse_array(x) -> np.ndarray:
-    """Convert a characterisation workbook cell value into a numpy array of floats."""
+    """Convert a Char_Consolidated cell value into a numpy array of floats."""
     if isinstance(x, np.ndarray):
         return x.astype(float)
     if isinstance(x, (list, tuple)):
@@ -123,7 +123,7 @@ class Characterization:
         """Interpolate R0 (mΩ) at a given SoC. Uses DCIR by default; HPPC fallback.
 
         Anchors outside the sanity envelope are dropped before interpolation —
-        previously the agent had to filter these case-by-case (e.g. MFR_C_1
+        previously the agent had to filter these case-by-case (e.g. REPT_1
         had a 0.0003 mΩ HPPC anchor that biased the interpolation).
         """
         sources = []
@@ -153,7 +153,7 @@ def _row_to_characterization(
 ) -> Characterization:
     nominal = float(row.get("nominal_cap_ah", 0.0) or 0.0)
     q_rpt = float(row.get("q_rpt_ah", 0.0) or 0.0)
-    # MFR_B_A sheet has no Soh column; compute from q_rpt / nominal
+    # EVE_CALB sheet has no Soh column; compute from q_rpt / nominal
     soh = float(row.get("Soh", 0.0) or 0.0)
     if soh == 0.0 and nominal > 0.0:
         soh = (q_rpt / nominal) * 100.0
@@ -273,11 +273,11 @@ def load_characterization(
 
     Examples
     --------
-    # Single MFR_B cell, batch 1
-    mfr_b = load_characterization(cell_id="MFR_A_0001")
+    # Single EVE cell, batch 1
+    eve = load_characterization(cell_id="CALB_0001")
 
-    # Median of all 8 MFR_B cells in batch 1
-    mfr_b_med = load_characterization(manufacturer="MFR_B", cohort="MFR_B",
+    # Median of all 8 EVE cells in batch 1
+    eve_med = load_characterization(manufacturer="EVE", cohort="EVE",
                                     aggregate=True)
 
     # Module P012_M04 (12S2P)

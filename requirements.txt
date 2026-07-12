@@ -3,13 +3,13 @@ pybamm>=24.0
 scipy>=1.11
 numpy>=1.24
 
-# Neural ODE surrogate
+# PINN training
 torch>=2.1
 torchdiffeq>=0.2.3
 
-# Data + IO
+# Data
 pandas>=2.0
-pyarrow>=14.0
+pyarrow>=14.0          # for parquet support
 
 # Config and utilities
 pyyaml>=6.0
@@ -17,3 +17,11 @@ joblib>=1.3
 
 # Plotting
 matplotlib>=3.7
+
+# Optional: experiment tracking
+# mlflow>=2.9
+# wandb>=0.16
+
+# Optional: import raw data from Athena (Data/import_data.ipynb)
+# boto3>=1.34
+# awswrangler>=3.0

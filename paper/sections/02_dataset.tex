@@ -1,0 +1,51 @@
+\section{Dataset and experimental conditions}
+\label{sec:dataset}
+
+\paragraph{Ambient condition.}
+All experiments are performed at a nominal ambient temperature of
+25\,$^\circ$C. We treat the cell as isothermal at this condition in all model
+configurations used for this repository.
+
+\paragraph{Cell type.}
+The cells are large-format lithium iron phosphate (LFP) cells with nominal
+capacity on the order of \TODO{insert value, e.g., 105\,Ah}.
+
+\paragraph{Available tests.}
+The raw data folders include characterisation protocols such as OCV--SOC,
+GITT, DCIR, HPPC, and RPT, as well as cycling datasets. Table~\ref{tab:tests}
+summarises how each test is used in the modelling workflow.
+
+\begin{table}[t]
+  \centering
+  \caption{Test types and intended use in the workflow.}
+  \label{tab:tests}
+  \begin{tabular}{ll}
+    \toprule
+    Test & Primary use in this repo \\
+    \midrule
+    OCV--SOC & OCV curve calibration / stoichiometry window \\
+    DCIR & Ohmic resistance / validation feature (DCIR) \\
+    HPPC & Dynamic resistance/RC behaviour; feature extraction \\
+    GITT & Step-level metrics; optional apparent diffusivity \\
+    RPT & Capacity and incremental capacity (IC) features \\
+    Long-term cycling & \SOH trajectories for fine-tuning/validation \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Data preprocessing.}
+The repository includes a unified loader that standardises column names,
+reconstructs a monotonic time base from absolute timestamps, and normalises
+units (mA$\rightarrow$A, mAh$\rightarrow$Ah) for consistency across exports.
+
+\paragraph{Cell cohort selection.}
+Because characterisation completeness varies by cell (e.g., some protocols such
+as self-discharge and peak power tests are only available for a subset), we
+define a default cohort that maximises the ability to calibrate and validate
+the electrochemical model before using it as a synthetic trajectory generator.
+In this repository, the default selected cohort is recorded in
+\texttt{configs/dataset.yaml} and justified in the generated audit report
+\texttt{data/processed/cell\_selection\_report.md}. At the time of writing, this
+default cohort comprises cells \texttt{0005--0008}, which have a more complete
+characterisation set (including GITT, peak-power, and self-discharge tests) than
+the remaining cells.

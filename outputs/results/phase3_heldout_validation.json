@@ -1,0 +1,111 @@
+{
+  "checkpoint": "outputs/models/pinn_phase3_operator.pt",
+  "branch_dim": 11,
+  "per_cell": [
+    {
+      "cell_id": "0029",
+      "make": "CALB",
+      "n_obs": 201,
+      "soh_rmse_pp": 1.0467911804858425,
+      "knee_abs_err_cycles": NaN,
+      "eol_abs_err_cycles": "beyond horizon",
+      "pearson_r": 0.892559351080672,
+      "fisher_abs_cos": 0.9935992971123369,
+      "fisher_passes": false,
+      "rmse_passes": true
+    },
+    {
+      "cell_id": "0003",
+      "make": "EVE",
+      "n_obs": 150,
+      "soh_rmse_pp": 1.759508511742814,
+      "knee_abs_err_cycles": NaN,
+      "eol_abs_err_cycles": "beyond horizon",
+      "pearson_r": 0.5391277815538346,
+      "fisher_abs_cos": 0.98082514996144,
+      "fisher_passes": false,
+      "rmse_passes": true
+    },
+    {
+      "cell_id": "0031",
+      "make": "REPT",
+      "n_obs": 201,
+      "soh_rmse_pp": 1.687760990338441,
+      "knee_abs_err_cycles": NaN,
+      "eol_abs_err_cycles": "beyond horizon",
+      "pearson_r": 0.7987721509122213,
+      "fisher_abs_cos": 0.9598733148122227,
+      "fisher_passes": false,
+      "rmse_passes": true
+    }
+  ],
+  "fisher_gate": {
+    "CALB_0029": {
+      "sample_id": "CALB_0029",
+      "cosine": 0.9935992971123369,
+      "abs_cosine": 0.9935992971123369,
+      "norm_dSoH_dlog_k_SEI": 0.04193338006734848,
+      "norm_dSoH_dlog_LAM_neg": 0.02659415826201439,
+      "passes": false,
+      "threshold": 0.3,
+      "cell_id": "0029",
+      "make": "CALB"
+    },
+    "EVE_0003": {
+      "sample_id": "EVE_0003",
+      "cosine": 0.98082514996144,
+      "abs_cosine": 0.98082514996144,
+      "norm_dSoH_dlog_k_SEI": 0.014881717041134834,
+      "norm_dSoH_dlog_LAM_neg": 0.005906275473535061,
+      "passes": false,
+      "threshold": 0.3,
+      "cell_id": "0003",
+      "make": "EVE"
+    },
+    "REPT_0031": {
+      "sample_id": "REPT_0031",
+      "cosine": 0.9598733148122227,
+      "abs_cosine": 0.9598733148122227,
+      "norm_dSoH_dlog_k_SEI": 0.012085492722690105,
+      "norm_dSoH_dlog_LAM_neg": 0.0029574956279248,
+      "passes": false,
+      "threshold": 0.3,
+      "cell_id": "0031",
+      "make": "REPT"
+    }
+  },
+  "regime_swap": {
+    "cell_a": "0029",
+    "make_a": "CALB",
+    "cell_b": "0003",
+    "make_b": "EVE",
+    "A_native_swaps_B_theta": {
+      "cell_id": "0029",
+      "rmse_native_vs_self_pp": 1.0467911804858425,
+      "rmse_swap_vs_self_pp": 1.1685533738251395,
+      "rmse_native_vs_other_pp": 2.6544749968841597,
+      "rmse_swap_vs_other_pp": 2.416642473718044,
+      "delta_self_pp": 0.12176219333929694,
+      "delta_other_pp": -0.2378325231661158,
+      "theta_matters": true
+    },
+    "B_native_swaps_A_theta": {
+      "cell_id": "0003",
+      "rmse_native_vs_self_pp": 1.759508511742814,
+      "rmse_swap_vs_self_pp": 1.9093088860980922,
+      "rmse_native_vs_other_pp": 1.8788708171747253,
+      "rmse_swap_vs_other_pp": 1.6779865773035447,
+      "delta_self_pp": 0.14980037435527827,
+      "delta_other_pp": -0.20088423987118054,
+      "theta_matters": true
+    },
+    "passes": true,
+    "criterion": "at_least_one_swap_shifts_off_native (delta_self > 0)"
+  },
+  "gates": {
+    "soh_rmse_pp<=3.0": true,
+    "fisher_cosine<=0.3": false,
+    "regime_swap_theta_matters": true,
+    "overall_pass": false
+  }
+}

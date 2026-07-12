@@ -1,0 +1,20 @@
+\section{Validation protocol}
+\label{sec:validation}
+
+To avoid optimistic bias, model calibration and validation must be separated
+by either:
+\begin{enumerate}
+  \item \textbf{cell hold-out:} leave-one-cell-out validation when multiple
+  cells are available, or
+  \item \textbf{protocol hold-out:} fit to a subset of characterisation tests
+  and validate on protocols not used in fitting.
+\end{enumerate}
+
+\paragraph{Key limitation for \RUL-to-EOL claims.}
+If the available long-term cycling data does not reach the end-of-life
+definition (e.g., 80\% \SOH), then \RUL-to-EOL accuracy cannot be directly
+validated. In that case, results must be stated as within-observation-horizon
+\SOH forecasting, with explicit uncertainty bounds and failure cases.
+
+\TODO{Insert concrete train/val/test splits once the final dataset curation is fixed.}
+

@@ -2,7 +2,7 @@
 1-D back-calibration of k_SEI to match a measured fade rate.
 
 For LFP cells the SEI kinetic rate constant is the strongest lever on the
-cycle-fade slope. If we have a measured (-1.00 pp/100cy from MFR_C, say)
+cycle-fade slope. If we have a measured (-1.00 pp/100cy from REPT, say)
 we can solve for the k_SEI that makes a short PyBaMM run produce that
 exact slope, holding all other identified parameters fixed.
 

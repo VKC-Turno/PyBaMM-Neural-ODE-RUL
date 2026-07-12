@@ -1,0 +1,174 @@
+"""Anonymised v3 figures for GitHub push.
+
+CALB → MFR_A, REPT → MFR_C, EVE → MFR_B (matching v2's convention).
+
+Outputs go directly into the scratchpad pushed-repo location:
+  /tmp/claude-1002/.../scratchpad/pybamm-neural-ode-rul/outputs/make_agnostic/
+    anonymised_bar_v3.png
+    anonymised_mfr_a_grid_v3.png
+    anonymised_mfr_b_grid_v3.png
+    anonymised_mfr_c_grid_v3.png
+"""
+from __future__ import annotations
+import sys
+from pathlib import Path
+
+sys.path.insert(0, "/home/hj/Desktop/PINNs")
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import torch
+
+from Voltaris.sciml.data_combined         import load_combined, feature_normaliser
+from Voltaris.sciml.physics               import estimate_k_sei_from_window, physics_trajectory
+from Voltaris.sciml.train_joint           import (JointConfig, JointPINN,
+                                                    predict_full_trajectory_joint)
+
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+K = 50
+SRC = Path("/home/hj/Desktop/PINNs/Voltaris/outputs/sciml_hybrid")
+OUT = Path("/tmp/claude-1002/-home-hj-Desktop-PINNs/"
+            "2ba1f50d-f587-410d-b908-082fe8df67cc/scratchpad/"
+            "pybamm-neural-ode-rul/outputs/make_agnostic")
+OUT.mkdir(parents=True, exist_ok=True)
+
+# Make-name mapping (matches v2)
+MAKE_TAG = {"CALB": "MFR_A", "REPT": "MFR_C", "EVE": "MFR_B"}
+MAKE_LETTER = {"CALB": "A", "REPT": "C", "EVE": "B"}
+
+cells, meta = load_combined(include_synth=False)
+mean, std   = feature_normaliser(cells)
+mean_s      = mean[:-1]; std_s = std[:-1]
+n_shared    = len(cells[0].x_health) - 1
+n_norm_scale = float(max(c.n_total for c in cells))
+cfg = JointConfig(K=K, n_norm_scale=n_norm_scale, p_init=0.5)
+
+model = JointPINN(n_cells=len(cells), n_shared_features=n_shared,
+                    embed_dim=8, hidden=128, n_layers=5,
+                    feat_mean=mean_s, feat_std=std_s, p_init=0.5)
+model.load_state_dict(torch.load(SRC / "warmstart_K50.pt", map_location=DEVICE))
+model.to(DEVICE).eval()
+
+per_make = {"CALB": {}, "REPT": {}, "EVE": {}}
+for i, cell in enumerate(cells):
+    m = meta[cell.cell_id]["make"]
+    n = cell.n_traj.numpy(); s = cell.soh_traj.numpy()
+    first_cy = float(n[0]); k_end = first_cy + K
+    mask_te = n > k_end
+    if mask_te.sum() < 3: continue
+    soh_pred = predict_full_trajectory_joint(model, cell, i, cfg, DEVICE).numpy()
+    k_L0 = estimate_k_sei_from_window(cell, K)
+    n_t = torch.tensor(n, dtype=torch.float32)
+    soh_phys = physics_trajectory(cell.soh_init, k_L0, n_t, first_cy).numpy()
+    cid_num = int(cell.cell_id.split("_")[-1])
+    per_make[m][cid_num] = dict(
+        n=n, s=s, soh_pred=soh_pred, soh_phys=soh_phys,
+        first_cy=first_cy, k_end=k_end,
+        rmse_pinn=float(np.sqrt(np.mean((soh_pred[mask_te]-s[mask_te])**2))) * 100,
+        rmse_phys=float(np.sqrt(np.mean((soh_phys[mask_te]-s[mask_te])**2))) * 100,
+    )
+
+
+def _plot_one(ax, cid_num, t, make, ymin_pad=1.5, ymax_pad=1.5):
+    n, s = t["n"], t["s"]
+    first_cy, k_end = t["first_cy"], t["k_end"]
+    soh_meas_pct = s * 100
+    soh_pred_pct = t["soh_pred"] * 100
+    soh_phys_pct = t["soh_phys"] * 100
+    ymin = float(min(soh_meas_pct.min(), soh_pred_pct.min())) - ymin_pad
+    ymax = float(max(soh_meas_pct.max(), soh_pred_pct.max())) + ymax_pad
+    ax.set_ylim(ymin, ymax)
+    ax.axvspan(k_end, n[-1], color="tab:blue", alpha=0.06)
+    ax.axvspan(first_cy, k_end, color="tab:orange", alpha=0.12)
+    ax.scatter(n, soh_meas_pct, s=4, color="black", alpha=0.30, label="Measured")
+    ax.plot(n, soh_phys_pct, color="tab:red", lw=1.4, ls="--",
+             label=f"phys {t['rmse_phys']:.2f} pp")
+    ax.plot(n, soh_pred_pct, color="tab:green", lw=2.0,
+             label=f"PINN {t['rmse_pinn']:.2f} pp")
+    ax.axvline(k_end, color="dimgray", ls="--", lw=0.7)
+    if soh_phys_pct[-1] < ymin:
+        ax.annotate(f"phys → {soh_phys_pct[-1]:.1f}%",
+                     xy=(n[-1], ymin + 0.5), fontsize=8, color="tab:red", ha="right")
+    passer = "  ✓" if t["rmse_pinn"] < 3.0 else "  ✗"
+    ax.set_title(f"{make} cell {cid_num}{passer}", fontsize=10)
+    ax.set_xlabel("Cycle"); ax.set_ylabel("SoH [%]")
+    ax.grid(alpha=0.3); ax.legend(fontsize=8, loc="lower left")
+
+
+def make_grid(make, trajs, ncols=3):
+    tag = MAKE_TAG[make]
+    keys = sorted(trajs.keys())
+    n = len(keys); nrows = (n + ncols - 1) // ncols
+    fig, axs = plt.subplots(nrows, ncols, figsize=(5.3*ncols, 3.6*nrows))
+    axs = np.array(axs).reshape(-1)
+    for ax, cid in zip(axs, keys):
+        _plot_one(ax, cid, trajs[cid], tag)
+    for ax in axs[n:]: ax.set_visible(False)
+    med_pinn = np.median([trajs[k]["rmse_pinn"] for k in keys])
+    med_phys = np.median([trajs[k]["rmse_phys"] for k in keys])
+    n_pass   = sum(trajs[k]["rmse_pinn"] < 3.0 for k in keys)
+    fig.suptitle(f"{tag} — Universal PINN (warm-started) vs pure physics (K=50)\n"
+                  f"PINN median {med_pinn:.2f} pp, phys median {med_phys:.2f} pp   ·   "
+                  f"PINN under 3 pp: {n_pass}/{len(keys)}",
+                  fontsize=12, y=1.005)
+    fig.tight_layout()
+    return fig
+
+
+for make in ("CALB", "REPT", "EVE"):
+    fig = make_grid(make, per_make[make])
+    tag = MAKE_TAG[make]
+    outfile = OUT / f"anonymised_{tag.lower()}_grid_v3.png"
+    fig.savefig(outfile, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"Wrote {outfile.name}")
+
+# ── Bar chart ──
+df = pd.read_csv(SRC / "warmstart_vs_baseline_K50.csv")
+df_h = df[df.model == "warm"].copy()
+# add anonymised make and cell tag
+df_h["make_anon"] = df_h["make"].map(MAKE_TAG)
+df_h["letter"] = df_h["make"].map(MAKE_LETTER)
+
+fig, ax = plt.subplots(figsize=(12, 4.5))
+xoff = {"MFR_A": 0, "MFR_C": 10, "MFR_B": 22}
+colors = {"MFR_A": "tab:red", "MFR_C": "tab:blue", "MFR_B": "tab:purple"}
+for tag in ["MFR_A", "MFR_C", "MFR_B"]:
+    d = df_h[df_h.make_anon == tag].sort_values("cell_id").reset_index(drop=True)
+    x = np.arange(len(d)) + xoff[tag]
+    ax.bar(x - 0.2, d.rmse_phys_pp, 0.4, color=colors[tag], alpha=0.4,
+            label=f"{tag} phys")
+    ax.bar(x + 0.2, d.rmse_pinn_pp, 0.4, color=colors[tag], alpha=0.9,
+            label=f"{tag} PINN", edgecolor="black", linewidth=0.5)
+ax.axhline(3.0, color="black", ls="--", lw=1.2, label="3 pp target")
+ax.set_yscale("log")
+ax.set_ylabel("Held-out RMSE [pp SoH]")
+ax.set_title("Universal PINN (K=50): held-out RMSE per cell, "
+             "all cells under 4 pp across three manufacturers")
+xticks, xlabels = [], []
+for tag in ["MFR_A", "MFR_C", "MFR_B"]:
+    d = df_h[df_h.make_anon == tag].sort_values("cell_id").reset_index(drop=True)
+    for i, row in d.iterrows():
+        letter = row["letter"]
+        cid_num = int(str(row["cell_id"]).split("_")[-1])
+        xticks.append(i + xoff[tag]); xlabels.append(f"{letter}{cid_num}")
+ax.set_xticks(xticks); ax.set_xticklabels(xlabels, rotation=45, fontsize=8)
+ax.grid(alpha=0.3, axis="y", which="both")
+ax.legend(fontsize=8, ncol=4, loc="upper right")
+fig.tight_layout()
+fig.savefig(OUT / "anonymised_bar_v3.png", dpi=150, bbox_inches="tight")
+plt.close(fig)
+print("Wrote anonymised_bar_v3.png")
+
+# ── Also copy the CSV (anonymised) for reproducibility ──
+csv_out = df_h[["make_anon", "cell_id", "n_total", "n_test",
+                  "rmse_pinn_pp", "rmse_phys_pp"]].copy()
+csv_out.columns = ["make", "cell_id_anon", "n_total", "n_test",
+                    "rmse_pinn_pp", "rmse_phys_pp"]
+# Anonymise cell_id: strip make prefix, keep number
+csv_out["cell_id_anon"] = csv_out.apply(
+    lambda r: f"{MAKE_LETTER[df_h.loc[r.name, 'make']]}{int(str(df_h.loc[r.name, 'cell_id']).split('_')[-1])}",
+    axis=1)
+csv_out.to_csv(OUT / "K50_v3_summary.csv", index=False)
+print("Wrote K50_v3_summary.csv")

@@ -1,0 +1,97 @@
+# Tighter PyBaMM degradation parameter sweep (LFP @ 25°C) — May 2026
+#
+# Rationale: the original sweep_config.yaml ranges produced fade rates 70–260×
+# faster than the EVE LF105 manufacturer-rated 4000 cycles to 80% retention.
+# This config narrows the upper bounds of LAM and plating to physically
+# plausible LFP regimes and pulls k_SEI down toward the identified ceiling.
+#
+# Targets (manufacturer spec sheet RD-LF105-S01-LF rev C, March 2022):
+#   25 °C  ≥ 4000 cycles to 80% retention
+#   45 °C  ≥ 2000 cycles to 80% retention
+#
+# Mean SoH fade rate to hit spec ≈ 5e-5 /cycle (= 0.20 / 4000).
+# We aim for sample-level mean rates in [5e-6, 2e-4] /cycle so the cohort
+# brackets the spec by factors of ~10 in both directions.
+
+sweep:
+  n_samples: 300                 # half of original 800 — keep wall time ~30 min
+  sampling_strategy: sobol
+  seed: 456
+  n_cycles_per_sim: 500         # double the cycles so slow fades reach EOL
+  solver: "safe"
+
+degradation_parameters:
+  # SEI rate: identified self-discharge bound was 2.73e-12 m/s for the
+  # Prada2013 default 0.18 m² electrode area; for the real 105 Ah jelly-
+  # roll (~30× larger) the bound is ~1e-13. Stay below that.
+  k_SEI_ms:
+    min: 1.0e-15
+    max: 5.0e-14
+    scale: log
+
+  SEI_partial_molar_volume_m3mol:
+    min: 5.0e-5
+    max: 1.5e-4
+    scale: linear
+
+  # Plating: essentially negligible at 25 °C with moderate C-rates. Keep
+  # a small range so it's a perturbation, not a dominant channel.
+  lithium_plating_exchange_current_A_m2:
+    min: 1.0e-9
+    max: 1.0e-7
+    scale: log
+
+  # LAM_positive (cathode active material loss) rate — near-negligible for
+  # this graphite-limited cell, but kept as a small perturbation.
+  LAM_positive_rate_s:
+    min: 1.0e-9
+    max: 1.0e-7
+    scale: log
+
+  # LAM_negative (graphite active material loss) rate — the DOMINANT fade
+  # driver. Diagnostic scan: 2.78e-7/s → 701 cy, 2.78e-8/s → 4980 cy,
+  # 2.78e-9/s → 9992 cy to 80% retention. This range brackets the spec's
+  # ≥4000-cycle (25 °C) rating with realistic spread.
+  LAM_negative_rate_s:
+    min: 2.0e-9
+    max: 6.0e-8
+    scale: log
+
+  temperature_K:
+    min: 298.15
+    max: 298.15
+    scale: linear
+
+  c_rate:
+    min: 0.30                    # min-crate raised from 0.10 so cycles run fast
+    max: 1.00
+    scale: linear
+
+cycling_protocol:
+  discharge_cutoff_V: 2.5
+  charge_cutoff_V: 3.65
+  rest_minutes: 10
+
+output_features:
+  - Q_Ah
+  - SOH
+  - dcir_mOhm
+  - V_mean_discharge
+  - ic_peak1_V
+  - ic_peak2_V
+  - ic_peak1_area
+  - ic_peak2_area
+  - SEI_thickness_m
+  - LAM_positive_fraction
+  - dead_lithium_fraction
+
+compute:
+  n_jobs: 5                       # match crash-recovery launch — proven stable
+  backend: joblib
+  timeout_per_sim_s: 1800         # 30 min per sim (longer cycles need more wall time)
+  checkpoint_every_n: 25
+
+quality_filters:
+  min_final_SOH: 0.50
+  max_final_SOH: 0.999
+  min_cycles_completed: 200

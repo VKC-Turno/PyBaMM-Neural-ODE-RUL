@@ -20,7 +20,7 @@
 
 % Figure paths — non-anonymised local build; the pushed repo will
 % rewrite these to ../outputs/make_agnostic/ before submission.
-\graphicspath{{../outputs/make_agnostic/}}
+\graphicspath{{../Voltaris/outputs/sciml_hybrid/}{../data/synthetic/validation_plots/}{../data/synthetic/verification/}}
 
 \begin{document}
 
@@ -640,8 +640,8 @@ until SoH crosses the second-life EoSL threshold of \(0.40\).
 
 \begin{figure}[!t]
     \centering
-    \includegraphics[width=\linewidth]{end_to_end_validation.png}
-    \caption{End-to-end workflow validation on a representative fresh supplier-B cell.
+    \includegraphics[width=\linewidth]{eve_0008_workflow_validation.png}
+    \caption{End-to-end workflow validation on supplier-B cell 0008.
     \emph{Left}: full 5000-cycle DFN simulation using this cell's own
     per-cell BOL parameters and degradation parameters fitted to its
     measured Longterm trajectory, reaching first-life EoL
@@ -657,7 +657,7 @@ until SoH crosses the second-life EoSL threshold of \(0.40\).
 Figure~\ref{fig:eosl} demonstrates the end-to-end workflow on a single
 cell whose own characterisation data drives both the BOL parameter
 identification and the degradation parameter fit. We work here with
-a representative fresh supplier-B cell, chosen because it has the fullest characterisation
+supplier-B cell 0008, chosen because it has the fullest characterisation
 suite (OCV, GITT, DCIR, HPPC, RPT) alongside a Longterm cycling record
 long enough to expose measurable fade
 (150~cycles at \(0.5\)\,C, \SI{25}{\celsius}, spanning SoH
@@ -665,7 +665,7 @@ long enough to expose measurable fade
 
 \paragraph{Phase 1 -- per-cell BOL identification.}
 Re-running the identification pipeline of Section~\ref{sec:methods:bol}
-against this single cell (as opposed to the cohort medians used to seed
+against cell 0008 alone (as opposed to the cohort medians used to seed
 the corpus) yields a per-cell parameter set within
 \SIrange{0.3}{0.5}{\percent} of the cohort medians on the core
 identifiable parameters (stoichiometry window, capacities, ohmic

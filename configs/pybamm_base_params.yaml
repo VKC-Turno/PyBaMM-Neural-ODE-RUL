@@ -1,0 +1,50 @@
+# Base PyBaMM configuration for LFP/graphite cells (25°C, isothermal assumption)
+#
+# Scientific scope note:
+# - We use an LFP-capable parameter set as the starting chemistry.
+# - Your cells are large-format (~105 Ah). Literature parameter sets shipped with
+#   PyBaMM (e.g. Prada2013) are not for your exact geometry, so treat this as a
+#   physics prior that must be calibrated/validated against your own OCV/HPPC/DCIR.
+
+base:
+  reference: "Prada2013"          # LFP parameter set in PyBaMM
+
+ambient:
+  temperature_C: 25.0
+
+model_options:
+  thermal: "isothermal"
+  SEI: "solvent-diffusion limited"
+  SEI porosity change: "true"
+  lithium plating: "irreversible"
+  loss of active material: "stress-driven"
+  cell geometry: "arbitrary"
+  dimensionality: 1
+
+# These values should be overridden by identified_params.yaml once you implement
+# parameter identification. The placeholders below are *not* validated for LF105.
+electrochemistry:
+  # Solid diffusion coefficients (if you choose to set fixed literature values)
+  Ds_n_m2s:
+  Ds_p_m2s:
+
+  # Exchange-current prefactors (if you fit kinetics lumped into an i0 scaling)
+  k0_n_A_m2:
+  k0_p_A_m2:
+
+geometry:
+  # If using "cell geometry: arbitrary", you must provide consistent dimensions
+  # so that current density and capacity scales match your 105 Ah cell.
+  electrode_height_m:
+  electrode_width_m:
+  negative_electrode_thickness_m:
+  separator_thickness_m:
+  positive_electrode_thickness_m:
+
+degradation:
+  # Default priors; you should NOT claim these are identified from your data
+  # unless you perform a constrained fit + independent validation.
+  SEI_kinetic_rate_m_s: 1.0e-13
+  SEI_partial_molar_volume_m3_mol: 9.585e-5
+  lithium_plating_exchange_current_A_m2: 1.0e-6
+  LAM_positive_rate_s: 1.0e-3

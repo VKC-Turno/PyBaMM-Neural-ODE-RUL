@@ -1,0 +1,69 @@
+# PINN training configuration
+#
+# Scientific scope note:
+# - All tests in this project are at a single ambient temperature: 25°C.
+# - Temperature is therefore NOT an identifiable/generalizable driver from the
+#   real dataset; it is retained as a constant feature for compatibility only.
+
+ambient:
+  temperature_C: 25.0
+
+model:
+  architecture: neural_ode
+  health_feature_dim: 5
+  hidden_size: 64
+  n_hidden_layers: 3
+  activation: tanh                # tanh preferred for ODEs (smooth derivatives)
+  dropout_p: 0.1                  # needed for MC dropout uncertainty
+  ode_solver: dopri5              # adaptive Runge-Kutta 4/5
+  ode_rtol: 1.0e-4
+  ode_atol: 1.0e-6
+
+health_features:                  # must match inference feature order
+  - temperature_C
+  - c_rate
+  - dcir_mOhm
+  - ic_peak1_shift_V
+  - ic_peak2_area_norm
+
+# Feature normalisation (computed from training data — filled by train.py).
+# For temperature we force a stable scale since it is constant in real data.
+normalisation:
+  temperature_C:    {mean: 25.0, std: 1.0}
+  c_rate:           {mean: 0.5,  std: 0.25}
+  dcir_mOhm:        {mean: 35.0, std: 10.0}
+  ic_peak1_shift_V: {mean: 0.0,  std: 0.01}
+  ic_peak2_area_norm: {mean: 1.0, std: 0.1}
+
+phase1_pretrain:
+  lr: 1.0e-3
+  batch_size: 64
+  epochs: 200
+  scheduler: cosine
+  warmup_epochs: 10
+  lambda_physics: 0.1
+  lambda_monotonicity: 0.05
+  val_split: 0.15
+  test_split: 0.15
+  early_stopping_patience: 20
+  seed: 456
+  checkpoint_dir: outputs/models/
+  log_every_n_epochs: 10
+
+phase2_finetune:
+  lr: 1.0e-4
+  batch_size: 8
+  epochs: 100
+  freeze_first_n_layers: 2
+  lambda_physics: 0.3             # trust physics more with less real data
+  lambda_monotonicity: 0.1
+  early_stopping_patience: 15
+  seed: 456
+
+eol:
+  soh_threshold: 0.2              # BESS application: deep-discharge EOL = 20% remaining capacity
+  max_prediction_cycles: 8000     # headroom for the >5000-cycle expected lifetime
+
+inference:
+  mc_dropout_samples: 200         # for uncertainty estimation
+  confidence_interval: 0.9        # report 90% CI

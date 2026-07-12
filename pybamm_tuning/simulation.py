@@ -76,7 +76,7 @@ class Simulation:
     Examples
     --------
     >>> sim = Simulation(parameters, protocol=CyclingProtocol(c_rate=0.25),
-    ...                  cache_dir=Path("data/outputs/sim_cache"))
+    ...                  cache_dir=Path("Cell_to_Pack/outputs/sim_cache"))
     >>> df = sim.run(n_cycles=20)
     """
 

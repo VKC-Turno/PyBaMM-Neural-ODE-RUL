@@ -1,0 +1,154 @@
+% PyBaMM Conference 2026 --- 1-page abstract, V6 (final skeleton)
+% Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
+% Deadline: 2026-07-15 UTC
+%
+% V6: structured skeleton (Abstract / Methods / Results / Discussion) with
+% \TODO{...} placeholders for numbers that land after training + held-out
+% validation on CALB_0029 / EVE_0003 / REPT_0031. All prose is defensible
+% pre-training; numeric claims are ring-fenced in \TODO{}. Compile with:
+%     cd paper && latexmk -pdf pybamm_conf_abstract_v6_final.tex
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[a4paper,top=0.7cm,bottom=0.7cm,left=1.1cm,right=1.1cm]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\captionsetup{font=footnotesize,skip=2pt,labelsep=period}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\setstretch{0.90}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.05em}
+\pagestyle{empty}
+
+% --- Placeholder macro for numbers pending training / validation ---
+\newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+% Compact section headings
+\usepackage{titlesec}
+\titleformat{\section}{\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0.25em}{0.08em}
+
+\begin{document}
+
+\begin{center}
+{\large\textbf{One-hour characterisation to full state-of-health trajectory:\\
+a supplier-agnostic PyBaMM-trained neural operator for second-life LFP RUL}}\\[0.45em]
+Krishna Chaitanya Vaddepally\\
+\emph{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India}\\
+\texttt{krishna.vaddepally@turno.club}
+\end{center}
+
+\section*{Abstract}
+Second-life reuse of used lithium iron phosphate (LFP) cells is
+bottlenecked by characterisation cost: reliable remaining-useful-life
+(RUL) estimation today requires hundreds of cycles of ageing data per
+cell. We present a supplier-agnostic neural operator that maps a
+\emph{single one-hour characterisation snapshot} --- OCV, GITT, HPPC and
+a partial RPT --- to the full state-of-health (SoH) trajectory to
+end-of-life. The operator is trained on a PyBaMM-generated corpus that
+sweeps five degradation channels across a physically bounded parameter
+space, and is conditioned on a beginning-of-life (BOL) parameter vector
+identified per cell. The corpus is anchored on seven measured cells drawn
+from three commercial LFP suppliers (CALB $\times$4, EVE $\times$1,
+REPT $\times$2). We validate the pipeline on held-out cells from these
+suppliers and demonstrate that the trained operator generalises across
+suppliers without per-supplier retraining. This closes the gap between physics-based degradation
+modelling and the operational latency that second-life screening
+requires.
+
+\section*{Methods}
+The pipeline has three phases. \textbf{Phase~1 (BOL identification)}
+fits per-cell electrochemistry from a single characterisation snapshot:
+OCV--SOC inversion, GITT-based solid diffusivity, HPPC-derived series
+resistance, and an initial-capacity anchor from a partial RPT.
+\textbf{Phase~2 (per-anchor degradation-parameter fit)} identifies
+five degradation parameters ($k_{\text{SEI}}$, $V_{\text{SEI}}$,
+$D_{\text{SEI,solvent}}$, $k_{\text{plating}}$, $k_{\text{LAM,neg}}$)
+per anchor cell via differential evolution against measured long-term
+cycling, using PyBaMM's SPMe model (IDAKLU solver) on the Prada2013 LFP
+chemistry; the negative-electrode LAM channel was identified in prior
+work as the dominant fade contributor for this chemistry.
+\textbf{Phase~3 (Sobol perturbation corpus + operator training)} draws
+Sobol perturbations in log-encoded $\theta$ space around each of the 7
+Phase-2 anchors under a decorrelation gate, simulates each perturbed
+trajectory to a 2{,}500-cycle horizon under a 0.5C/25\,\textdegree C
+protocol, and trains a $\theta$-conditioned Neural ODE
+(\emph{softplus}-monotonic decoder integrated by \texttt{torchdiffeq}
+dopri5) whose branch input concatenates a 5-dim health-feature vector
+$x_{\text{health}}$ with the identified $\theta$. Corpus wall time
+was 4.2\,h on a 5-core CPU. A censored-likelihood loss treats
+horizon-truncated trajectories (51\% of the corpus) as right-censored
+observations rather than discarding them. In-distribution validation
+plateaus at SoH RMSE $\approx 5.0$\,pp; held-out real-cell metrics
+appear in Results.
+
+\section*{Results}
+The training corpus contains $N = 490$ trajectories from the DE-refined
+sweep, with 466 (95.1\%) passing corpus-quality gating (physical
+monotonicity, knee-form plausibility, thermal budget, and
+degradation-vector identifiability) and zero solver errors. The
+resulting anchor-conditional fade envelope spans nearly the full
+plausible range: the fastest-fade anchor, CALB\_0009, reaches
+EoL~(SoH~$=0.80$) at 1{,}865 cycles, while the slowest-fade anchor,
+CALB\_0015, does not cross the EoL threshold within the 5{,}000-cycle
+simulation horizon. Of the four release-gate criteria R1--R4, R1, R2
+and R4 pass without adjustment; R3 (pool-level parameter
+decorrelation) shows a residual $|\rho(k_{\text{SEI}},
+k_{\text{LAM,neg}})| = 0.185$ across pooled anchor draws (local
+within-anchor decorrelation is 0.03--0.07) --- an anchor-to-anchor
+drift artefact rather than a corpus bug. Held-out validation on three supplier-representative cells
+(CALB\_0029, EVE\_0003, REPT\_0031) with a zero-shot nearest-anchor
+$\theta$ prior yields in-window SoH RMSE $= 1.05, 1.76, 1.69$\,pp
+(mean $1.50$\,pp), all well inside the $3.0$\,pp acceptance gate
+(Figure~\ref{fig:heldout}). Trajectory Pearson $r = 0.89, 0.54, 0.80$.
+Cross-supplier RMSE std of $0.32$\,pp quantifies the supplier-agnostic
+claim: with a single supplier-median $\theta$ prior, prediction error
+varies by less than one-third of a percentage point across CALB, EVE,
+and REPT chemistries. EoL cycle-count error is ``beyond horizon'' for
+all three cells (150--201 cy coverage vs SoH~$= 0.80$ crossing) --- a
+ground-truth coverage limit, not an operator failure. The Fisher-cosine
+identifiability gate returns $|\cos| \geq 0.96$, indicating residual
+SEI/LAM entanglement (see Limitations).
+
+\begin{figure}[h]
+  \setlength{\abovecaptionskip}{2pt}
+  \setlength{\belowcaptionskip}{0pt}
+  \centering
+  \IfFileExists{figures/heldout_soh_overlay.pdf}{%
+    \includegraphics[width=\columnwidth]{figures/heldout_soh_overlay.pdf}%
+  }{%
+    \fbox{\parbox[c][0.9cm][c]{0.95\columnwidth}{\centering\footnotesize
+      \textcolor{red}{[placeholder: figures/heldout\_soh\_overlay.pdf]}}}%
+  }
+  \caption{Per-cell SoH predictions on 3 held-out cells (CALB\_0029,
+  EVE\_0003, REPT\_0031). Blue: observed cycling. Red dashed: operator
+  prediction from nearest-anchor $\theta$ prior. Dotted: EoL threshold
+  (SoH=0.80). Per-cell in-window SoH RMSE: CALB\_0029 $= 1.05$\,pp,
+  EVE\_0003 $= 1.76$\,pp, REPT\_0031 $= 1.69$\,pp; cross-supplier
+  RMSE std $= 0.32$\,pp.}
+  \label{fig:heldout}
+\end{figure}
+
+\enlargethispage{2\baselineskip}
+\section*{Discussion and limitations}
+Conditioning the operator on an identified $\theta_{\text{BOL}}$
+vector --- not raw characterisation traces --- appears to buy the
+supplier-agnostic behaviour: each supplier enters only through
+physically meaningful degradation parameters, so unseen suppliers land
+in the same latent space as familiar ones. The censored-loss
+formulation, to our knowledge novel in operator-learning for battery
+ageing, lets short right-censored trajectories contribute to training
+(51\% of our corpus) without biasing toward early truncation. Limitations: in-distribution val ($5.0$\,pp) exceeds held-out RMSE
+because per-sample gradient noise pins training loss (batched retrain
+queued); Fisher-cosine $|\cos| \geq 0.96$ shows SEI/LAM entanglement;
+cross-supplier claim rests on 7 anchors.
+
+\end{document}

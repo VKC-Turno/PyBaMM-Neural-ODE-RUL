@@ -1,0 +1,137 @@
+version: 1
+name: phase3_corpus_v1
+description: 7-anchor Sobol perturbation corpus per configs/phase3_design.md
+seed_base: 789
+n_sims_per_anchor: 70
+n_anchors: 7
+total_target: 490
+
+horizon:
+  max_cycles: 2500
+  soh_stop: 0.65
+
+# Independent per-θ log-normal (or linear for V_SEI) draws around each anchor.
+# Units: log10 dec = standard deviation in decades of log10; relative = fractional σ of value.
+perturbation_sigma:
+  k_SEI: {space: log10, sigma_dec: 0.6}
+  V_SEI: {space: linear, sigma_rel: 0.15}
+  D_SEI_solvent: {space: log10, sigma_dec: 0.7}
+  k_plating: {space: log10, sigma_dec: 0.5}
+  LAM_neg_rate_s: {space: log10, sigma_dec: 0.8}
+  LAM_pos_rate_s: {space: log10, sigma_dec: 0.3}
+
+# Per-anchor Sobol draws are rejected if |Spearman rho| exceeds the threshold.
+decorrelation_gate:
+  metric: spearman_rho
+  target_pair: [k_SEI, LAM_neg_rate_s]
+  abs_threshold: 0.10
+
+# Ensure a minimum count of "fast-fade quadrant" samples on the REPT anchors
+# so knee-cycle behaviour is represented (R2 in design doc).
+fast_fade_booster:
+  anchors: [REPT_0007, REPT_0057]
+  min_samples_in_quadrant: 10
+  quadrant:
+    D_SEI: floor
+    LAM_neg: ceiling
+
+# REPT anchors get 2x wider bounds on all axes to help fast-fade cover OOD
+# regions; interior-minimum re-check must be emitted to the fit log (R4).
+rept_anchor_bound_widen: 2.0
+
+quality_filters:
+  final_soh_max: 0.98
+  final_soh_min: 0.55
+  monotonicity_tol: 0.005
+  min_cycles_kept: 100
+
+model:
+  name: SPMe
+  temperature_C: 25.0
+  solver: IDAKLU
+  rtol: 1.0e-6
+  atol: 1.0e-6
+
+compute:
+  n_jobs: 5
+  checkpoint_every_n_anchors: 1
+
+# Anchor set. fitted_theta values are physical units, pulled verbatim from
+# configs/deg_params/<CELL>.yaml (fitted_params.*.value).
+anchors:
+  - id: CALB_0003
+    deg_params_source: configs/deg_params/CALB_0003.yaml
+    bol_params_source: configs/bol_params/CALB_0003.yaml
+    protocol_id: CALB_0.5C_0.5D_15_100
+    fitted_theta:
+      k_SEI: 2.1169905064235324e-11              # [m.s-1]
+      V_SEI: 0.00011173376694876834              # [m3.mol-1]
+      D_SEI_solvent: 9.955699478515781e-21       # [m2.s-1]
+      k_plating: 2.1756659808689533e-12          # [m.s-1]
+      k_LAM_negative: 3.0628434377244957e-10     # [s-1]
+
+  - id: CALB_0009
+    deg_params_source: configs/deg_params/CALB_0009.yaml
+    bol_params_source: configs/bol_params/CALB_0009.yaml
+    protocol_id: CALB_0.25C_0.25D_15_100
+    fitted_theta:
+      k_SEI: 1.7465845824679754e-13
+      V_SEI: 0.00012026584591311348
+      D_SEI_solvent: 2.3859372566283037e-22
+      k_plating: 5.050943407222166e-12
+      k_LAM_negative: 3.638845754272187e-08
+
+  - id: CALB_0010
+    deg_params_source: configs/deg_params/CALB_0010.yaml
+    bol_params_source: configs/bol_params/CALB_0010.yaml
+    protocol_id: CALB_0.25C_0.25D_0_100
+    fitted_theta:
+      k_SEI: 4.875226815248997e-13
+      V_SEI: 0.00016425386819302192
+      D_SEI_solvent: 2.400650337638718e-22
+      k_plating: 3.437283222741764e-12
+      k_LAM_negative: 3.5680165041849115e-10
+
+  - id: CALB_0015
+    deg_params_source: configs/deg_params/CALB_0015.yaml
+    bol_params_source: configs/bol_params/CALB_0015.yaml
+    protocol_id: CALB_0.5C_0.5D_0_100
+    fitted_theta:
+      k_SEI: 2.015372595245549e-12
+      V_SEI: 0.00013114940724827712
+      D_SEI_solvent: 1.4786985160104064e-22
+      k_plating: 2.24522902458494e-12
+      k_LAM_negative: 7.849870829828915e-10
+
+  - id: EVE_0004
+    deg_params_source: configs/deg_params/EVE_0004.yaml
+    bol_params_source: configs/bol_params/EVE_0004.yaml
+    protocol_id: EVE_0.5C_0.5D_2_100
+    fitted_theta:
+      k_SEI: 1.000448159442961e-11
+      V_SEI: 0.0001583208380633887
+      D_SEI_solvent: 1.2899659362191576e-22
+      k_plating: 4.250635778593157e-12
+      k_LAM_negative: 1.0997957171574515e-08
+
+  - id: REPT_0007
+    deg_params_source: configs/deg_params/REPT_0007.yaml
+    bol_params_source: configs/bol_params/REPT_0007.yaml
+    protocol_id: REPT_0.25C_0.25D_0_100
+    fitted_theta:
+      k_SEI: 1.6691959344004205e-11
+      V_SEI: 0.0001430564368827072
+      D_SEI_solvent: 2.0553526482823942e-21
+      k_plating: 1.148541342712009e-12
+      k_LAM_negative: 1.388270416261342e-10
+
+  - id: REPT_0057
+    deg_params_source: configs/deg_params/REPT_0057.yaml
+    bol_params_source: configs/bol_params/REPT_0057.yaml
+    protocol_id: REPT_0.5C_0.5D_0_100
+    fitted_theta:
+      k_SEI: 8.220307469554708e-13
+      V_SEI: 0.0001567650046345802
+      D_SEI_solvent: 2.482782621094373e-21
+      k_plating: 1.3621523267736937e-12
+      k_LAM_negative: 1.327724766381274e-09

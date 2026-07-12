@@ -1,0 +1,17 @@
+\section{Reproducibility and experiment tracking}
+\label{sec:reproducibility}
+
+This repository uses configuration files under \texttt{configs/} to define
+ambient conditions, model options, and training hyperparameters. We also
+provide local, dependency-free experiment tracking via run folders under
+\texttt{outputs/experiments/}. Each run records:
+\begin{itemize}
+  \item a metadata file (\texttt{meta.yaml}) including platform and timestamps,
+  \item immutable snapshots of the configuration files used (with hashes),
+  \item streamed metrics (\texttt{metrics.jsonl}),
+  \item and a best-effort \texttt{pip freeze} capture (\texttt{pip\_freeze.txt}).
+\end{itemize}
+
+This is intended to support auditable iteration even without third-party
+tracking services.
+

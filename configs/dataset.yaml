@@ -1,0 +1,29 @@
+dataset:
+  selected_cells:
+  - "0005"
+  - "0006"
+  - "0007"
+  - "0008"
+  ambient_temperature_C: 25.0
+  selection_policy:
+    essential_tests:
+    - OCVSOC
+    - RPT
+    - Longterm
+    - HPPC
+    - DCIR
+    - RateCapability
+    - ConstantPower
+    preferred_optional_tests:
+    - GITT
+    - PeakPower
+    - SelfDischarge
+    primary_objective: characterisation_completeness
+splits:
+  train_cells:
+  - "0005"
+  - "0006"
+  - "0008"
+  val_cells:
+  - "0007"
+  test_cells: []

@@ -1,0 +1,32 @@
+make: CALB
+cell: '0010'
+nominal_capacity_Ah: 72.0
+stoichiometry:
+  x_100: 0.6604670436754607
+  x_0: 0.126240751960429
+  y_100: 0.015988381373896434
+  y_0: 0.9778485965117761
+  fit_success: true
+capacity:
+  Q_n_Ah: 98.40622129919669
+  Q_p_Ah: 54.65574920241681
+  Q_rpt_used: 52.57119068635863
+resistance:
+  R0_Ohm: 0.0013315934818051791
+  R1_Ohm: 0.0007237507362649626
+diffusion:
+  D_s_m2_s: 3.1435309662629247e-14
+  tau_diff_used: 866.8087030933019
+  particle_radius_m: 5.22e-06
+validation:
+  ocv_rmse_upper_half_mV: 3.432670231968613
+  ocv_rmse_full_mV: 4.815893148042361
+  rmse_upper_bound_mV: 20.0
+  passed_upper_rmse_budget: true
+  stoich_bound_clipped: false
+  n_ocv_points_used: 3926
+_provenance:
+  identified_at_utc: '2026-07-10T12:32:00.297148+00:00'
+  source_notebook: phase1_bol_identification.ipynb
+  pipeline_version: 1
+  prada_ocp_source: pybamm.ParameterValues('Prada2013')

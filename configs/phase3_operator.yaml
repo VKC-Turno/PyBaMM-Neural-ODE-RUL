@@ -1,0 +1,47 @@
+version: 1
+
+architecture:
+  kind: neural_ode
+  reuse: /home/hj/Desktop/PINNs/src/pinn/model.py::RULPredictor
+  branch_input_expand: x_health(5) + theta_norm(6)
+  decoder: softplus-monotonic (preserved)
+  notes: refresh feat_mean/feat_std over the expanded 11-dim input at train time.
+
+loss:
+  data_weight: 1.0
+  physics_weight: 0.2
+  monotonicity_weight: 0.5
+  shape_weight: 0.3
+  shape_term_definition: weighted MSE on curvature (d2 SoH/dn2) + knee-cycle location.
+
+training:
+  optimizer: Adam
+  lr_max: 1.0e-3
+  lr_min: 1.0e-5
+  schedule: cosine
+  epochs: 60
+  patience: 15
+  batch_size: 32
+  grad_clip_norm: 5.0
+  seed: 456
+
+splits:
+  train_pct: 70
+  val_pct: 15
+  test_pct: 15
+  stratify_by: anchor_id
+
+validation:
+  # Selected per design doc section 5.1:
+  #   - 1 CALB not in the anchor set (CALB_0008 is the surviving suspicious CALB)
+  #   - 1 EVE from the surviving suspicious trio (EVE_0002 or EVE_0008;
+  #     final pick after knee-error screen at eval time)
+  #   - 1 REPT held back via leave-one-out on REPT_0007 or REPT_0057
+  held_out_cells:
+    - CALB_0008
+    - EVE_0002_or_EVE_0008   # pick per knee-error screen at eval time
+    - REPT_holdback          # loo on REPT_0007 or REPT_0057
+  pass_thresholds:
+    soh_rmse_pp: 3.0
+    knee_cycle_mae_rpt_intervals: 1
+    fisher_cosine_max: 0.3

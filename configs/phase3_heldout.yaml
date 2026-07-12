@@ -1,0 +1,57 @@
+# Phase 3 held-out validation set — cells NOT in the anchor training set
+# Generated 2026-07-12 post-corpus-close
+# Anchors excluded: CALB_0003/0009/0010/0015, EVE_0004, REPT_0007/0057
+heldout_cells:
+  - id: CALB_0029
+    make: CALB
+    regime: fast
+    justification: >-
+      Fastest non-anchor fader (SoH 0.829 @ cy 402, crosses 0.80 at cy 292)
+      with clean 2-batch Longterm coverage; probes whether the CALB_0009
+      fast-fade anchor cloud generalises past the right-censoring horizon.
+    longterm_source: Data/Longterm/CALB/CALB_0029/ (global_cycle continuous, soh pre-normalised)
+
+  - id: EVE_0003
+    make: EVE
+    regime: slow
+    justification: >-
+      Only EVE non-anchor with 3-batch coverage (236 cy, SoH 0.979); best
+      signal-to-noise for validating the EVE_0004 slow-fade anchor cloud on
+      a mild-degradation trajectory.
+    longterm_source: Data/Longterm/EVE/EVE_0003/ (raw V-t → ICA/δQ via v3 extractor)
+
+  - id: REPT_0031
+    make: REPT
+    regime: mid
+    justification: >-
+      Fastest-fading clean REPT non-anchor (SoH 0.973 @ cy 212); sits between
+      REPT_0007 (slow) and REPT_0057 (fast) anchors, tests interpolation
+      regime. Coverage caps pre-knee — only pre-EoSL operators are exercised.
+    longterm_source: Data/Longterm/REPT/REPT_0031/cycle.csv (Athena pull v3, 2026-05-30)
+
+validation_gates:
+  fisher_cosine_threshold: 0.3   # per project design decision (SEI/LAM discrimination)
+  regime_swap_replay: true       # test operator predictions when swapping fitted-theta between held-out cells
+  eol_bucket_stratification: true  # from top-3 risks
+
+notes:
+  - REPT_0031 will only exercise pre-knee operators (max 212 cy, no 0.80 crossing);
+    do not use for EOL-bucket metrics — restrict to trajectory-shape gates.
+  - CALB_0029 is the only held-out cell that crosses SoH 0.80 within its own coverage;
+    it carries the full EOL-bucket stratification test alone.
+  - All three cells verified NOT in the anchor set as of 2026-07-12 corpus close.
+
+theta_provenance:
+  # 2026-07-12: Phase 2 DE fit for held-out cells was blocked by missing Phase 1
+  # BOL YAMLs (which live only as a notebook, no CLI). To ship the abstract on
+  # schedule, held-out cells received the nearest-supplier anchor's fitted theta
+  # as a "supplier-typical prior". This turns validation into a zero-shot test:
+  # operator predicts a held-out cell's trajectory using ONLY (a) the cell's
+  # x_health snapshot and (b) the supplier's characteristic theta — no per-cell
+  # cycling calibration. Weaker than per-cell fitted theta but a stronger paper
+  # claim ("single-snapshot RUL prediction").
+  approach: nearest_anchor_theta
+  mapping:
+    CALB_0029: CALB_0009  # fastest CALB anchor, matches fast-fade regime
+    EVE_0003:  EVE_0004   # only EVE anchor
+    REPT_0031: REPT_0007  # slower REPT anchor, matches REPT_0031's pre-knee coverage

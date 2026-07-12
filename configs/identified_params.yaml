@@ -1,0 +1,65 @@
+header:
+  description: "Identified PyBaMM parameter overrides for the 25\xB0C LFP cohort."
+  identification_date: '2026-05-22'
+  reference_parameter_set: pybamm.ParameterValues('Prada2013')
+  cohort_cells:
+  - '0005'
+  - '0006'
+  - '0007'
+  - '0008'
+  ambient_temperature_C: 25.0
+  nominal_capacity_Ah: 105.0
+  notes: Values are cohort medians from src/param_id/*.  Per-cell results are stored
+    under data/processed/*.parquet.
+stoichiometry:
+  x_100: 0.8793634598958197
+  x_0: 0.1219204026174682
+  y_100: 0.010041736246249277
+  y_0: 0.9511039549697082
+  x_100_mad: 0.003363202327283321
+  y_100_mad: 0.0007925440003194867
+  x_0_mad: 0.0001335760772716854
+  y_0_mad: 0.00020011389453178374
+  _source: src/param_id/ocv_fit.py (Prada2013 half-cell anchored)
+capacity:
+  Q_n_init_Ah: 138.24571435445023
+  Q_n_init_Ah_mad: 0.538524304656832
+  Q_p_init_Ah: 111.2862593551832
+  Q_p_init_Ah_mad: 0.1121010899837529
+  _source: derived from OCV stoichiometric fit + measured Q_dchg
+fit_quality:
+  ocv_rmse_mV_median: 6.791709951047833
+  hppc_rmse_mV_median: 0.2664515944770666
+diffusion:
+  Ds_n_m2s: null
+  Ds_p_m2s: null
+  dV_dsqrt_t_V_per_sqrt_s_median: -0.0016588294058224185
+  tau_pulse_s_median: 360.12549999999464
+  gitt_fit_r2_median: 0.99986736637321
+  _source: src/param_id/gitt_ds.py (step metrics; apparent D requires explicit L)
+  _caveat: Full-cell GITT cannot uniquely separate Ds_n and Ds_p. Use a literature
+    LFP value or do model-based pulse fitting.
+resistance:
+  R0_Ohm: 0.001737571996132303
+  R0_mad_Ohm: 0.0003477791568414943
+  R1_Ohm: 0.0007116837326096059
+  R1_mad_Ohm: 0.00015536619579975802
+  tau_s: 19.59904864282375
+  tau_mad_s: 4.677471326095251
+  C1_F: 23837.1959000817
+  C1_mad_F: 8396.185054506757
+  SOC_window_min: 0.9711863508181137
+  SOC_window_max: 1.0
+  _source: src/param_id/dcir_hppc.py (RC fit, discharge pulses)
+  _caveat: "HPPC for this dataset only probes SOC \u2248 0.97\u20131.00. R(SOC) outside\
+    \ this band is NOT identified."
+sei:
+  I_sd_uA_median: 215.474743465019
+  I_sd_uA_mad: 24.96397317759812
+  k_SEI_max_m_per_s_median: 2.7321910806014164e-12
+  k_SEI_max_m_per_s_mad: 3.1653985871100237e-13
+  dV_dt_uV_per_s_median: -0.029318981328235055
+  _source: "src/param_id/sei_selfdisc.py (OCV-decay \u2192 I_sd \u2192 bound)"
+  _caveat: k_SEI_max uses the Prada2013 geometric electrode area (0.18 m^2). For this
+    105 Ah cell the true jelly-roll area is ~30x larger, so the *real* k_SEI bound
+    is ~30x smaller. Treat as an order-of-magnitude ceiling.

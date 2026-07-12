@@ -1,0 +1,46 @@
+\section{Methods}
+\label{sec:methods}
+
+\subsection{GITT processing}
+We process galvanostatic intermittent titration technique (GITT) measurements
+to compute defensible, step-level metrics such as rest voltage change
+($\Delta E_s$), pulse voltage change ($\Delta E_\tau$), pulse duration ($\tau$),
+and early-time $V$--$\sqrt{t}$ slope. Following classic treatments of GITT
+\citep{WeppnerHuggins1977GITT}, an \emph{apparent} diffusion coefficient may be
+computed only if an explicit diffusion length scale $L$ is assumed and stated.
+Because full-cell voltage contains contributions from both electrodes and
+overpotentials, this work does not claim electrode-specific solid diffusivities
+from full-cell GITT alone.
+
+\subsection{Physics model: \pybamm}
+We use \pybamm \citep{Sulzer2021PyBaMM} to define an electrochemical model
+family for LFP/graphite cells. Within this repository, thermal effects are
+disabled (isothermal at 25\,$^\circ$C) to match the dataset conditions.
+
+The role of \pybamm is to provide a physics prior and synthetic trajectory
+generator. To be scientifically defensible, electrochemical and degradation
+parameters must be calibrated only against tests that actually constrain them,
+and validated on held-out protocols within the same operating envelope.
+
+\subsection{Neural ODE surrogate for \SOH dynamics}
+We model \SOH evolution across cycle number $n$ via a continuous-depth ODE:
+\begin{equation}
+  \frac{d\,\SOH}{dn} = f_\theta(\SOH, n, \mathbf{x}),
+\end{equation}
+where $\mathbf{x}$ is a vector of health features (e.g., DCIR and IC features).
+We integrate this system using an adaptive Runge--Kutta method as implemented in
+\texttt{torchdiffeq} \citep{Chen2018NeuralODE}.
+
+\paragraph{Monotonicity constraint.}
+To encode the physical prior that capacity-related \SOH should not increase
+under normal aging, we enforce $d\SOH/dn \le 0$ by parameterising the ODE output
+as $-\mathrm{softplus}(\cdot)$ in the implementation.
+
+\paragraph{Relationship to \pinn terminology.}
+The codebase refers to this as a \pinn-style approach in the broad sense of
+embedding physics constraints into training. However, because the governing
+system is an ODE in cycle count rather than a PDE in space--time, the surrogate
+is best described as a physics-guided Neural ODE with monotonic constraints,
+and any additional ``physics residual'' terms must be justified against
+validated mechanistic models.
+

@@ -1,0 +1,65 @@
+version: 2
+generated_by: soh_trajectories_by_cell.ipynb
+selection_criteria:
+  CALB:
+    DoD:
+    - '0_100'
+    - '15_100'
+    SoH_first_min: 0.6
+    excluded_cells:
+    - '0005'
+    - 0019
+    - '0020'
+    - '0030'
+  EVE:
+    SoH_first_min: 0.6
+    n_cycles_min: 150
+    excluded_cells:
+    - '0003'
+    exclusion_reason: EVE 0003 has no GITT test in Athena; drops EVE cohort from 4
+      to 3 cells
+    note: only cells with 150-cy trajectories qualify for DE fit
+  REPT:
+    SoH_first_min: 0.6
+    monotone_min: -3.0
+    note: noise-ranked, top-5 with rolling-median smoothability
+test_coverage:
+  required_tests:
+  - OCV_SOC
+  - GITT
+  - HPPC
+  - RPT
+  - Longterm
+  optional_tests:
+  - DCIR
+  - SelfDischarge
+  required_note: All 13 cohort cells have 100% coverage on required tests. These are
+    the minimum inputs for Phase 1 BOL identification (OCV + GITT + HPPC + RPT) and
+    Phase 2 DE fit target (Longterm).
+  optional_note: "DCIR excluded due to variable SoC-sampling protocol across batches\
+    \ (HPPC R0 used as the resistance signal instead). SelfDischarge is only partially\
+    \ covered \u2014 8 of 13 cohort cells have it (2 CALB + 1 EVE + 5 REPT); the missing\
+    \ 5 cells (CALB 0008/0009/0010, EVE 0002/0004) were not tested at the lab stage,\
+    \ so nothing to pull. SelfDischarge scalars are used only in the diagnostic correlation\
+    \ notebook, never as a cell-selection gate."
+smoothing:
+  method: rolling_median
+  window: 7
+cohort:
+  CALB:
+  - '0003'
+  - 0008
+  - 0009
+  - '0010'
+  - '0015'
+  EVE:
+  - '0002'
+  - '0004'
+  - 0008
+  REPT:
+  - '0004'
+  - '0007'
+  - '0012'
+  - '0046'
+  - '0057'
+n_cells_total: 13

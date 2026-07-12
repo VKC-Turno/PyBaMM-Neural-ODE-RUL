@@ -1,0 +1,32 @@
+make: EVE
+cell: 0008
+nominal_capacity_Ah: 105.0
+stoichiometry:
+  x_100: 0.8800295068526914
+  x_0: 0.12204792275798222
+  y_100: 0.017268481191052384
+  y_0: 0.9494305705258113
+  fit_success: true
+capacity:
+  Q_n_Ah: 137.22454441362999
+  Q_p_Ah: 111.5832522491317
+  Q_rpt_used: 104.01367755131804
+resistance:
+  R0_Ohm: 0.001777894842903024
+  R1_Ohm: 0.00037686471035154763
+diffusion:
+  D_s_m2_s: 3.325088284645061e-14
+  tau_diff_used: 819.4789932595323
+  particle_radius_m: 5.22e-06
+validation:
+  ocv_rmse_upper_half_mV: 1.463792601377468
+  ocv_rmse_full_mV: 6.628779227904211
+  rmse_upper_bound_mV: 20.0
+  passed_upper_rmse_budget: true
+  stoich_bound_clipped: false
+  n_ocv_points_used: 4014
+_provenance:
+  identified_at_utc: '2026-07-10T12:32:00.530867+00:00'
+  source_notebook: phase1_bol_identification.ipynb
+  pipeline_version: 1
+  prada_ocp_source: pybamm.ParameterValues('Prada2013')

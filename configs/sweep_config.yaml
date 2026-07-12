@@ -1,0 +1,74 @@
+# PyBaMM degradation parameter sweep configuration (LFP @ 25°C)
+#
+# Scientific scope note:
+# - Your measured data is all at ~25°C. Do NOT sweep temperature unless you also
+#   have real validation data at other temperatures.
+# - Keep C-rate range within what you actually operate/validate (LF105 typical is
+#   0.5C standard; 1C max per datasheets).
+
+sweep:
+  n_samples: 800
+  sampling_strategy: sobol        # sobol | random | grid
+  seed: 123
+  n_cycles_per_sim: 500
+  solver: "safe"                  # pybamm solver mode
+
+degradation_parameters:
+  k_SEI_ms:                       # SEI kinetic rate constant [m/s]
+    min: 1.0e-14
+    max: 5.0e-13
+    scale: log
+
+  SEI_partial_molar_volume_m3mol: # [m³/mol]
+    min: 5.0e-5
+    max: 1.5e-4
+    scale: linear
+
+  lithium_plating_exchange_current_A_m2:
+    min: 1.0e-7
+    max: 1.0e-5
+    scale: log
+
+  LAM_positive_rate_s:            # stress-driven LAM rate [1/s]
+    min: 1.0e-4
+    max: 1.0e-2
+    scale: log
+
+  temperature_K:
+    min: 298.15                   # 25°C fixed (matches your lab tests)
+    max: 298.15
+    scale: linear
+
+  c_rate:
+    min: 0.10
+    max: 1.00
+    scale: linear
+
+cycling_protocol:
+  discharge_cutoff_V: 2.5
+  charge_cutoff_V: 3.65
+  rest_minutes: 10
+
+output_features:
+  - Q_Ah
+  - SOH
+  - dcir_mOhm
+  - V_mean_discharge
+  - ic_peak1_V
+  - ic_peak2_V
+  - ic_peak1_area
+  - ic_peak2_area
+  - SEI_thickness_m
+  - LAM_positive_fraction
+  - dead_lithium_fraction
+
+compute:
+  n_jobs: -1
+  backend: joblib                 # joblib | multiprocessing
+  timeout_per_sim_s: 600
+  checkpoint_every_n: 50
+
+quality_filters:
+  min_final_SOH: 0.55
+  max_final_SOH: 0.999
+  min_cycles_completed: 100

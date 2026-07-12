@@ -8,7 +8,7 @@ The full-cell OCV at SoC = s is
 
 so the four stoichiometric limits (x_0, x_100, y_0, y_100) shift each
 electrode's operating window. Fitting them to a measured OCV curve gives
-us the MFR_B-specific cell balance without needing half-cell data.
+us the EVE-specific cell balance without needing half-cell data.
 """
 from __future__ import annotations
 

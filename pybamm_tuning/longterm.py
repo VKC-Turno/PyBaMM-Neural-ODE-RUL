@@ -2,7 +2,7 @@
 Load longterm cycling data for simulation validation.
 
 Two data sources:
-  1. characterisation workbook MFR_C sheet — batch 1 + batch 2 measurements
+  1. Char_Consolidated REPT_Montra sheet — batch 1 + batch 2 measurements
      give an actual cell-cohort fade rate between RPT checkpoints.
   2. data/raw/Longterm/  — per-cell continuous cycling files, when available.
 
@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 
 
-DEFAULT_CHAR_PATH = Path("data/char_consolidated.xlsx")
+DEFAULT_CHAR_PATH = Path("Cell_to_Pack/data/Char_Consolidated (1).xlsx")
 LONGTERM_DIR = Path("data/raw/Longterm")
 
 
@@ -48,9 +48,9 @@ class LongtermData:
         return float(slope * 100.0)
 
 
-def _extract_cell_pair_from_mfr_c(df: pd.DataFrame,
+def _extract_cell_pair_from_rept(df: pd.DataFrame,
                                   cell_id: str) -> Optional[LongtermData]:
-    """If a cell has both batch 1 and batch 2 in MFR_C, build a 2-point series."""
+    """If a cell has both batch 1 and batch 2 in REPT, build a 2-point series."""
     sub = df[df["cell_id"].astype(str) == cell_id]
     if "batch" not in sub.columns or sub["batch"].nunique() < 2:
         return None
@@ -83,16 +83,16 @@ def load_longterm(
     Load longterm validation data for a cell or module.
 
     Tries in order:
-      1. RPT batch-1 → batch-2 pair from characterisation workbook.MFR_C
+      1. RPT batch-1 → batch-2 pair from Char_Consolidated.REPT_Montra
       2. Continuous cycling CSV from data/raw/Longterm/<cell_id>/
 
     Returns a LongtermData with at least 2 points if any source matches.
     """
     path = Path(path)
     try:
-        df = pd.read_excel(path, sheet_name="MFR_C")
+        df = pd.read_excel(path, sheet_name="REPT_Montra")
         df.attrs["cycles_per_batch"] = cycles_per_batch
-        result = _extract_cell_pair_from_mfr_c(df, cell_id)
+        result = _extract_cell_pair_from_rept(df, cell_id)
         if result is not None:
             return result
     except Exception:
@@ -121,17 +121,17 @@ def load_longterm(
 
 
 def compute_actual_fade_rate(
-    cohort: str = "MFR_C",
+    cohort: str = "REPT_Montra",
     manufacturer: Optional[str] = None,
     *,
     cycles_per_batch: int = 600,
     path: Union[str, Path] = DEFAULT_CHAR_PATH,
 ) -> dict:
     """
-    Aggregate actual MFR_C batch 1 -> batch 2 fade rate across all paired cells.
+    Aggregate actual REPT batch 1 -> batch 2 fade rate across all paired cells.
     Returns the mean/median fade in pp/100cy with cohort statistics.
     """
-    df = pd.read_excel(path, sheet_name="MFR_C")
+    df = pd.read_excel(path, sheet_name="REPT_Montra")
     if manufacturer:
         df = df[df["manufacturer"] == manufacturer]
     fade_rates = []

@@ -1,12 +1,54 @@
 # ── Proprietary data (never commit) ──
 data/
 Data/
+Cell_to_Pack/
+Lab_Data_Cell/
+P012_M04/
+lab_processing/
+lab_processing.zip
+characterization_results/
+characterization_results.csv
+df_calb_cc_cap.csv
+Cell Automation Metadata - Sheet1.csv
+LFP_OCV_SOC_Table.xlsx
+
+# ── Internal PDFs / images (Turno documents, spec sheets) ──
+/*.pdf
+/*.pptx
+/*.png
+!PROJECT_SUMMARY.pdf
 
 # ── PyBaMM run cache + intermediate outputs ──
 outputs/pybamm_cache/
 outputs/tuned_params/
+outputs/logs/
+outputs/models/
+outputs/experiments/
 # Keep archived hold-out results committed (they're what the abstract cites):
 !outputs/holdout_sweep/
+# Keep validation JSON output cited by the v6 abstract:
+outputs/results/*
+!outputs/results/phase3_heldout_validation.json
+
+# ── Large regeneratable corpus data (rebuild from phase3_corpus.py) ──
+configs/phase3_corpus/*.parquet
+!configs/phase3_corpus/censored_loss_recommendation.md
+!configs/phase3_corpus/_manifest.yaml
+
+# ── Downloaded reference PDFs ──
+Voltaris/**/*.pdf
+Voltaris/outputs/
+
+# ── Ambiguous / superseded workstreams ──
+xgb_share/
+post_processing_script/
+post_processing_dashboard/
+soh/
+reports/
+
+# ── Internal notes ──
+MORNING_SUMMARY_*.md
+texput.log
 
 # ── Python ──
 __pycache__/
@@ -14,6 +56,10 @@ __pycache__/
 *.egg-info/
 .venv/
 .env
+
+# ── Claude Code local ──
+.claude/
+.serena/
 
 # ── LaTeX aux ──
 paper/*.aux

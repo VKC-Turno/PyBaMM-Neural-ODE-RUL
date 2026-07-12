@@ -1,0 +1,27 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Remaining useful life (\RUL) estimation for lithium-ion cells is challenging
+because degradation is multi-mechanistic and operating-condition dependent.
+Purely data-driven models often struggle when long-horizon aging data is
+limited, while purely mechanistic electrochemical models can be difficult to
+parameterise for specific large-format cells without extensive
+characterisation.
+
+This work documents a pragmatic ``physics-guided surrogate'' approach:
+\begin{enumerate}
+  \item Use \pybamm \citep{Sulzer2021PyBaMM} as a physics prior to generate
+  plausible trajectories within a validated operating envelope.
+  \item Train a Neural ODE surrogate \citep{Chen2018NeuralODE} for \SOH dynamics
+  as a function of cycle number and health features.
+  \item Constrain the surrogate to be physically consistent at minimum by
+  enforcing monotonic \SOH decrease.
+\end{enumerate}
+
+\paragraph{Scope limitations (must be explicit for defensibility).}
+All tests in this repository are conducted at a single ambient temperature
+(25\,$^\circ$C). Therefore, temperature is treated as constant and the study
+does \emph{not} claim temperature generalisation. In addition, the dataset
+currently contains a small number of cells, which constrains the extent to
+which end-of-life predictions can be validated.
+

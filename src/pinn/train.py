@@ -51,7 +51,7 @@ MODELS_DIR = Path("outputs/models")
 RESULTS_DIR = Path("outputs/results")
 
 
-def _seed_mfr_brything(seed: int) -> None:
+def _seed_everything(seed: int) -> None:
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -82,7 +82,7 @@ def _split_dataset(dataset, val_split: float, test_split: float, seed: int
     n_test = max(1, int(round(n_total * test_split)))
     n_train = max(1, n_total - n_val - n_test)
     if n_train + n_val + n_test > n_total:
-        # Pathological tiny datasets: take mfr_brything as train and reuse for val/test
+        # Pathological tiny datasets: take everything as train and reuse for val/test
         return (
             Subset(dataset, list(range(n_total))),
             Subset(dataset, list(range(n_total))),
@@ -189,9 +189,9 @@ def pretrain(epochs: int | None = None, batch_size: int | None = None,
     val_split = float(p["val_split"])
     test_split = float(p["test_split"])
     patience = int(p["early_stopping_patience"])
-    log_mfr_bry = int(p.get("log_mfr_bry_n_epochs", 1))
+    log_every = int(p.get("log_every_n_epochs", 1))
 
-    _seed_mfr_brything(seed)
+    _seed_everything(seed)
 
     weights = LossWeights(
         data=1.0,
@@ -262,7 +262,7 @@ def pretrain(epochs: int | None = None, batch_size: int | None = None,
             "val_data": val_metrics["data"],
             "elapsed_s": time.time() - t0,
         })
-        if ep == 1 or ep % log_mfr_bry == 0 or ep == epochs:
+        if ep == 1 or ep % log_every == 0 or ep == epochs:
             print(f"  epoch {ep:3d}/{epochs}  "
                   f"train_total={train_metrics['total']:.4e}  "
                   f"val_total={val_metrics['total']:.4e}  "

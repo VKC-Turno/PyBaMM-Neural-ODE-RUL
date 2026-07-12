@@ -1,0 +1,111 @@
+make: EVE
+cell: '0004'
+protocol_id: EVE_0.5C_0.5D_2_100
+experiment_steps:
+- Charge at 0.5C until 3.65 V
+- Hold at 3.65 V until C/50
+- Rest for 10 minutes
+- Discharge at 0.5C for 1.960 hours or until 2.5 V
+- Rest for 10 minutes
+nominal_capacity_Ah: 105.0
+n_cycles_fitted: 150
+de:
+  n_evaluations: 200
+  popsize_per_param: 6
+  n_individuals: 30
+  maxiter: 6
+  tol: 0.001
+  seed: 42
+  workers: -1
+  success: true
+  message: Optimization terminated successfully.
+  wall_time_s: 162.22178983688354
+best_rmse_pp: 0.6918387408096643
+fitted_params:
+  k_SEI:
+    value: 1.000448159442961e-11
+    pybamm_key: SEI kinetic rate constant [m.s-1]
+    encoding: log10
+    search_bounds:
+    - -13.0
+    - -10.0
+    identifiability:
+      top10pct_range:
+      - -12.187796176515523
+      - -10.562578536867486
+      span_of_full_range: 0.5417392132160123
+      well_identified: false
+      encoding: log10
+      pybamm_key: SEI kinetic rate constant [m.s-1]
+  V_SEI:
+    value: 0.0001583208380633887
+    pybamm_key: SEI partial molar volume [m3.mol-1]
+    encoding: linear
+    search_bounds:
+    - 8.0e-05
+    - 0.0002
+    identifiability:
+      top10pct_range:
+      - 0.0001583208380633887
+      - 0.00018327205906369
+      span_of_full_range: 0.20792684166917758
+      well_identified: true
+      encoding: linear
+      pybamm_key: SEI partial molar volume [m3.mol-1]
+  D_SEI_solvent:
+    value: 1.2899659362191576e-22
+    pybamm_key: SEI solvent diffusivity [m2.s-1]
+    encoding: log10
+    search_bounds:
+    - -22.0
+    - -18.0
+    identifiability:
+      top10pct_range:
+      - -21.889421757846005
+      - -20.855218911283906
+      span_of_full_range: 0.2585507116405248
+      well_identified: true
+      encoding: log10
+      pybamm_key: SEI solvent diffusivity [m2.s-1]
+  k_plating:
+    value: 4.250635778593157e-12
+    pybamm_key: Lithium plating kinetic rate constant [m.s-1]
+    encoding: log10
+    search_bounds:
+    - -12.0
+    - -9.0
+    identifiability:
+      top10pct_range:
+      - -11.947508976895094
+      - -11.019176926989974
+      span_of_full_range: 0.3094440166350398
+      well_identified: false
+      encoding: log10
+      pybamm_key: Lithium plating kinetic rate constant [m.s-1]
+  k_LAM_negative:
+    value: 1.0997957171574515e-08
+    pybamm_key: Negative electrode LAM constant proportional term [s-1]
+    encoding: log10
+    search_bounds:
+    - -10.0
+    - -7.0
+    identifiability:
+      top10pct_range:
+      - -7.997151743577062
+      - -7.736659624348958
+      span_of_full_range: 0.086830706409368
+      well_identified: true
+      encoding: log10
+      pybamm_key: Negative electrode LAM constant proportional term [s-1]
+model_options:
+  SEI: solvent-diffusion limited
+  SEI porosity change: 'true'
+  lithium plating: irreversible
+  loss of active material: stress-driven
+_provenance:
+  identified_at_utc: '2026-07-10T13:45:43.939828+00:00'
+  source_module: Voltaris/Data_Exploration/phase2_de_fit.py (driven by scratchpad
+    runner)
+  pipeline_version: 1
+  base_parameter_set: pybamm.ParameterValues('Prada2013')
+  degradation_donor: pybamm.ParameterValues('OKane2022')

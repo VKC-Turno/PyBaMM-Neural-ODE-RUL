@@ -1,0 +1,6552 @@
+generated_utc: '2026-07-11T09:46:48.163684+00:00'
+config_snapshot:
+  version: 1
+  name: phase3_corpus_v1
+  description: 7-anchor Sobol perturbation corpus per configs/phase3_design.md
+  seed_base: 789
+  n_sims_per_anchor: 70
+  n_anchors: 7
+  total_target: 490
+  horizon:
+    max_cycles: 2500
+    soh_stop: 0.65
+  perturbation_sigma:
+    k_SEI:
+      space: log10
+      sigma_dec: 0.6
+    V_SEI:
+      space: linear
+      sigma_rel: 0.15
+    D_SEI_solvent:
+      space: log10
+      sigma_dec: 0.7
+    k_plating:
+      space: log10
+      sigma_dec: 0.5
+    LAM_neg_rate_s:
+      space: log10
+      sigma_dec: 0.8
+    LAM_pos_rate_s:
+      space: log10
+      sigma_dec: 0.3
+  decorrelation_gate:
+    metric: spearman_rho
+    target_pair:
+    - k_SEI
+    - LAM_neg_rate_s
+    abs_threshold: 0.1
+  fast_fade_booster:
+    anchors:
+    - REPT_0007
+    - REPT_0057
+    min_samples_in_quadrant: 10
+    quadrant:
+      D_SEI: floor
+      LAM_neg: ceiling
+  rept_anchor_bound_widen: 2.0
+  quality_filters:
+    final_soh_max: 0.98
+    final_soh_min: 0.55
+    monotonicity_tol: 0.005
+    min_cycles_kept: 100
+  model:
+    name: SPMe
+    temperature_C: 25.0
+    solver: IDAKLU
+    rtol: 1.0e-06
+    atol: 1.0e-06
+  compute:
+    n_jobs: 5
+    checkpoint_every_n_anchors: 1
+  anchors:
+  - id: CALB_0003
+    deg_params_source: configs/deg_params/CALB_0003.yaml
+    bol_params_source: configs/bol_params/CALB_0003.yaml
+    protocol_id: CALB_0.5C_0.5D_15_100
+    fitted_theta:
+      k_SEI: 2.1169905064235324e-11
+      V_SEI: 0.00011173376694876834
+      D_SEI_solvent: 9.955699478515781e-21
+      k_plating: 2.1756659808689533e-12
+      k_LAM_negative: 3.0628434377244957e-10
+  - id: CALB_0009
+    deg_params_source: configs/deg_params/CALB_0009.yaml
+    bol_params_source: configs/bol_params/CALB_0009.yaml
+    protocol_id: CALB_0.25C_0.25D_15_100
+    fitted_theta:
+      k_SEI: 1.7465845824679754e-13
+      V_SEI: 0.00012026584591311348
+      D_SEI_solvent: 2.3859372566283037e-22
+      k_plating: 5.050943407222166e-12
+      k_LAM_negative: 3.638845754272187e-08
+  - id: CALB_0010
+    deg_params_source: configs/deg_params/CALB_0010.yaml
+    bol_params_source: configs/bol_params/CALB_0010.yaml
+    protocol_id: CALB_0.25C_0.25D_0_100
+    fitted_theta:
+      k_SEI: 4.875226815248997e-13
+      V_SEI: 0.00016425386819302192
+      D_SEI_solvent: 2.400650337638718e-22
+      k_plating: 3.437283222741764e-12
+      k_LAM_negative: 3.5680165041849115e-10
+  - id: CALB_0015
+    deg_params_source: configs/deg_params/CALB_0015.yaml
+    bol_params_source: configs/bol_params/CALB_0015.yaml
+    protocol_id: CALB_0.5C_0.5D_0_100
+    fitted_theta:
+      k_SEI: 2.015372595245549e-12
+      V_SEI: 0.00013114940724827712
+      D_SEI_solvent: 1.4786985160104064e-22
+      k_plating: 2.24522902458494e-12
+      k_LAM_negative: 7.849870829828915e-10
+  - id: EVE_0004
+    deg_params_source: configs/deg_params/EVE_0004.yaml
+    bol_params_source: configs/bol_params/EVE_0004.yaml
+    protocol_id: EVE_0.5C_0.5D_2_100
+    fitted_theta:
+      k_SEI: 1.000448159442961e-11
+      V_SEI: 0.0001583208380633887
+      D_SEI_solvent: 1.2899659362191576e-22
+      k_plating: 4.250635778593157e-12
+      k_LAM_negative: 1.0997957171574515e-08
+  - id: REPT_0007
+    deg_params_source: configs/deg_params/REPT_0007.yaml
+    bol_params_source: configs/bol_params/REPT_0007.yaml
+    protocol_id: REPT_0.25C_0.25D_0_100
+    fitted_theta:
+      k_SEI: 1.6691959344004205e-11
+      V_SEI: 0.0001430564368827072
+      D_SEI_solvent: 2.0553526482823942e-21
+      k_plating: 1.148541342712009e-12
+      k_LAM_negative: 1.388270416261342e-10
+  - id: REPT_0057
+    deg_params_source: configs/deg_params/REPT_0057.yaml
+    bol_params_source: configs/bol_params/REPT_0057.yaml
+    protocol_id: REPT_0.5C_0.5D_0_100
+    fitted_theta:
+      k_SEI: 8.220307469554708e-13
+      V_SEI: 0.0001567650046345802
+      D_SEI_solvent: 2.482782621094373e-21
+      k_plating: 1.3621523267736937e-12
+      k_LAM_negative: 1.327724766381274e-09
+elapsed_seconds: 15245.367625236511
+per_anchor:
+  CALB_0003:
+    n_sims: 70
+    n_ok: 70
+    n_rejected: 0
+    n_error: 0
+    n_skipped: 0
+    summaries:
+    - sample_id: CALB_0003_s0000
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7703172224833593
+      elapsed_s: 164.75126791000366
+      reason: ok
+      theta_list:
+      - 2.6801268049729953e-12
+      - 0.00011756934657801914
+      - 4.26036304391328e-21
+      - 4.755918888244037e-12
+      - 1.9152154740498275e-11
+    - sample_id: CALB_0003_s0001
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 444
+      soh_final: 0.7089951949255691
+      elapsed_s: 20.7846839427948
+      reason: ok
+      theta_list:
+      - 5.175186066795787e-11
+      - 0.00010802115747696846
+      - 3.570770161290147e-19
+      - 1.502177982299813e-12
+      - 3.635813393559205e-10
+    - sample_id: CALB_0003_s0002
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.802490274329263
+      elapsed_s: 164.9513897895813
+      reason: ok
+      theta_list:
+      - 2.366175333757198e-10
+      - 0.00012773508913991802
+      - 1.819173637486549e-21
+      - 4.335159711423048e-12
+      - 2.408795565644556e-09
+    - sample_id: CALB_0003_s0003
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8275284913163481
+      elapsed_s: 163.4219033718109
+      reason: ok
+      theta_list:
+      - 1.2354411305510025e-11
+      - 9.239645963080187e-05
+      - 1.399378929871278e-20
+      - 6.595077923694234e-13
+      - 1.0503727028995314e-10
+    - sample_id: CALB_0003_s0004
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7799318490372532
+      elapsed_s: 161.71246719360352
+      reason: ok
+      theta_list:
+      - 1.71837057625614e-11
+      - 0.00013420546565996266
+      - 4.043193770425224e-20
+      - 2.634509167105755e-13
+      - 1.7851859316022285e-10
+    - sample_id: CALB_0003_s0005
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7830398582676217
+      elapsed_s: 165.88056302070618
+      reason: ok
+      theta_list:
+      - 9.409252831289577e-11
+      - 9.356850172098878e-05
+      - 9.797597529184372e-21
+      - 2.837261894865302e-12
+      - 1.6016296680952707e-08
+    - sample_id: CALB_0003_s0006
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7848582133351796
+      elapsed_s: 166.34431433677673
+      reason: ok
+      theta_list:
+      - 2.7868948328950488e-11
+      - 0.00011684302318358769
+      - 1.8735705163719095e-20
+      - 1.8434816916955262e-12
+      - 7.071081597121537e-10
+    - sample_id: CALB_0003_s0007
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2364
+      soh_final: 0.649998954898973
+      elapsed_s: 168.69070410728455
+      reason: ok
+      theta_list:
+      - 7.334678059064906e-12
+      - 0.00010463275324690468
+      - 1.1544182051507626e-21
+      - 1.208660481195146e-11
+      - 6.86333619079329e-11
+    - sample_id: CALB_0003_s0008
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7434354955903294
+      elapsed_s: 165.42730474472046
+      reason: ok
+      theta_list:
+      - 4.751823203506718e-12
+      - 0.00012543839810207175
+      - 2.7055737890279082e-20
+      - 2.5340072355068732e-12
+      - 5.358579024367238e-10
+    - sample_id: CALB_0003_s0009
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9416239218552692
+      elapsed_s: 165.97861242294312
+      reason: ok
+      theta_list:
+      - 2.604652907185278e-11
+      - 6.01775365482898e-05
+      - 6.562094617377489e-22
+      - 4.0786957432570125e-13
+      - 8.909821463483873e-12
+    - sample_id: CALB_0003_s0010
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 1171
+      soh_final: 0.6499249654019812
+      elapsed_s: 161.69113850593567
+      reason: ok
+      theta_list:
+      - 6.113407111422045e-11
+      - 0.0001224905262238865
+      - 4.39266222931474e-20
+      - 1.5470937853506176e-11
+      - 1.248326312015257e-10
+    - sample_id: CALB_0003_s0011
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8434799678143252
+      elapsed_s: 163.6710228919983
+      reason: ok
+      theta_list:
+      - 1.60873067239253e-11
+      - 0.00011010692642173791
+      - 6.202443836709459e-21
+      - 1.7238975264010129e-12
+      - 1.3340223140970149e-09
+    - sample_id: CALB_0003_s0012
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8908786959490498
+      elapsed_s: 165.7753357887268
+      reason: ok
+      theta_list:
+      - 8.673117796540904e-12
+      - 0.00011193750761232802
+      - 2.963034167015176e-21
+      - 1.0813137684420763e-12
+      - 4.1756637650803066e-09
+    - sample_id: CALB_0003_s0013
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6706123466023729
+      elapsed_s: 162.3386754989624
+      reason: ok
+      theta_list:
+      - 1.6784824717372281e-10
+      - 0.00010249082000467973
+      - 1.1640904528123214e-20
+      - 7.270006777675093e-12
+      - 2.535500365817451e-10
+    - sample_id: CALB_0003_s0014
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.889214319931947
+      elapsed_s: 166.2932906150818
+      reason: ok
+      theta_list:
+      - 3.62571607009079e-11
+      - 0.000142401096861578
+      - 4.535721003161033e-21
+      - 9.485565900209565e-13
+      - 4.0303650131613295e-11
+    - sample_id: CALB_0003_s0015
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2185
+      soh_final: 0.649932985599696
+      elapsed_s: 164.0790343284607
+      reason: ok
+      theta_list:
+      - 1.8900363165056914e-12
+      - 9.963629020948386e-05
+      - 6.392869041289169e-20
+      - 3.2769691199199367e-12
+      - 9.524125236255552e-10
+    - sample_id: CALB_0003_s0016
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8920736680081931
+      elapsed_s: 168.5005922317505
+      reason: ok
+      theta_list:
+      - 5.073927022101728e-13
+      - 0.00014868970581592675
+      - 4.102491673389175e-22
+      - 2.06771980111391e-12
+      - 1.224247975438397e-10
+    - sample_id: CALB_0003_s0017
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 1922
+      soh_final: 0.6499596349395729
+      elapsed_s: 164.50336003303528
+      reason: ok
+      theta_list:
+      - 3.937515114279544e-11
+      - 9.8534422291622e-05
+      - 2.444445766902149e-20
+      - 9.113235639651114e-12
+      - 1.889675349672458e-09
+    - sample_id: CALB_0003_s0018
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8910326956120337
+      elapsed_s: 164.40100002288818
+      reason: ok
+      theta_list:
+      - 1.172702025937579e-10
+      - 0.0001134000041241235
+      - 7.714981628984746e-21
+      - 1.525947388867392e-13
+      - 3.148596867172892e-10
+    - sample_id: CALB_0003_s0019
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2269
+      soh_final: 0.6499546800704303
+      elapsed_s: 163.40833616256714
+      reason: ok
+      theta_list:
+      - 9.655964993432251e-12
+      - 0.0001007293728497651
+      - 6.324043155910943e-20
+      - 3.0483122380520542e-12
+      - 2.706467858134365e-11
+    - sample_id: CALB_0003_s0020
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7575256877986044
+      elapsed_s: 164.68898558616638
+      reason: ok
+      theta_list:
+      - 1.3922251987391016e-11
+      - 0.00012111502434916573
+      - 1.0686469747340076e-20
+      - 3.999134959876444e-12
+      - 8.374323374827022e-11
+    - sample_id: CALB_0003_s0021
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9075427112142115
+      elapsed_s: 165.56567788124084
+      reason: ok
+      theta_list:
+      - 6.930294475222381e-11
+      - 0.00011124459558686179
+      - 2.626504115917179e-21
+      - 7.350797513938828e-13
+      - 5.966988225363525e-10
+    - sample_id: CALB_0003_s0022
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 1248
+      soh_final: 0.6754030430229921
+      elapsed_s: 65.98243427276611
+      reason: ok
+      theta_list:
+      - 2.294007509050309e-11
+      - 0.0001230497470560077
+      - 1.0559989437497639e-19
+      - 5.5082628005058155e-12
+      - 6.267497706144755e-09
+    - sample_id: CALB_0003_s0023
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8495629449320219
+      elapsed_s: 163.37669682502747
+      reason: ok
+      theta_list:
+      - 5.413709912753725e-12
+      - 8.320612041434416e-05
+      - 5.719713441176107e-21
+      - 1.3290666572161726e-12
+      - 2.073466951098524e-10
+    - sample_id: CALB_0003_s0024
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 1161
+      soh_final: 0.7195261947373682
+      elapsed_s: 59.347299337387085
+      reason: ok
+      theta_list:
+      - 6.478127274350291e-12
+      - 0.00011532504445343998
+      - 1.2588210625437552e-19
+      - 8.682076615516353e-13
+      - 1.0936375405522673e-09
+    - sample_id: CALB_0003_s0025
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8075289793227208
+      elapsed_s: 166.80872058868408
+      reason: ok
+      theta_list:
+      - 3.223201835347436e-11
+      - 0.00010620041187947056
+      - 3.424442462360085e-21
+      - 3.5298139518544223e-12
+      - 1.484385808691863e-10
+    - sample_id: CALB_0003_s0026
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8249811099873214
+      elapsed_s: 163.40405249595642
+      reason: ok
+      theta_list:
+      - 8.272268154451868e-11
+      - 0.000132315177202655
+      - 1.4817696122391343e-20
+      - 1.2344675094831445e-12
+      - 1.8139031758922775e-11
+    - sample_id: CALB_0003_s0027
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7515381264767813
+      elapsed_s: 167.02974843978882
+      reason: ok
+      theta_list:
+      - 1.9527253046246993e-11
+      - 9.500675537480159e-05
+      - 1.9957580262661315e-21
+      - 6.080375536922076e-12
+      - 4.6070724419761313e-10
+    - sample_id: CALB_0003_s0028
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 691
+      soh_final: 0.6499664485804353
+      elapsed_s: 159.51854515075684
+      reason: ok
+      theta_list:
+      - 1.136551617680134e-11
+      - 0.00013088886053543115
+      - 8.155225399871735e-21
+      - 4.002808439911357e-11
+      - 8.156682416929963e-10
+    - sample_id: CALB_0003_s0029
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.731487643150268
+      elapsed_s: 164.17077684402466
+      reason: ok
+      theta_list:
+      - 8.417445574075644e-10
+      - 8.83281415473577e-05
+      - 3.1595354561216415e-20
+      - 1.5317536103117531e-12
+      - 5.1046655438305425e-11
+    - sample_id: CALB_0003_s0030
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.865599382538941
+      elapsed_s: 164.8969419002533
+      reason: ok
+      theta_list:
+      - 4.643390064433046e-11
+      - 0.00011879195585860845
+      - 1.3106899198641386e-21
+      - 2.3638832361113936e-12
+      - 2.925165142058154e-10
+    - sample_id: CALB_0003_s0031
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8172212106002306
+      elapsed_s: 162.74436354637146
+      reason: ok
+      theta_list:
+      - 3.8248698298073115e-12
+      - 0.0001068341928660531
+      - 1.9906904436408454e-20
+      - 4.840696902932233e-13
+      - 3.067384815661114e-09
+    - sample_id: CALB_0003_s0032
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7232631111473409
+      elapsed_s: 163.0447335243225
+      reason: ok
+      theta_list:
+      - 4.062720083198409e-12
+      - 0.00012689257745789143
+      - 4.992010517009068e-20
+      - 1.2448079786105439e-12
+      - 6.420345583776243e-11
+    - sample_id: CALB_0003_s0033
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7178081289689612
+      elapsed_s: 161.5437593460083
+      reason: ok
+      theta_list:
+      - 4.236635407471094e-11
+      - 9.057904921185222e-05
+      - 6.722590113409349e-21
+      - 5.995346908821583e-12
+      - 6.844295995748404e-10
+    - sample_id: CALB_0003_s0034
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7876882733247287
+      elapsed_s: 164.67660450935364
+      reason: ok
+      theta_list:
+      - 3.0477183643429993e-10
+      - 0.00011837662487931015
+      - 2.877185444407446e-20
+      - 6.99901362874536e-13
+      - 1.642409218365853e-08
+    - sample_id: CALB_0003_s0035
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8187025308512127
+      elapsed_s: 168.7393238544464
+      reason: ok
+      theta_list:
+      - 1.1731405938360396e-11
+      - 0.00010845410242271938
+      - 7.790480002657403e-22
+      - 4.146406215794598e-12
+      - 1.8927377720422866e-10
+    - sample_id: CALB_0003_s0036
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8173272180073398
+      elapsed_s: 164.2589406967163
+      reason: ok
+      theta_list:
+      - 2.009830631564065e-11
+      - 0.00011622002258433929
+      - 4.9632335597536254e-21
+      - 2.8821145145962355e-12
+      - 8.882560531893057e-11
+    - sample_id: CALB_0003_s0037
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2230
+      soh_final: 0.6943259821289967
+      elapsed_s: 141.51871347427368
+      reason: ok
+      theta_list:
+      - 7.309180569324635e-11
+      - 0.00010360420534019895
+      - 7.477821287097768e-20
+      - 2.447654852413115e-13
+      - 2.0749516123593814e-09
+    - sample_id: CALB_0003_s0038
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6939132197737092
+      elapsed_s: 162.74787044525146
+      reason: ok
+      theta_list:
+      - 2.967965245931991e-11
+      - 0.00013612419698959277
+      - 3.1574942512626373e-21
+      - 8.435035850745354e-12
+      - 3.9902711154354106e-10
+    - sample_id: CALB_0003_s0039
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.791489704118021
+      elapsed_s: 160.82794070243835
+      reason: ok
+      theta_list:
+      - 6.749608128151942e-12
+      - 9.426025519485606e-05
+      - 1.2188215367201391e-20
+      - 2.1437732773032316e-12
+      - 2.5956875298257033e-11
+    - sample_id: CALB_0003_s0040
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9298572978553117
+      elapsed_s: 168.01166987419128
+      reason: ok
+      theta_list:
+      - 6.1279778482797615e-12
+      - 0.00012161400321295736
+      - 1.5824547573038066e-21
+      - 5.442578291339327e-13
+      - 9.867161615885383e-10
+    - sample_id: CALB_0003_s0041
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7929664239039238
+      elapsed_s: 161.23063588142395
+      reason: ok
+      theta_list:
+      - 2.2290288400795363e-11
+      - 0.0001097090129668103
+      - 1.2883520982648594e-20
+      - 2.2400840333402583e-12
+      - 4.3869209889459715e-11
+    - sample_id: CALB_0003_s0042
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8667160076621602
+      elapsed_s: 163.5518765449524
+      reason: ok
+      theta_list:
+      - 6.652151514655138e-11
+      - 0.00012629549598638996
+      - 4.041228569466079e-21
+      - 1.591102632570198e-12
+      - 2.3954199560519183e-10
+    - sample_id: CALB_0003_s0043
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 408
+      soh_final: 0.6497525648575176
+      elapsed_s: 48.999016761779785
+      reason: ok
+      theta_list:
+      - 1.5120297864281484e-11
+      - 7.834785135560597e-05
+      - 2.332499061735189e-19
+      - 2.4035682956436618e-11
+      - 4.15244596603465e-09
+    - sample_id: CALB_0003_s0044
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6754141074085681
+      elapsed_s: 162.57181763648987
+      reason: ok
+      theta_list:
+      - 1.0584015741882526e-11
+      - 0.00013904034565757306
+      - 1.724161022063077e-20
+      - 6.668026482167558e-12
+      - 1.5009599735109477e-09
+    - sample_id: CALB_0003_s0045
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9118331066121635
+      elapsed_s: 168.9211983680725
+      reason: ok
+      theta_list:
+      - 1.1041543031487816e-10
+      - 9.907640817420045e-05
+      - 9.302730187414906e-22
+      - 1.1542374019754108e-12
+      - 1.4528395188308003e-10
+    - sample_id: CALB_0003_s0046
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6803541496812101
+      elapsed_s: 163.7514579296112
+      reason: ok
+      theta_list:
+      - 3.8150278186132463e-11
+      - 0.00011248717642815194
+      - 3.790217696575394e-20
+      - 3.654301817911503e-12
+      - 2.1420199671672198e-12
+    - sample_id: CALB_0003_s0047
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8522273604819842
+      elapsed_s: 164.1441514492035
+      reason: ok
+      theta_list:
+      - 1.4588409378731447e-12
+      - 0.00010349790826278452
+      - 9.319834319286276e-21
+      - 8.320566476503946e-13
+      - 4.86733974028558e-10
+    - sample_id: CALB_0003_s0048
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 1917
+      soh_final: 0.6499446638695486
+      elapsed_s: 162.80457067489624
+      reason: ok
+      theta_list:
+      - 2.1371887897834945e-12
+      - 0.00011429361244274978
+      - 1.6059887130244313e-20
+      - 1.0888347168783289e-11
+      - 2.18558861590395e-10
+    - sample_id: CALB_0003_s0049
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8664961822017123
+      elapsed_s: 166.2164568901062
+      reason: ok
+      theta_list:
+      - 3.331203700951468e-11
+      - 0.00010141139907242706
+      - 2.2668868400365086e-21
+      - 1.912505121339597e-12
+      - 7.195140342769297e-09
+    - sample_id: CALB_0003_s0050
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 746
+      soh_final: 0.7598099650609662
+      elapsed_s: 35.890037536621094
+      reason: ok
+      theta_list:
+      - 1.350451253671772e-10
+      - 0.00014485741630371773
+      - 1.4912946260395132e-19
+      - 2.6857307630968978e-12
+      - 5.923638561356911e-10
+    - sample_id: CALB_0003_s0051
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9096537543382511
+      elapsed_s: 162.74523901939392
+      reason: ok
+      theta_list:
+      - 8.9835381081959e-12
+      - 9.74661105518374e-05
+      - 3.642035093136735e-21
+      - 3.341521183097384e-13
+      - 7.738817526418646e-11
+    - sample_id: CALB_0003_s0052
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9274332546894762
+      elapsed_s: 163.25398802757263
+      reason: ok
+      theta_list:
+      - 1.6565723632316147e-11
+      - 0.00012423063990964493
+      - 1.535316122823967e-21
+      - 6.251940164443804e-13
+      - 3.669149217903553e-11
+    - sample_id: CALB_0003_s0053
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6866898751214106
+      elapsed_s: 165.25257682800293
+      reason: ok
+      theta_list:
+      - 5.5111261634875675e-11
+      - 8.544238894582954e-05
+      - 2.178372050443414e-20
+      - 4.503550288656658e-12
+      - 3.437516536587291e-10
+    - sample_id: CALB_0003_s0054
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.843513776505714
+      elapsed_s: 162.82309007644653
+      reason: ok
+      theta_list:
+      - 2.40431443860212e-11
+      - 0.0001206707384782608
+      - 8.53883261251181e-21
+      - 1.411389394323941e-12
+      - 1.6241295238865157e-09
+    - sample_id: CALB_0003_s0055
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6554376242431238
+      elapsed_s: 159.62072944641113
+      reason: ok
+      theta_list:
+      - 4.9987759711150945e-12
+      - 0.00011053154696299345
+      - 3.367678081214003e-20
+      - 5.136501097881482e-12
+      - 1.072115003913798e-10
+    - sample_id: CALB_0003_s0056
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.794086884979351
+      elapsed_s: 160.33248901367188
+      reason: ok
+      theta_list:
+      - 8.136662651774785e-12
+      - 0.00013315975455445968
+      - 7.10372937448744e-21
+      - 3.388219823220006e-12
+      - 2.8542490870254296e-09
+    - sample_id: CALB_0003_s0057
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.69515073757328
+      elapsed_s: 162.43902802467346
+      reason: ok
+      theta_list:
+      - 2.7066515488024614e-11
+      - 9.614429941613512e-05
+      - 5.497208695233652e-20
+      - 9.109097518850231e-13
+      - 2.776641884692528e-10
+    - sample_id: CALB_0003_s0058
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7309961343180931
+      elapsed_s: 166.31889867782593
+      reason: ok
+      theta_list:
+      - 8.946683752155645e-11
+      - 0.00011438886947174652
+      - 2.6088277273077043e-22
+      - 8.099789310212224e-12
+      - 5.61690074045352e-11
+    - sample_id: CALB_0003_s0059
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7879327816713324
+      elapsed_s: 162.3638780117035
+      reason: ok
+      theta_list:
+      - 1.861700583919047e-11
+      - 0.00010557281816912399
+      - 2.3189347819002317e-20
+      - 1.0058312735308185e-12
+      - 8.2198777297627e-10
+    - sample_id: CALB_0003_s0060
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 1633
+      soh_final: 0.7068859294953068
+      elapsed_s: 91.05801343917847
+      reason: ok
+      theta_list:
+      - 1.3448179948022695e-11
+      - 0.00011927207664594037
+      - 8.520680230464575e-20
+      - 1.7884224494066166e-12
+      - 4.211051108001683e-10
+    - sample_id: CALB_0003_s0061
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 1901
+      soh_final: 0.6499639231948557
+      elapsed_s: 161.1252682209015
+      reason: ok
+      theta_list:
+      - 2.0937350646185993e-10
+      - 0.00010762848522604022
+      - 5.262548935581608e-21
+      - 1.341126576049027e-11
+      - 1.0028897303816522e-11
+    - sample_id: CALB_0003_s0062
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8708678789060027
+      elapsed_s: 163.31733417510986
+      reason: ok
+      theta_list:
+      - 4.99662065458175e-11
+      - 0.00012927041811286178
+      - 1.0165017362685298e-20
+      - 4.691067255846183e-13
+      - 1.6780349026790296e-10
+    - sample_id: CALB_0003_s0063
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8455127943989618
+      elapsed_s: 164.46903800964355
+      reason: ok
+      theta_list:
+      - 3.329361758312381e-12
+      - 8.674217516665027e-05
+      - 2.4624260155829367e-21
+      - 2.399835713062742e-12
+      - 1.2409839809260518e-09
+    - sample_id: CALB_0003_s0064
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8487639266199113
+      elapsed_s: 163.13483929634094
+      reason: ok
+      theta_list:
+      - 3.0938109996099236e-12
+      - 0.00013669951674789943
+      - 1.1799870722433257e-20
+      - 9.413190961878805e-13
+      - 6.440891055970148e-10
+    - sample_id: CALB_0003_s0065
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8146932523043052
+      elapsed_s: 162.24027252197266
+      reason: ok
+      theta_list:
+      - 4.7475518926632885e-11
+      - 9.420765324112244e-05
+      - 3.0036217555292974e-21
+      - 3.3106614871933523e-12
+      - 6.228469954125327e-11
+    - sample_id: CALB_0003_s0066
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2036
+      soh_final: 0.7079981306916648
+      elapsed_s: 123.21727871894836
+      reason: ok
+      theta_list:
+      - 1.795020443823438e-10
+      - 0.00011584796938964628
+      - 7.099152806748817e-20
+      - 1.0353837881108262e-12
+      - 1.9320093523751718e-10
+    - sample_id: CALB_0003_s0067
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6920615792269306
+      elapsed_s: 159.0787959098816
+      reason: ok
+      theta_list:
+      - 1.304278427918555e-11
+      - 0.00010418888198118999
+      - 4.79956145057357e-21
+      - 7.795511315062059e-12
+      - 4.799389080816386e-08
+    - sample_id: CALB_0003_s0068
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2059
+      soh_final: 0.6498971511324845
+      elapsed_s: 165.08160591125488
+      reason: ok
+      theta_list:
+      - 1.8335650376217072e-11
+      - 0.00011787915547011194
+      - 5.335600419879306e-22
+      - 1.45396663330231e-11
+      - 2.1296044797123846e-09
+    - sample_id: CALB_0003_s0069
+      anchor_id: CALB_0003
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7602007583034639
+      elapsed_s: 161.9523766040802
+      reason: ok
+      theta_list:
+      - 8.92493286965132e-11
+      - 0.00010909064482176684
+      - 2.5725599389341824e-20
+      - 1.7442825923037486e-12
+      - 9.480595227245967e-11
+  CALB_0009:
+    n_sims: 70
+    n_ok: 70
+    n_rejected: 0
+    n_error: 0
+    n_skipped: 0
+    summaries:
+    - sample_id: CALB_0009_s0000
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1997
+      soh_final: 0.6499477275310376
+      elapsed_s: 157.86073541641235
+      reason: ok
+      theta_list:
+      - 2.2111899616088678e-14
+      - 0.00012654703502604277
+      - 1.0210190589994061e-22
+      - 1.10411604378101e-11
+      - 2.275393384599598e-09
+    - sample_id: CALB_0009_s0001
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7132945744186211
+      elapsed_s: 155.16433143615723
+      reason: ok
+      theta_list:
+      - 4.269693306721069e-13
+      - 0.00011626973864076333
+      - 8.557543928544683e-21
+      - 3.4873992804452224e-12
+      - 4.3195691844791337e-08
+    - sample_id: CALB_0009_s0002
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2214
+      soh_final: 0.6499697764269028
+      elapsed_s: 158.15951418876648
+      reason: ok
+      theta_list:
+      - 1.9521700002038323e-12
+      - 0.0001374890417436923
+      - 4.359748069255974e-23
+      - 1.0064341933094874e-11
+      - 2.8617967895438345e-07
+    - sample_id: CALB_0009_s0003
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8843910228751884
+      elapsed_s: 163.2537965774536
+      reason: ok
+      theta_list:
+      - 1.019278274805588e-13
+      - 9.945192648852801e-05
+      - 3.3536873347027635e-22
+      - 1.531088211688423e-12
+      - 1.2479071581892477e-08
+    - sample_id: CALB_0009_s0004
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.918704731441436
+      elapsed_s: 155.87152409553528
+      reason: ok
+      theta_list:
+      - 1.4177104461965587e-13
+      - 0.00014445350134090893
+      - 9.689732673673646e-22
+      - 6.116176299978042e-13
+      - 2.1209103174478118e-08
+    - sample_id: CALB_0009_s0005
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6924641820644734
+      elapsed_s: 158.76124787330627
+      reason: ok
+      theta_list:
+      - 7.762933219496293e-13
+      - 0.00010071346664126206
+      - 2.3480472688811437e-22
+      - 6.586879322674742e-12
+      - 1.9028342245252846e-06
+    - sample_id: CALB_0009_s0006
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7708488776769192
+      elapsed_s: 154.73027753829956
+      reason: ok
+      theta_list:
+      - 2.2992769846273173e-13
+      - 0.00012576524900178893
+      - 4.490113133264744e-22
+      - 4.2797569934358095e-12
+      - 8.400878389955881e-08
+    - sample_id: CALB_0009_s0007
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 814
+      soh_final: 0.649936963519837
+      elapsed_s: 156.13982319831848
+      reason: ok
+      theta_list:
+      - 6.051342968453519e-14
+      - 0.00011262259317925713
+      - 2.766625701532132e-23
+      - 2.8059802114588965e-11
+      - 8.154064112583376e-09
+    - sample_id: CALB_0009_s0008
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.713054005788067
+      elapsed_s: 157.66047191619873
+      reason: ok
+      theta_list:
+      - 3.9204054626960143e-14
+      - 0.00013501697355866192
+      - 6.484054001157001e-22
+      - 5.88285483736101e-12
+      - 6.366320358260725e-08
+    - sample_id: CALB_0009_s0009
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9344866050753446
+      elapsed_s: 164.14190649986267
+      reason: ok
+      theta_list:
+      - 2.1489215924996024e-13
+      - 6.477274091426445e-05
+      - 1.572641486708993e-23
+      - 9.46894493714566e-13
+      - 1.0585414064719105e-09
+    - sample_id: CALB_0009_s0010
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 603
+      soh_final: 0.6498686471492181
+      elapsed_s: 157.8514244556427
+      reason: ok
+      theta_list:
+      - 5.043755545790639e-13
+      - 0.00013184399984843173
+      - 1.0527252747356385e-21
+      - 3.591674100796525e-11
+      - 1.4830881802426565e-08
+    - sample_id: CALB_0009_s0011
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7912272235131409
+      elapsed_s: 160.6445348262787
+      reason: ok
+      theta_list:
+      - 1.3272540340726484e-13
+      - 0.0001185147785545883
+      - 1.4864492308234992e-22
+      - 4.0021349427103364e-12
+      - 1.5849002838234258e-07
+    - sample_id: CALB_0009_s0012
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.852518170904129
+      elapsed_s: 157.96612930297852
+      reason: ok
+      theta_list:
+      - 7.155598373919365e-14
+      - 0.0001204851443751544
+      - 7.101071729816893e-23
+      - 2.5103369257397202e-12
+      - 4.960944518313133e-07
+    - sample_id: CALB_0009_s0013
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1290
+      soh_final: 0.6499787915790317
+      elapsed_s: 159.217187166214
+      reason: ok
+      theta_list:
+      - 1.3848014897486147e-12
+      - 0.00011031710021772729
+      - 2.789805766479703e-22
+      - 1.6877771278793668e-11
+      - 3.012329859068786e-08
+    - sample_id: CALB_0009_s0014
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8671792078303585
+      elapsed_s: 160.39068460464478
+      reason: ok
+      theta_list:
+      - 2.991331217221824e-13
+      - 0.00015327495743399952
+      - 1.08701008406963e-22
+      - 2.20213290866916e-12
+      - 4.7883206943170145e-09
+    - sample_id: CALB_0009_s0015
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2457
+      soh_final: 0.6499575254489173
+      elapsed_s: 157.26590943336487
+      reason: ok
+      theta_list:
+      - 1.5593401485254334e-14
+      - 0.00010724459626589304
+      - 1.5320856616125422e-21
+      - 7.60768689563253e-12
+      - 1.1315244603182525e-07
+    - sample_id: CALB_0009_s0016
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7753458127763339
+      elapsed_s: 159.92666339874268
+      reason: ok
+      theta_list:
+      - 4.18615137029696e-15
+      - 0.0001600437695501999
+      - 9.831843307112246e-24
+      - 4.800339661167916e-12
+      - 1.4544816404034057e-08
+    - sample_id: CALB_0009_s0017
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1016
+      soh_final: 0.6498043552390516
+      elapsed_s: 155.22641968727112
+      reason: ok
+      theta_list:
+      - 3.24857535778642e-13
+      - 0.00010605858884087766
+      - 5.858246564839737e-22
+      - 2.115694131236702e-11
+      - 2.2450501512467307e-07
+    - sample_id: CALB_0009_s0018
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9559477478018512
+      elapsed_s: 156.22638583183289
+      reason: ok
+      theta_list:
+      - 9.675165155992251e-13
+      - 0.00012205931827924116
+      - 1.848937098043246e-22
+      - 3.5425814308542413e-13
+      - 3.74072608508478e-08
+    - sample_id: CALB_0009_s0019
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6614300112976649
+      elapsed_s: 157.0485556125641
+      reason: ok
+      theta_list:
+      - 7.966478609708604e-14
+      - 0.00010842114756257168
+      - 1.5155911657211477e-21
+      - 7.07684577381415e-12
+      - 3.215449720134289e-09
+    - sample_id: CALB_0009_s0020
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2302
+      soh_final: 0.6499594016932451
+      elapsed_s: 156.0423219203949
+      reason: ok
+      theta_list:
+      - 1.1486301237832031e-13
+      - 0.0001303634635608275
+      - 2.561070306213294e-22
+      - 9.284239647904057e-12
+      - 9.949209509719866e-09
+    - sample_id: CALB_0009_s0021
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8906098743216417
+      elapsed_s: 158.07468032836914
+      reason: ok
+      theta_list:
+      - 5.717713634359001e-13
+      - 0.00011973932103846986
+      - 6.294559250585808e-23
+      - 1.7065331979877463e-12
+      - 7.089147784121681e-08
+    - sample_id: CALB_0009_s0022
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1486
+      soh_final: 0.6499756076551967
+      elapsed_s: 155.73798990249634
+      reason: ok
+      theta_list:
+      - 1.892629246666751e-13
+      - 0.00013244592322633172
+      - 2.530758615494406e-21
+      - 1.2787773455165198e-11
+      - 7.44617146832009e-07
+    - sample_id: CALB_0009_s0023
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8263601653598904
+      elapsed_s: 157.08676862716675
+      reason: ok
+      theta_list:
+      - 4.466483075327502e-14
+      - 8.955980568853263e-05
+      - 1.3707602791737003e-22
+      - 3.0855106110284746e-12
+      - 2.4634058400432205e-08
+    - sample_id: CALB_0009_s0024
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8171834159794198
+      elapsed_s: 157.39831352233887
+      reason: ok
+      theta_list:
+      - 5.34466129456599e-14
+      - 0.00012413135621320125
+      - 3.016832799174988e-21
+      - 2.0155978917602718e-12
+      - 1.299308437426327e-07
+    - sample_id: CALB_0009_s0025
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6657249213853789
+      elapsed_s: 158.87155485153198
+      reason: ok
+      theta_list:
+      - 2.659244155662754e-13
+      - 0.00011430995946697011
+      - 8.206861679339251e-23
+      - 8.194681842531324e-12
+      - 1.7635413325838187e-08
+    - sample_id: CALB_0009_s0026
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8297069936843848
+      elapsed_s: 159.21984028816223
+      reason: ok
+      theta_list:
+      - 6.824884654308359e-13
+      - 0.00014241886895943612
+      - 3.551141063679528e-22
+      - 2.865892826969482e-12
+      - 2.15502816401227e-09
+    - sample_id: CALB_0009_s0027
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1595
+      soh_final: 0.6499723163268557
+      elapsed_s: 158.26947855949402
+      reason: ok
+      theta_list:
+      - 1.6110605600279647e-13
+      - 0.00010226154648352438
+      - 4.782942113067102e-23
+      - 1.4115968628321055e-11
+      - 5.473484471528896e-08
+    - sample_id: CALB_0009_s0028
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 247
+      soh_final: 0.6494431733524323
+      elapsed_s: 155.93166327476501
+      reason: ok
+      theta_list:
+      - 9.376912775923504e-14
+      - 0.00014088363762151566
+      - 1.954443900174481e-22
+      - 9.292767859461832e-11
+      - 9.690638710492935e-08
+    - sample_id: CALB_0009_s0029
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7866702688598142
+      elapsed_s: 155.41418266296387
+      reason: ok
+      theta_list:
+      - 6.944660648611585e-12
+      - 9.507294841314125e-05
+      - 7.571997703091149e-22
+      - 3.5560609337665193e-12
+      - 6.064655578656493e-09
+    - sample_id: CALB_0009_s0030
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.749166959305844
+      elapsed_s: 155.66820907592773
+      reason: ok
+      theta_list:
+      - 3.8309446699527183e-13
+      - 0.00012786300371989977
+      - 3.141139322696016e-23
+      - 5.4879014296629816e-12
+      - 3.4752754994330674e-08
+    - sample_id: CALB_0009_s0031
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8974596951920472
+      elapsed_s: 157.16808199882507
+      reason: ok
+      theta_list:
+      - 3.1556394109553196e-14
+      - 0.00011499213647179574
+      - 4.770797377066578e-22
+      - 1.1237977852860045e-12
+      - 3.644241189644314e-07
+    - sample_id: CALB_0009_s0032
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8085790181099486
+      elapsed_s: 158.77519178390503
+      reason: ok
+      theta_list:
+      - 3.351873444243838e-14
+      - 0.00013658219520215335
+      - 1.196362335335168e-21
+      - 2.8898988668790467e-12
+      - 7.627764116419015e-09
+    - sample_id: CALB_0009_s0033
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1575
+      soh_final: 0.6498690445040799
+      elapsed_s: 156.5743284225464
+      reason: ok
+      theta_list:
+      - 3.495359125028851e-13
+      - 9.749573717015923e-05
+      - 1.6111051008759148e-22
+      - 1.391856939870319e-11
+      - 8.131443193718805e-08
+    - sample_id: CALB_0009_s0034
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8580142198285241
+      elapsed_s: 155.96664190292358
+      reason: ok
+      theta_list:
+      - 2.514464703887076e-12
+      - 0.0001274159577379798
+      - 6.895330620268788e-22
+      - 1.624864388928403e-12
+      - 1.95128283000591e-06
+    - sample_id: CALB_0009_s0035
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2356
+      soh_final: 0.6499285369972589
+      elapsed_s: 159.24672746658325
+      reason: ok
+      theta_list:
+      - 9.678783480814648e-14
+      - 0.00011673574360556879
+      - 1.867030691863466e-23
+      - 9.626138995365489e-12
+      - 2.248688496746526e-08
+    - sample_id: CALB_0009_s0036
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7058082571454268
+      elapsed_s: 159.45148277282715
+      reason: ok
+      theta_list:
+      - 1.658174273247959e-13
+      - 0.00012509467558321493
+      - 1.1894657817985404e-22
+      - 6.691007459033301e-12
+      - 1.0553026406912332e-08
+    - sample_id: CALB_0009_s0037
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8979860530960609
+      elapsed_s: 155.64058184623718
+      reason: ok
+      theta_list:
+      - 6.030306727461004e-13
+      - 0.00011151550453953693
+      - 1.792100338685057e-21
+      - 5.682382428489157e-13
+      - 2.4651697086298563e-07
+    - sample_id: CALB_0009_s0038
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1153
+      soh_final: 0.6499022762993676
+      elapsed_s: 156.2458050251007
+      reason: ok
+      theta_list:
+      - 2.448665841493622e-13
+      - 0.00014651874851496835
+      - 7.567105845184009e-23
+      - 1.958245847231964e-11
+      - 4.740686686089492e-08
+    - sample_id: CALB_0009_s0039
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7515932316105657
+      elapsed_s: 158.74925899505615
+      reason: ok
+      theta_list:
+      - 5.5686416441454807e-14
+      - 0.00010145804295842973
+      - 2.9209717709107447e-22
+      - 4.9769025194065495e-12
+      - 3.083835899343521e-09
+    - sample_id: CALB_0009_s0040
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9148709360396393
+      elapsed_s: 163.0322766304016
+      reason: ok
+      theta_list:
+      - 5.055776867697216e-14
+      - 0.00013090054484597005
+      - 3.792438462538579e-23
+      - 1.2635282796466479e-12
+      - 1.1722792850083544e-07
+    - sample_id: CALB_0009_s0041
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7441725950430023
+      elapsed_s: 155.417870759964
+      reason: ok
+      theta_list:
+      - 1.8390197755475942e-13
+      - 0.00011808648011299882
+      - 3.08760552439219e-22
+      - 5.200493908216844e-12
+      - 5.211931050192158e-09
+    - sample_id: CALB_0009_s0042
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8073371197976212
+      elapsed_s: 156.2635793685913
+      reason: ok
+      theta_list:
+      - 5.488236834545922e-13
+      - 0.00013593952011645526
+      - 9.685022963225573e-23
+      - 3.693843366978831e-12
+      - 2.8459057454318534e-08
+    - sample_id: CALB_0009_s0043
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 361
+      soh_final: 0.6496054097846826
+      elapsed_s: 152.7015368938446
+      reason: ok
+      theta_list:
+      - 1.247472723753162e-13
+      - 8.433055535554637e-05
+      - 5.5899602277611355e-21
+      - 5.5800327547709247e-11
+      - 4.933360349811331e-07
+    - sample_id: CALB_0009_s0044
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1395
+      soh_final: 0.6498531754048547
+      elapsed_s: 156.00276684761047
+      reason: ok
+      theta_list:
+      - 8.732150030564201e-14
+      - 0.00014965757660552985
+      - 4.132045194658604e-22
+      - 1.5480236716223983e-11
+      - 1.7832324563741163e-07
+    - sample_id: CALB_0009_s0045
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.852402021858992
+      elapsed_s: 158.9281108379364
+      reason: ok
+      theta_list:
+      - 9.109624614251864e-13
+      - 0.00010664196119483355
+      - 2.229449632385149e-23
+      - 2.679633660286615e-12
+      - 1.7260624064623972e-08
+    - sample_id: CALB_0009_s0046
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2342
+      soh_final: 0.6499418746742265
+      elapsed_s: 155.75171756744385
+      reason: ok
+      theta_list:
+      - 3.1475194383055263e-13
+      - 0.00012107678633722513
+      - 9.083461822553253e-22
+      - 8.483688138474342e-12
+      - 2.544851025386889e-10
+    - sample_id: CALB_0009_s0047
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8713851356779795
+      elapsed_s: 160.01102137565613
+      reason: ok
+      theta_list:
+      - 1.203590229918866e-14
+      - 0.00011140109053307816
+      - 2.2335487301494243e-22
+      - 1.93167107260031e-12
+      - 5.782697976131952e-08
+    - sample_id: CALB_0009_s0048
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 870
+      soh_final: 0.6497898168694641
+      elapsed_s: 155.218891620636
+      reason: ok
+      theta_list:
+      - 1.763248809445747e-14
+      - 0.0001230211632370314
+      - 3.848838860994611e-22
+      - 2.527797273630519e-11
+      - 2.5966132508151756e-08
+    - sample_id: CALB_0009_s0049
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7775488543650232
+      elapsed_s: 159.84419202804565
+      reason: ok
+      theta_list:
+      - 2.7483491340598765e-13
+      - 0.00010915525384792565
+      - 5.432716987766936e-23
+      - 4.439999162946288e-12
+      - 8.548267784503606e-07
+    - sample_id: CALB_0009_s0050
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6696486315225403
+      elapsed_s: 157.0585377216339
+      reason: ok
+      theta_list:
+      - 1.1141652888290187e-12
+      - 0.00015591884337473944
+      - 3.573968274711023e-21
+      - 6.235090409429499e-12
+      - 7.037645725976395e-08
+    - sample_id: CALB_0009_s0051
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9358912025438926
+      elapsed_s: 157.36902594566345
+      reason: ok
+      theta_list:
+      - 7.411705016238455e-14
+      - 0.0001049086999702821
+      - 8.728334194312329e-23
+      - 7.757548510786567e-13
+      - 9.19418960572699e-09
+    - sample_id: CALB_0009_s0052
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9061345186517927
+      elapsed_s: 158.9075424671173
+      reason: ok
+      theta_list:
+      - 1.366724952513332e-13
+      - 0.00013371698999382512
+      - 3.6794681740372636e-23
+      - 1.4514266543494272e-12
+      - 4.359174187263968e-09
+    - sample_id: CALB_0009_s0053
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1982
+      soh_final: 0.6499377291502056
+      elapsed_s: 160.63348722457886
+      reason: ok
+      theta_list:
+      - 4.5468545843622827e-13
+      - 9.196683745674716e-05
+      - 5.220586504410618e-22
+      - 1.0455271093818679e-11
+      - 4.083980362931704e-08
+    - sample_id: CALB_0009_s0054
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8158567518664033
+      elapsed_s: 155.9716682434082
+      reason: ok
+      theta_list:
+      - 1.9836359762245788e-13
+      - 0.00012988525166883851
+      - 2.046377444625517e-22
+      - 3.2766279470144398e-12
+      - 1.9295654324314084e-07
+    - sample_id: CALB_0009_s0055
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1722
+      soh_final: 0.6498961496430025
+      elapsed_s: 158.3124499320984
+      reason: ok
+      theta_list:
+      - 4.124149360079508e-14
+      - 0.00011897182345677615
+      - 8.070822768042105e-22
+      - 1.1924705623319935e-11
+      - 1.2737383445827158e-08
+    - sample_id: CALB_0009_s0056
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.668275596277054
+      elapsed_s: 156.87055683135986
+      reason: ok
+      theta_list:
+      - 6.713005796299806e-14
+      - 0.0001433279389069339
+      - 1.702447187379471e-22
+      - 7.865962297887928e-12
+      - 3.3910228789474255e-07
+    - sample_id: CALB_0009_s0057
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8337705925120353
+      elapsed_s: 155.91184210777283
+      reason: ok
+      theta_list:
+      - 2.2330737199374417e-13
+      - 0.00010348595428906386
+      - 1.3174358126943382e-21
+      - 2.1147334408475848e-12
+      - 3.29882076530631e-08
+    - sample_id: CALB_0009_s0058
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1222
+      soh_final: 0.6498624076829838
+      elapsed_s: 159.16444158554077
+      reason: ok
+      theta_list:
+      - 7.381298998893842e-13
+      - 0.00012312369416822891
+      - 6.2521968287017434e-24
+      - 1.8804162852224712e-11
+      - 6.673222391919758e-09
+    - sample_id: CALB_0009_s0059
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8421943941142489
+      elapsed_s: 159.16717267036438
+      reason: ok
+      theta_list:
+      - 1.5359622668020152e-13
+      - 0.00011363444220369563
+      - 5.557452697087477e-22
+      - 2.3350996359235575e-12
+      - 9.765718615968644e-08
+    - sample_id: CALB_0009_s0060
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.74684459237913
+      elapsed_s: 156.34116578102112
+      reason: ok
+      theta_list:
+      - 1.1095176708729299e-13
+      - 0.00012837978691092403
+      - 2.042027128033849e-21
+      - 4.151933550273481e-12
+      - 5.0029868509241955e-08
+    - sample_id: CALB_0009_s0061
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 724
+      soh_final: 0.6499520688154196
+      elapsed_s: 154.60022830963135
+      reason: ok
+      theta_list:
+      - 1.7273981024191834e-12
+      - 0.00011584708162566292
+      - 1.2611983314009872e-22
+      - 3.113508459988778e-11
+      - 1.19149447616353e-09
+    - sample_id: CALB_0009_s0062
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9126382204406136
+      elapsed_s: 158.34379053115845
+      reason: ok
+      theta_list:
+      - 4.122371155304355e-13
+      - 0.0001391416096533615
+      - 2.4361014203213115e-22
+      - 1.0890603354145672e-12
+      - 1.9936083268005957e-08
+    - sample_id: CALB_0009_s0063
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7426378343474531
+      elapsed_s: 158.13106870651245
+      reason: ok
+      theta_list:
+      - 2.7468294727267438e-14
+      - 9.336587638313446e-05
+      - 5.901337203828499e-23
+      - 5.5713673329898304e-12
+      - 1.4743650408286896e-07
+    - sample_id: CALB_0009_s0064
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8599712247663525
+      elapsed_s: 161.57580995559692
+      reason: ok
+      theta_list:
+      - 2.5524925957827914e-14
+      - 0.00014713800014581153
+      - 2.8279028752129703e-22
+      - 2.1853306182061793e-12
+      - 7.652173396809086e-08
+    - sample_id: CALB_0009_s0065
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6802133804009779
+      elapsed_s: 156.15690350532532
+      reason: ok
+      theta_list:
+      - 3.9168814952320955e-13
+      - 0.00010140142427783555
+      - 7.198342082142733e-23
+      - 7.685905814276187e-12
+      - 7.399804106545883e-09
+    - sample_id: CALB_0009_s0066
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8188057527140226
+      elapsed_s: 156.95976161956787
+      reason: ok
+      theta_list:
+      - 1.480949027822239e-12
+      - 0.00012469421211181914
+      - 1.7013503881542004e-21
+      - 2.403707629980214e-12
+      - 2.295345541503628e-08
+    - sample_id: CALB_0009_s0067
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 1171
+      soh_final: 0.6498177179771487
+      elapsed_s: 159.3002142906189
+      reason: ok
+      theta_list:
+      - 1.0760712372284799e-13
+      - 0.00011214482755203919
+      - 1.1502408750999858e-22
+      - 1.8097762629451238e-11
+      - 5.701968427352543e-06
+    - sample_id: CALB_0009_s0068
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 680
+      soh_final: 0.6496919550407892
+      elapsed_s: 156.9380099773407
+      reason: ok
+      theta_list:
+      - 1.512749545142121e-13
+      - 0.00012688050117057924
+      - 1.278705514940828e-23
+      - 3.3754736459436585e-11
+      - 2.530100665229462e-07
+    - sample_id: CALB_0009_s0069
+      anchor_id: CALB_0009
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.774256318291584
+      elapsed_s: 156.8634774684906
+      reason: ok
+      theta_list:
+      - 7.363353828180106e-13
+      - 0.00011742089288650288
+      - 6.165279111184623e-22
+      - 4.049460136528042e-12
+      - 1.1263528284118656e-08
+  CALB_0010:
+    n_sims: 70
+    n_ok: 70
+    n_rejected: 0
+    n_error: 0
+    n_skipped: 0
+    summaries:
+    - sample_id: CALB_0010_s0000
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7541005609859058
+      elapsed_s: 157.21239233016968
+      reason: ok
+      theta_list:
+      - 5.586301061324995e-14
+      - 0.00021090217064671297
+      - 1.569128450210039e-22
+      - 5.154214403870133e-12
+      - 5.1957494543771836e-09
+    - sample_id: CALB_0010_s0001
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7508234275185028
+      elapsed_s: 158.72508668899536
+      reason: ok
+      theta_list:
+      - 2.5468086346559464e-12
+      - 0.00015317078957721605
+      - 1.8297746057622108e-20
+      - 1.5383399441367343e-12
+      - 3.2889915099381104e-10
+    - sample_id: CALB_0010_s0002
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6566663318699539
+      elapsed_s: 159.02560544013977
+      reason: ok
+      theta_list:
+      - 6.587036165512784e-13
+      - 0.00016745513057342667
+      - 5.852231196217788e-23
+      - 8.636125517086793e-12
+      - 6.2731568319575434e-12
+    - sample_id: CALB_0010_s0003
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8590118338755565
+      elapsed_s: 162.45670771598816
+      reason: ok
+      theta_list:
+      - 4.527207599923e-13
+      - 0.00013865184404717042
+      - 4.793776489677618e-22
+      - 2.081725382550131e-12
+      - 5.292043083558423e-10
+    - sample_id: CALB_0010_s0004
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8189602392862799
+      elapsed_s: 156.64894485473633
+      reason: ok
+      theta_list:
+      - 2.0433022360694387e-13
+      - 0.00017776025955028343
+      - 8.006638089833043e-22
+      - 2.895599035282209e-12
+      - 8.159561615758234e-10
+    - sample_id: CALB_0010_s0005
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 1193
+      soh_final: 0.6499314896598257
+      elapsed_s: 156.8670392036438
+      reason: ok
+      theta_list:
+      - 9.458418286302093e-13
+      - 0.0001350984135494829
+      - 1.426008648316067e-22
+      - 1.871251035540067e-11
+      - 9.053670229279031e-11
+    - sample_id: CALB_0010_s0006
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9283500784358473
+      elapsed_s: 157.97395420074463
+      reason: ok
+      theta_list:
+      - 2.127870347585916e-12
+      - 0.00018117536396148698
+      - 3.109251389903417e-22
+      - 7.97055020243782e-13
+      - 1.0910323612958346e-10
+    - sample_id: CALB_0010_s0007
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8139903010772139
+      elapsed_s: 157.6084704399109
+      reason: ok
+      theta_list:
+      - 1.661408473337918e-13
+      - 0.0001593914999124344
+      - 1.413193817364151e-23
+      - 3.7203432089943214e-12
+      - 2.0842319214904147e-09
+    - sample_id: CALB_0010_s0008
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 946
+      soh_final: 0.6498277778257102
+      elapsed_s: 155.5724639892578
+      reason: ok
+      theta_list:
+      - 1.2619213607515859e-13
+      - 0.0001690878980240195
+      - 2.823396582721809e-22
+      - 2.348554457830791e-11
+      - 2.4272994692567844e-10
+    - sample_id: CALB_0010_s0009
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8467181645546463
+      elapsed_s: 157.39356637001038
+      reason: ok
+      theta_list:
+      - 1.3603707211186571e-12
+      - 0.00014542625128959944
+      - 2.0298636368125508e-23
+      - 2.8335542588729453e-12
+      - 2.266828842501082e-08
+    - sample_id: CALB_0010_s0010
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7453788497001497
+      elapsed_s: 163.72303986549377
+      reason: ok
+      theta_list:
+      - 9.743127062995901e-13
+      - 0.0001958028672323273
+      - 1.5253318077646859e-21
+      - 4.577367393084903e-12
+      - 3.8371179508269283e-10
+    - sample_id: CALB_0010_s0011
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9678619817565384
+      elapsed_s: 156.13779425621033
+      reason: ok
+      theta_list:
+      - 3.0309943640500565e-13
+      - 0.00015148888261973294
+      - 9.0240513311617e-23
+      - 2.879326484625365e-13
+      - 2.3851287836156773e-11
+    - sample_id: CALB_0010_s0012
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9335738741527091
+      elapsed_s: 155.17672777175903
+      reason: ok
+      theta_list:
+      - 3.354953577007685e-13
+      - 0.00019175830675893912
+      - 5.071516920832763e-23
+      - 9.184396143014482e-13
+      - 6.198696916126115e-11
+    - sample_id: CALB_0010_s0013
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6796471720097
+      elapsed_s: 154.945250749588
+      reason: ok
+      theta_list:
+      - 5.442820009884996e-13
+      - 0.00016163574897052601
+      - 5.331476860365577e-22
+      - 7.171696532547692e-12
+      - 1.1795303752000355e-09
+    - sample_id: CALB_0010_s0014
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8793375154423806
+      elapsed_s: 158.19577527046204
+      reason: ok
+      theta_list:
+      - 1.0015080369866279e-11
+      - 0.00017511892882888974
+      - 2.3745024221951393e-22
+      - 1.830323632273687e-12
+      - 1.3891065229822036e-09
+    - sample_id: CALB_0010_s0015
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 1739
+      soh_final: 0.6499374506849961
+      elapsed_s: 158.01947164535522
+      reason: ok
+      theta_list:
+      - 6.05404400233108e-14
+      - 9.45155285437627e-05
+      - 1.8048283611794623e-21
+      - 1.0971267704013752e-11
+      - 1.5452554833465525e-10
+    - sample_id: CALB_0010_s0016
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9524872768386637
+      elapsed_s: 158.60637044906616
+      reason: ok
+      theta_list:
+      - 9.796947595349881e-14
+      - 0.00017361435189327268
+      - 3.6302109456796186e-23
+      - 6.116399420180966e-13
+      - 6.345917797289554e-10
+    - sample_id: CALB_0010_s0017
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7910598047764368
+      elapsed_s: 155.34112119674683
+      reason: ok
+      theta_list:
+      - 4.9372371492426306e-12
+      - 0.0001255697526026471
+      - 2.5810327297702163e-22
+      - 3.946453055410021e-12
+      - 1.3034856133842737e-11
+    - sample_id: CALB_0010_s0018
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8245893352693008
+      elapsed_s: 156.97800016403198
+      reason: ok
+      theta_list:
+      - 5.400085461418425e-13
+      - 0.00018622566204388682
+      - 1.0029096205276622e-22
+      - 3.2829690316899924e-12
+      - 2.7517754110833147e-10
+    - sample_id: CALB_0010_s0019
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 1371
+      soh_final: 0.6498451140993015
+      elapsed_s: 157.02293586730957
+      reason: ok
+      theta_list:
+      - 3.667019196461852e-13
+      - 0.00016312950536257238
+      - 1.0270664325986087e-21
+      - 1.5184623604340646e-11
+      - 3.964258174590562e-09
+    - sample_id: CALB_0010_s0020
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6597324633355975
+      elapsed_s: 156.9787790775299
+      reason: ok
+      theta_list:
+      - 2.5639092571154634e-13
+      - 0.00019681709762676757
+      - 6.881343634438022e-22
+      - 7.799473470290423e-12
+      - 2.810346609609504e-09
+    - sample_id: CALB_0010_s0021
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8640196277055271
+      elapsed_s: 162.4154236316681
+      reason: ok
+      theta_list:
+      - 1.210961867665923e-12
+      - 0.0001485716934528989
+      - 4.233777061195668e-23
+      - 2.3777084972632817e-12
+      - 1.235192532259763e-10
+    - sample_id: CALB_0010_s0022
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7060585524673638
+      elapsed_s: 158.02580571174622
+      reason: ok
+      theta_list:
+      - 1.4997616975183009e-12
+      - 0.00017149348025142887
+      - 2.341707211023157e-21
+      - 5.465832784130619e-12
+      - 7.08508472650748e-11
+    - sample_id: CALB_0010_s0023
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9023512972431943
+      elapsed_s: 158.6166319847107
+      reason: ok
+      theta_list:
+      - 1.162681526880312e-13
+      - 0.0001446566558301434
+      - 1.9112307215676182e-22
+      - 1.3456524400275776e-12
+      - 7.272325556539923e-10
+    - sample_id: CALB_0010_s0024
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.84483549697988
+      elapsed_s: 154.3724913597107
+      reason: ok
+      theta_list:
+      - 1.6800305712546457e-13
+      - 0.0001855841816688247
+      - 3.125908567820314e-21
+      - 1.6260385359071597e-12
+      - 3.277275176936034e-11
+    - sample_id: CALB_0010_s0025
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 1812
+      soh_final: 0.6498935789362278
+      elapsed_s: 157.67016315460205
+      reason: ok
+      theta_list:
+      - 1.8402829325756254e-12
+      - 0.00015779152021356863
+      - 1.7343405214422998e-22
+      - 1.2090497290080027e-11
+      - 4.669860553260029e-10
+    - sample_id: CALB_0010_s0026
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9065406621258975
+      elapsed_s: 156.82162761688232
+      reason: ok
+      theta_list:
+      - 7.626341477998943e-13
+      - 0.00017944238551834656
+      - 4.314399099685193e-22
+      - 1.1362748438845464e-12
+      - 9.354622953306663e-09
+    - sample_id: CALB_0010_s0027
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7134528482381527
+      elapsed_s: 156.15287065505981
+      reason: ok
+      theta_list:
+      - 2.3361125986238045e-13
+      - 0.00012662195658011944
+      - 7.795824800062163e-23
+      - 6.5348882328958445e-12
+      - 1.9865301109672535e-10
+    - sample_id: CALB_0010_s0028
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7881614175531406
+      elapsed_s: 158.87277221679688
+      reason: ok
+      theta_list:
+      - 4.2097593890478645e-13
+      - 0.00016504391416032982
+      - 1.1185082109337461e-22
+      - 4.220443724076919e-12
+      - 1.768118934850109e-10
+    - sample_id: CALB_0010_s0029
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.922119055339509
+      elapsed_s: 159.13643836975098
+      reason: ok
+      theta_list:
+      - 6.932337312520374e-13
+      - 0.00013947128908912336
+      - 8.969580399363661e-22
+      - 5.710632943421721e-13
+      - 1.820036620171507e-09
+    - sample_id: CALB_0010_s0030
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 737
+      soh_final: 0.6498107614959118
+      elapsed_s: 156.98841667175293
+      reason: ok
+      theta_list:
+      - 3.7033862080956924e-12
+      - 0.00020879062745035858
+      - 8.395763085417511e-24
+      - 3.124571084448637e-11
+      - 1.019389906429146e-09
+    - sample_id: CALB_0010_s0031
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8426270741372966
+      elapsed_s: 157.7608139514923
+      reason: ok
+      theta_list:
+      - 1.4247427412311886e-14
+      - 0.00015588025262089337
+      - 3.9149956104469673e-22
+      - 2.5493494070700523e-12
+      - 4.455782045924769e-11
+    - sample_id: CALB_0010_s0032
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8804395698378635
+      elapsed_s: 163.1487488746643
+      reason: ok
+      theta_list:
+      - 3.701574530379231e-14
+      - 0.00016641228829740375
+      - 1.254069892899875e-21
+      - 1.3051261971628684e-12
+      - 2.0183149056777836e-09
+    - sample_id: CALB_0010_s0033
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7328330207291717
+      elapsed_s: 156.19555711746216
+      reason: ok
+      theta_list:
+      - 3.381466475087087e-12
+      - 0.00013766779696046155
+      - 8.541207979109939e-23
+      - 5.890974625882388e-12
+      - 1.1689555945135992e-10
+    - sample_id: CALB_0010_s0034
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8621149956190836
+      elapsed_s: 159.40412950515747
+      reason: ok
+      theta_list:
+      - 7.474398994588623e-13
+      - 0.00022130038614684154
+      - 2.967288030197546e-22
+      - 2.2112743228163734e-12
+      - 9.690359913820765e-11
+    - sample_id: CALB_0010_s0035
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6760174485567256
+      elapsed_s: 160.39563918113708
+      reason: ok
+      theta_list:
+      - 4.115672573873456e-13
+      - 0.000153912407428617
+      - 2.779053525543804e-23
+      - 8.02172126696538e-12
+      - 8.017364148877242e-10
+    - sample_id: CALB_0010_s0036
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 1663
+      soh_final: 0.6499677140361834
+      elapsed_s: 157.47560477256775
+      reason: ok
+      theta_list:
+      - 2.287644100300404e-13
+      - 0.00018247323927947855
+      - 2.130300151660789e-22
+      - 1.317379243498109e-11
+      - 4.998530247670178e-10
+    - sample_id: CALB_0010_s0037
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7860132276628937
+      elapsed_s: 156.24623560905457
+      reason: ok
+      theta_list:
+      - 8.27310649967216e-13
+      - 0.00015993234620962997
+      - 1.6400630271935457e-21
+      - 3.3594845693201376e-12
+      - 7.64612940577967e-12
+    - sample_id: CALB_0010_s0038
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.804981695704118
+      elapsed_s: 160.6465835571289
+      reason: ok
+      theta_list:
+      - 1.7422540384221292e-12
+      - 0.00017646011176664336
+      - 5.475609829226877e-23
+      - 3.8557280188763515e-12
+      - 3.340818849244727e-10
+    - sample_id: CALB_0010_s0039
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9196611327144084
+      elapsed_s: 158.64451003074646
+      reason: ok
+      theta_list:
+      - 1.8814334360464225e-13
+      - 0.00013375721258702887
+      - 6.07055651224908e-22
+      - 7.342209159327195e-13
+      - 4.515791896089977e-09
+    - sample_id: CALB_0010_s0040
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8579944926948551
+      elapsed_s: 158.3375220298767
+      reason: ok
+      theta_list:
+      - 1.0206495586519845e-13
+      - 0.00019432827933212342
+      - 6.85638627083215e-23
+      - 2.4928252073196712e-12
+      - 1.5716378677063215e-10
+    - sample_id: CALB_0010_s0041
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 310
+      soh_final: 0.6493429769918622
+      elapsed_s: 155.28923773765564
+      reason: ok
+      theta_list:
+      - 1.547820759644479e-12
+      - 0.00015013708069534697
+      - 5.062051699743964e-22
+      - 7.30108827707856e-11
+      - 1.299060985678318e-09
+    - sample_id: CALB_0010_s0042
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9556121030773236
+      elapsed_s: 160.31820726394653
+      reason: ok
+      theta_list:
+      - 1.0869617963270068e-12
+      - 0.0001696617799206443
+      - 1.4967030518636186e-22
+      - 4.3244208264716345e-13
+      - 1.1012831232376205e-09
+    - sample_id: CALB_0010_s0043
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7183850301313929
+      elapsed_s: 159.24448323249817
+      reason: ok
+      theta_list:
+      - 2.657849238347187e-13
+      - 0.0001467860131445471
+      - 4.924689062268919e-21
+      - 4.314741784901208e-12
+      - 6.393317042603374e-11
+    - sample_id: CALB_0010_s0044
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.717071984806885
+      elapsed_s: 155.89293479919434
+      reason: ok
+      theta_list:
+      - 3.800650759372903e-13
+      - 0.00017583401124027494
+      - 3.486776500685555e-22
+      - 6.053170892447171e-12
+      - 2.7553945097955155e-11
+    - sample_id: CALB_0010_s0045
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9229224813712951
+      elapsed_s: 160.20508885383606
+      reason: ok
+      theta_list:
+      - 4.951048412946845e-13
+      - 0.00011400192659884094
+      - 1.7380984829583974e-23
+      - 1.1781139328271499e-12
+      - 3.7752644002506755e-10
+    - sample_id: CALB_0010_s0046
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 1792
+      soh_final: 0.6499381777993178
+      elapsed_s: 160.83602643013
+      reason: ok
+      theta_list:
+      - 5.334142652513943e-12
+      - 0.00019078854540845026
+      - 7.546913698275552e-22
+      - 1.1604485143410665e-11
+      - 1.8040147357037627e-08
+    - sample_id: CALB_0010_s0047
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8859625768579754
+      elapsed_s: 160.75770592689514
+      reason: ok
+      theta_list:
+      - 8.341277400419706e-14
+      - 0.0001606211343540745
+      - 1.2699857420738895e-22
+      - 1.762744239256448e-12
+      - 2.5710073440530665e-10
+    - sample_id: CALB_0010_s0048
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8045045507913041
+      elapsed_s: 156.28197145462036
+      reason: ok
+      theta_list:
+      - 7.494340506911894e-14
+      - 0.00018816197437666554
+      - 4.251076536916598e-22
+      - 3.4797205334041723e-12
+      - 6.619879075160065e-10
+    - sample_id: CALB_0010_s0049
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9358998178985832
+      elapsed_s: 157.44286036491394
+      reason: ok
+      theta_list:
+      - 8.416058752391758e-12
+      - 0.00016389509730459762
+      - 7.052357618432435e-23
+      - 8.3805289459634e-13
+      - 8.445852405847095e-11
+    - sample_id: CALB_0010_s0050
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 1096
+      soh_final: 0.6499517797233745
+      elapsed_s: 153.43278193473816
+      reason: ok
+      theta_list:
+      - 5.938437835894056e-13
+      - 0.0001721592511102304
+      - 4.395975511652017e-21
+      - 1.752593902511725e-11
+      - 1.4334697962149034e-10
+    - sample_id: CALB_0010_s0051
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8263598891056712
+      elapsed_s: 155.46803903579712
+      reason: ok
+      theta_list:
+      - 3.2347543385923485e-13
+      - 0.0001221488363676695
+      - 1.7658107328632697e-22
+      - 3.0968822392744693e-12
+      - 2.3828338046319282e-09
+    - sample_id: CALB_0010_s0052
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8838016741407407
+      elapsed_s: 161.3290913105011
+      reason: ok
+      theta_list:
+      - 2.927464408791887e-13
+      - 0.00017016134249879818
+      - 7.371780199481538e-24
+      - 2.0323959666750223e-12
+      - 3.041923765091017e-09
+    - sample_id: CALB_0010_s0053
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2228
+      soh_final: 0.6499132879348488
+      elapsed_s: 157.39176964759827
+      reason: ok
+      theta_list:
+      - 1.0802144910687297e-12
+      - 0.0001435453429438066
+      - 3.613941166003031e-22
+      - 9.517190810049506e-12
+      - 3.0062024208472673e-10
+    - sample_id: CALB_0010_s0054
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9041587734824019
+      elapsed_s: 158.08017325401306
+      reason: ok
+      theta_list:
+      - 1.321175211780538e-12
+      - 0.00020052381327008228
+      - 1.2229392278717784e-22
+      - 1.4066111846123168e-12
+      - 1.9160296723687094e-11
+    - sample_id: CALB_0010_s0055
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7282584597988857
+      elapsed_s: 156.0836308002472
+      reason: ok
+      theta_list:
+      - 1.4116279608217987e-13
+      - 0.00014968670691710342
+      - 9.196417793094463e-22
+      - 5.27458770532797e-12
+      - 5.555143378134527e-10
+    - sample_id: CALB_0010_s0056
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2233
+      soh_final: 0.6499312700192347
+      elapsed_s: 157.8221390247345
+      reason: ok
+      theta_list:
+      - 1.471262338161249e-13
+      - 0.00018053797688608126
+      - 1.0237681816819686e-22
+      - 9.868092376707122e-12
+      - 5.258739586977915e-11
+    - sample_id: CALB_0010_s0057
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8515761149406248
+      elapsed_s: 157.03960514068604
+      reason: ok
+      theta_list:
+      - 2.267210384232141e-12
+      - 0.0001305224036517923
+      - 1.164878280612166e-21
+      - 1.879822639827047e-12
+      - 8.794296720959445e-10
+    - sample_id: CALB_0010_s0058
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7044951485752939
+      elapsed_s: 156.51769590377808
+      reason: ok
+      theta_list:
+      - 8.690294119042469e-13
+      - 0.00018449190247967392
+      - 3.0856651520635144e-23
+      - 6.9734944191691915e-12
+      - 1.5266149881050846e-09
+    - sample_id: CALB_0010_s0059
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9161641014452916
+      elapsed_s: 158.45949840545654
+      reason: ok
+      theta_list:
+      - 2.08899528049105e-13
+      - 0.00015648272547804228
+      - 2.5456623074569347e-22
+      - 1.0370471195263416e-12
+      - 1.9410250662070335e-10
+    - sample_id: CALB_0010_s0060
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9263387285508371
+      elapsed_s: 156.48411417007446
+      reason: ok
+      theta_list:
+      - 4.629668355742854e-13
+      - 0.00020471208808237672
+      - 2.4596351232327663e-21
+      - 2.1617386635659898e-13
+      - 2.2712776083761826e-10
+    - sample_id: CALB_0010_s0061
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7594061250674536
+      elapsed_s: 156.64269280433655
+      reason: ok
+      theta_list:
+      - 6.119819249069413e-13
+      - 0.00015438234166969877
+      - 2.07363579876925e-22
+      - 4.91387134653896e-12
+      - 6.433503050471674e-09
+    - sample_id: CALB_0010_s0062
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8325905364049968
+      elapsed_s: 161.56224131584167
+      reason: ok
+      theta_list:
+      - 2.728083882127485e-12
+      - 0.00016584020053192375
+      - 6.267497498836617e-22
+      - 2.643367780970582e-12
+      - 4.272332133517673e-10
+    - sample_id: CALB_0010_s0063
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 885
+      soh_final: 0.6499344818026224
+      elapsed_s: 157.58931946754456
+      reason: ok
+      theta_list:
+      - 3.820546218587144e-14
+      - 0.00014151765687135356
+      - 4.12907165185393e-23
+      - 2.578960190278762e-11
+      - 4.2621743036061206e-11
+    - sample_id: CALB_0010_s0064
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.865600445774165
+      elapsed_s: 156.53143000602722
+      reason: ok
+      theta_list:
+      - 4.6820756999969334e-14
+      - 0.0001772309189537076
+      - 5.654504095293186e-22
+      - 1.9321901656053432e-12
+      - 1.1891841385481147e-10
+    - sample_id: CALB_0010_s0065
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2197
+      soh_final: 0.6499446500400415
+      elapsed_s: 158.13605785369873
+      reason: ok
+      theta_list:
+      - 2.924842344313795e-12
+      - 0.0001319981151650904
+      - 4.914616737220478e-23
+      - 1.0191906290188687e-11
+      - 1.8627670241643814e-09
+    - sample_id: CALB_0010_s0066
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8884433191233996
+      elapsed_s: 156.71155667304993
+      reason: ok
+      theta_list:
+      - 6.34844347457595e-13
+      - 0.0001830048123060951
+      - 1.884776331734903e-21
+      - 9.94675866891872e-13
+      - 7.530784982089698e-10
+    - sample_id: CALB_0010_s0067
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6986645635498798
+      elapsed_s: 155.87361097335815
+      reason: ok
+      theta_list:
+      - 4.872102987860548e-13
+      - 0.00015984647209295886
+      - 2.255382339183412e-22
+      - 6.797374498893968e-12
+      - 9.928705299296251e-11
+    - sample_id: CALB_0010_s0068
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7741489581204817
+      elapsed_s: 159.52441930770874
+      reason: ok
+      theta_list:
+      - 2.148513556637235e-13
+      - 0.00022718882831954332
+      - 2.3696756729978445e-23
+      - 4.793016830884719e-12
+      - 1.1018871754212567e-11
+    - sample_id: CALB_0010_s0069
+      anchor_id: CALB_0010
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.971058264318619
+      elapsed_s: 160.3140833377838
+      reason: ok
+      theta_list:
+      - 8.798266702026368e-13
+      - 0.00015372461462242502
+      - 2.7688311284279935e-22
+      - 8.866122055020065e-14
+      - 4.912420846160826e-10
+  CALB_0015:
+    n_sims: 70
+    n_ok: 69
+    n_rejected: 1
+    n_error: 0
+    n_skipped: 0
+    summaries:
+    - sample_id: CALB_0015_s0000
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8678806922706481
+      elapsed_s: 164.21481323242188
+      reason: ok
+      theta_list:
+      - 3.918104123263665e-12
+      - 0.00017878359073407612
+      - 2.9296118013908797e-21
+      - 2.0370372532195033e-12
+      - 5.869644367911629e-10
+    - sample_id: CALB_0015_s0001
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8890934680342096
+      elapsed_s: 169.78185653686523
+      reason: ok
+      theta_list:
+      - 2.485529861107785e-13
+      - 0.00013103215533895532
+      - 6.701204029326751e-23
+      - 2.4870050074135483e-12
+      - 8.374889531054757e-09
+    - sample_id: CALB_0015_s0002
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9666276546308957
+      elapsed_s: 167.6272246837616
+      reason: ok
+      theta_list:
+      - 1.1739400950717373e-12
+      - 0.00013180076858549595
+      - 3.217209461128108e-22
+      - 2.869231057156619e-13
+      - 1.2112651010593665e-09
+    - sample_id: CALB_0015_s0003
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 1762
+      soh_final: 0.6498905760402415
+      elapsed_s: 165.85193252563477
+      reason: ok
+      theta_list:
+      - 1.2004641302512987e-11
+      - 8.360380914902824e-05
+      - 1.730653364691628e-23
+      - 1.814347874042386e-11
+      - 9.00173095450415e-11
+    - sample_id: CALB_0015_s0004
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7469069399652113
+      elapsed_s: 168.7633364200592
+      reason: ok
+      theta_list:
+      - 7.221452842361516e-12
+      - 0.00013918141738227755
+      - 1.0037379819395931e-22
+      - 7.70340558082149e-12
+      - 1.7277380285853355e-10
+    - sample_id: CALB_0015_s0005
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9333612324102135
+      elapsed_s: 170.27971363067627
+      reason: ok
+      theta_list:
+      - 1.5704618127081048e-12
+      - 0.00011189248656336027
+      - 9.35976304903112e-22
+      - 6.748538472039801e-13
+      - 2.5925092097117348e-09
+    - sample_id: CALB_0015_s0006
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8594785926044959
+      elapsed_s: 167.67166805267334
+      reason: ok
+      theta_list:
+      - 4.575412928444096e-13
+      - 0.0001503745392383141
+      - 4.8966778142720774e-23
+      - 3.462185345023835e-12
+      - 3.6726724917179417e-09
+    - sample_id: CALB_0015_s0007
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9205840463941622
+      elapsed_s: 169.61173129081726
+      reason: ok
+      theta_list:
+      - 2.9548022674661803e-12
+      - 0.00012251671025215798
+      - 1.6529795591572724e-22
+      - 1.4814903926831264e-12
+      - 2.5875110479479735e-10
+    - sample_id: CALB_0015_s0008
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9520508602101017
+      elapsed_s: 171.89627075195312
+      reason: ok
+      theta_list:
+      - 2.12147776163178e-12
+      - 0.0001366242150161365
+      - 2.6267449496074735e-23
+      - 9.124631996606315e-13
+      - 1.5395283365464022e-08
+    - sample_id: CALB_0015_s0009
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7911174770824734
+      elapsed_s: 168.31427264213562
+      reason: ok
+      theta_list:
+      - 7.419510379685315e-13
+      - 0.00010753166633175541
+      - 2.3262165379535e-22
+      - 5.659412749959816e-12
+      - 7.18365303637582e-10
+    - sample_id: CALB_0015_s0010
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9347705061137569
+      elapsed_s: 168.8020749092102
+      reason: ok
+      theta_list:
+      - 1.7494065055163957e-12
+      - 0.00015431825251562863
+      - 1.4095365885006243e-22
+      - 1.1760833113753497e-12
+      - 3.1338606108596415e-11
+    - sample_id: CALB_0015_s0011
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8202327739715254
+      elapsed_s: 169.93348145484924
+      reason: ok
+      theta_list:
+      - 6.15473625612697e-12
+      - 0.0001248896200990674
+      - 4.845360947821097e-22
+      - 4.368743851703869e-12
+      - 8.317586609306953e-10
+    - sample_id: CALB_0015_s0012
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8617080394500397
+      elapsed_s: 163.5203676223755
+      reason: ok
+      theta_list:
+      - 7.930397543147475e-11
+      - 0.00014711176534227538
+      - 3.505816115091319e-22
+      - 3.0702441909540878e-12
+      - 1.6868610999038932e-09
+    - sample_id: CALB_0015_s0013
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9239500812393406
+      elapsed_s: 171.26007723808289
+      reason: ok
+      theta_list:
+      - 8.095971852851154e-13
+      - 0.00012065078822068449
+      - 1.0032728673562118e-23
+      - 1.6503429753257738e-12
+      - 9.521240103253098e-11
+    - sample_id: CALB_0015_s0014
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.684885931152999
+      elapsed_s: 164.1929895877838
+      reason: ok
+      theta_list:
+      - 1.6220147972388083e-13
+      - 0.0001425420119232373
+      - 1.4877639564690634e-21
+      - 9.591875884601926e-12
+      - 3.2623568191734633e-10
+    - sample_id: CALB_0015_s0015
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9650745813604168
+      elapsed_s: 167.9882652759552
+      reason: ok
+      theta_list:
+      - 4.4436121578204045e-12
+      - 0.00011551355143464991
+      - 7.289177238139057e-23
+      - 5.329461589946058e-13
+      - 5.105552750845908e-09
+    - sample_id: CALB_0015_s0016
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8418825384876231
+      elapsed_s: 165.1286039352417
+      reason: ok
+      theta_list:
+      - 4.975569572789405e-12
+      - 0.0001438797912695867
+      - 2.063238871282546e-22
+      - 3.849179341820082e-12
+      - 5.968441061658741e-11
+    - sample_id: CALB_0015_s0017
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9358106668623444
+      elapsed_s: 172.3191623687744
+      reason: ok
+      theta_list:
+      - 6.255854079788803e-14
+      - 0.00011705422730322786
+      - 3.289197248500078e-23
+      - 1.2840354348563468e-12
+      - 1.353408939779334e-09
+    - sample_id: CALB_0015_s0018
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7706547375854521
+      elapsed_s: 165.5469810962677
+      reason: ok
+      theta_list:
+      - 9.064895830820455e-13
+      - 0.00014457364739011726
+      - 5.677721197207516e-22
+      - 6.257219057271779e-12
+      - 1.1014801428560772e-08
+    - sample_id: CALB_0015_s0019
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9510462746551634
+      elapsed_s: 165.5562562942505
+      reason: ok
+      theta_list:
+      - 2.5953731614393993e-11
+      - 0.00011830580751821258
+      - 1.2297060426605763e-22
+      - 7.862737872837126e-13
+      - 4.876300219336732e-10
+    - sample_id: CALB_0015_s0020
+      anchor_id: CALB_0015
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9900736370661971
+      elapsed_s: 175.83329510688782
+      reason: soh_final_too_high(0.990)
+      theta_list:
+      - 5.424246935403278e-12
+      - 0.0001586936981170557
+      - 4.9911054813211126e-24
+      - 1.6202977784881853e-13
+      - 3.184436864769146e-10
+    - sample_id: CALB_0015_s0021
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 1065
+      soh_final: 0.649861411938889
+      elapsed_s: 165.43467950820923
+      reason: ok
+      theta_list:
+      - 1.9274096434233095e-12
+      - 0.00012691960118913558
+      - 4.1011632462136993e-22
+      - 2.922158378193383e-11
+      - 3.1700008674913378e-09
+    - sample_id: CALB_0015_s0022
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8994576299676694
+      elapsed_s: 169.14038801193237
+      reason: ok
+      theta_list:
+      - 6.538863550502913e-13
+      - 0.0001354575498439589
+      - 8.303400767679135e-23
+      - 2.165237328060101e-12
+      - 2.270698640565677e-09
+    - sample_id: CALB_0015_s0023
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8698253841472191
+      elapsed_s: 166.9960720539093
+      reason: ok
+      theta_list:
+      - 2.3382865235812856e-12
+      - 0.00010490434387006737
+      - 1.079325078563863e-21
+      - 2.3134799267462396e-12
+      - 2.200288244648353e-10
+    - sample_id: CALB_0015_s0024
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6504174079207996
+      elapsed_s: 163.94363522529602
+      reason: ok
+      theta_list:
+      - 2.6032494365231893e-12
+      - 0.0001537022368654991
+      - 5.751230532618759e-23
+      - 1.2593513707852643e-11
+      - 9.258019001038515e-10
+    - sample_id: CALB_0015_s0025
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8510419163784937
+      elapsed_s: 163.19294714927673
+      reason: ok
+      theta_list:
+      - 5.565714787663634e-13
+      - 0.00012461097749575354
+      - 1.4636248635698158e-20
+      - 3.942276182409037e-13
+      - 3.2345007554120574e-12
+    - sample_id: CALB_0015_s0026
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8847313513886678
+      elapsed_s: 170.18071699142456
+      reason: ok
+      theta_list:
+      - 1.3844868017607946e-12
+      - 0.00013796336417854985
+      - 2.303212382319444e-23
+      - 2.7147520237050167e-12
+      - 5.984261644606963e-10
+    - sample_id: CALB_0015_s0027
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9020360702366569
+      elapsed_s: 167.65911173820496
+      reason: ok
+      theta_list:
+      - 8.776221197472773e-12
+      - 0.0001098866882451114
+      - 2.8175843374362487e-22
+      - 1.8450299070723916e-12
+      - 2.55654819253451e-08
+    - sample_id: CALB_0015_s0028
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9231488496361535
+      elapsed_s: 165.89167475700378
+      reason: ok
+      theta_list:
+      - 1.6701568471552417e-11
+      - 0.00013295696013334614
+      - 7.353819699283927e-22
+      - 1.0647494589744995e-12
+      - 4.299928653190232e-09
+    - sample_id: CALB_0015_s0029
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8218751984691246
+      elapsed_s: 170.61017370224
+      reason: ok
+      theta_list:
+      - 1.0292086560126921e-12
+      - 9.477283535242682e-05
+      - 1.1304481102061745e-22
+      - 4.633268020958742e-12
+      - 3.9705503738995855e-10
+    - sample_id: CALB_0015_s0030
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9414257224760546
+      elapsed_s: 166.38943672180176
+      reason: ok
+      theta_list:
+      - 3.4338736520060435e-13
+      - 0.00016429894079497546
+      - 1.8956431152876526e-22
+      - 9.782419877470227e-13
+      - 1.30798181354101e-10
+    - sample_id: CALB_0015_s0031
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8150866940689574
+      elapsed_s: 166.7230269908905
+      reason: ok
+      theta_list:
+      - 3.434301240355558e-12
+      - 0.00012909551661522244
+      - 4.204841862083043e-23
+      - 5.046586139646305e-12
+      - 1.5001895421787218e-09
+    - sample_id: CALB_0015_s0032
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8898983451237779
+      elapsed_s: 165.23209762573242
+      reason: ok
+      theta_list:
+      - 3.3068845317285084e-12
+      - 0.00013259255518589583
+      - 1.384811039673686e-22
+      - 2.370546544360774e-12
+      - 2.459209096335832e-10
+    - sample_id: CALB_0015_s0033
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8863374893035386
+      elapsed_s: 164.2005100250244
+      reason: ok
+      theta_list:
+      - 3.6867738754503783e-13
+      - 9.220917774650348e-05
+      - 4.730302445011127e-22
+      - 2.1160859341966476e-12
+      - 3.519803941056336e-09
+    - sample_id: CALB_0015_s0034
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 1353
+      soh_final: 0.6498506784252134
+      elapsed_s: 163.7063274383545
+      reason: ok
+      theta_list:
+      - 1.1154420975967341e-12
+      - 0.0001703810732944326
+      - 2.558247179068331e-23
+      - 2.3659830052676184e-11
+      - 2.4625023512835e-09
+    - sample_id: CALB_0015_s0035
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9737115466023368
+      elapsed_s: 169.969988822937
+      reason: ok
+      theta_list:
+      - 1.342350859523713e-11
+      - 0.00013027775329351842
+      - 2.2937916523804187e-22
+      - 2.0190484095187467e-13
+      - 1.655389703915423e-10
+    - sample_id: CALB_0015_s0036
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9288186496187838
+      elapsed_s: 166.48228216171265
+      reason: ok
+      theta_list:
+      - 9.594712420975537e-12
+      - 0.00014915337799144518
+      - 1.4317200682479919e-21
+      - 7.042646500634748e-13
+      - 7.218357268926022e-11
+    - sample_id: CALB_0015_s0037
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.765325450516627
+      elapsed_s: 171.6802053451538
+      reason: ok
+      theta_list:
+      - 1.3197969700476375e-12
+      - 0.00012164999411221322
+      - 7.183299113639126e-23
+      - 6.954001070525218e-12
+      - 1.0785380615502603e-09
+    - sample_id: CALB_0015_s0038
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9193986766703085
+      elapsed_s: 167.5445795059204
+      reason: ok
+      theta_list:
+      - 5.066222990563218e-13
+      - 0.00014002256250178604
+      - 3.4381285762740877e-22
+      - 1.3824424540724447e-12
+      - 6.733425050801614e-09
+    - sample_id: CALB_0015_s0039
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8589732267763247
+      elapsed_s: 170.83110547065735
+      reason: ok
+      theta_list:
+      - 2.7758581980841924e-12
+      - 0.00011309770070220164
+      - 9.296931035309018e-24
+      - 3.5826370497825453e-12
+      - 5.228291161649553e-10
+    - sample_id: CALB_0015_s0040
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8037106583671455
+      elapsed_s: 164.1878538131714
+      reason: ok
+      theta_list:
+      - 2.481655608993267e-12
+      - 0.00015595540138798277
+      - 2.841117951330469e-22
+      - 5.180608103579031e-12
+      - 6.1400830947525555e-09
+    - sample_id: CALB_0015_s0041
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9521132611435664
+      elapsed_s: 168.00552225112915
+      reason: ok
+      theta_list:
+      - 5.976463263116703e-13
+      - 0.00012570466986008914
+      - 1.270353019196112e-23
+      - 9.508309695758371e-13
+      - 3.690683615526541e-10
+    - sample_id: CALB_0015_s0042
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7996936865599313
+      elapsed_s: 164.76140117645264
+      reason: ok
+      theta_list:
+      - 1.835400854158759e-12
+      - 0.00013583008932482724
+      - 1.8468985961457872e-21
+      - 4.505003634023594e-12
+      - 1.1513604102441055e-10
+    - sample_id: CALB_0015_s0043
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9411205242362694
+      elapsed_s: 168.65145444869995
+      reason: ok
+      theta_list:
+      - 5.7612148530311054e-12
+      - 0.00010587367776847706
+      - 5.911617362987622e-23
+      - 1.0973008501736107e-12
+      - 1.9089591038269334e-09
+    - sample_id: CALB_0015_s0044
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.918046677777303
+      elapsed_s: 169.18809723854065
+      reason: ok
+      theta_list:
+      - 1.8777959169406205e-11
+      - 0.00014161719432506897
+      - 4.2505114682734935e-23
+      - 1.725800001848479e-12
+      - 8.649596991712523e-10
+    - sample_id: CALB_0015_s0045
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8714941127529268
+      elapsed_s: 164.5092716217041
+      reason: ok
+      theta_list:
+      - 9.90422712704312e-13
+      - 0.0001144031130647207
+      - 1.4818901458409673e-22
+      - 2.906287763217856e-12
+      - 3.611659490875963e-11
+    - sample_id: CALB_0015_s0046
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.967623134061113
+      elapsed_s: 167.41684341430664
+      reason: ok
+      theta_list:
+      - 1.047596906734464e-13
+      - 0.0001481848546161007
+      - 8.921643353168829e-23
+      - 4.762923130402268e-13
+      - 7.470314073035339e-10
+    - sample_id: CALB_0015_s0047
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6752415663121623
+      elapsed_s: 169.0494270324707
+      reason: ok
+      theta_list:
+      - 4.782106585898444e-12
+      - 0.00012151346254892833
+      - 7.652179011765949e-22
+      - 1.0420771561275313e-11
+      - 1.7504761027928526e-08
+    - sample_id: CALB_0015_s0048
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9284816514385762
+      elapsed_s: 169.51430702209473
+      reason: ok
+      theta_list:
+      - 4.1331760116562924e-12
+      - 0.00014558476672892762
+      - 1.832967400119524e-23
+      - 1.5112886476023669e-12
+      - 1.9187682102810163e-10
+    - sample_id: CALB_0015_s0049
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.853055720084226
+      elapsed_s: 168.07965636253357
+      reason: ok
+      theta_list:
+      - 2.111765962042869e-13
+      - 0.00011926227068492202
+      - 2.508591495990449e-22
+      - 3.398660051304715e-12
+      - 1.996189515815217e-09
+    - sample_id: CALB_0015_s0050
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9622540534457199
+      elapsed_s: 165.71626234054565
+      reason: ok
+      theta_list:
+      - 8.560523966026938e-13
+      - 0.00014296949919805234
+      - 5.01216173875759e-23
+      - 6.431892002291411e-13
+      - 2.766302367412832e-09
+    - sample_id: CALB_0015_s0051
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7011626237861749
+      elapsed_s: 165.51134252548218
+      reason: ok
+      theta_list:
+      - 3.634186397820342e-11
+      - 0.00011606629832648177
+      - 3.0787379989530195e-21
+      - 8.0731373353306e-12
+      - 2.8027737047998267e-10
+    - sample_id: CALB_0015_s0052
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2243
+      soh_final: 0.6499865404404855
+      elapsed_s: 165.89941692352295
+      reason: ok
+      theta_list:
+      - 6.860898792177115e-12
+      - 0.00013466986865592157
+      - 1.6915010083869408e-22
+      - 1.3864143646796456e-11
+      - 4.679811650728172e-10
+    - sample_id: CALB_0015_s0053
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9752566754304065
+      elapsed_s: 166.73783707618713
+      reason: ok
+      theta_list:
+      - 1.625417830635136e-12
+      - 0.00010288407994461112
+      - 3.5884171207842126e-23
+      - 3.698592823252753e-13
+      - 1.0093165205526178e-08
+    - sample_id: CALB_0015_s0054
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8696057235682602
+      elapsed_s: 166.5852222442627
+      reason: ok
+      theta_list:
+      - 7.115101519483533e-13
+      - 0.000160890692347348
+      - 6.211816399913773e-22
+      - 2.674810799690417e-12
+      - 1.2986353555664227e-09
+    - sample_id: CALB_0015_s0055
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9079560979755327
+      elapsed_s: 168.31810307502747
+      reason: ok
+      theta_list:
+      - 2.198697086647264e-12
+      - 0.00012769482256558715
+      - 1.0109791387563317e-22
+      - 1.896781904914192e-12
+      - 5.460159547851013e-11
+    - sample_id: CALB_0015_s0056
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9484254016406006
+      elapsed_s: 167.85861706733704
+      reason: ok
+      theta_list:
+      - 3.054740527611068e-12
+      - 0.0001387923522739351
+      - 5.56302692585319e-22
+      - 5.630468649506755e-13
+      - 1.5682088076891196e-09
+    - sample_id: CALB_0015_s0057
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.716061960894289
+      elapsed_s: 168.39479899406433
+      reason: ok
+      theta_list:
+      - 4.286854457300496e-13
+      - 0.00011122361055426596
+      - 1.2128067168798528e-22
+      - 9.045212062649975e-12
+      - 1.373397177883686e-10
+    - sample_id: CALB_0015_s0058
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9148904744018683
+      elapsed_s: 165.90134048461914
+      reason: ok
+      theta_list:
+      - 1.4533025929993342e-12
+      - 0.00015229184995234598
+      - 2.0268141576985055e-22
+      - 1.6204990988576503e-12
+      - 4.15014532612825e-10
+    - sample_id: CALB_0015_s0059
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8705081159689144
+      elapsed_s: 168.05931949615479
+      reason: ok
+      theta_list:
+      - 8.111322140841643e-12
+      - 0.00012379950773467422
+      - 3.194820061878963e-23
+      - 3.1314547169399338e-12
+      - 4.510058617899558e-09
+    - sample_id: CALB_0015_s0060
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8405741015024091
+      elapsed_s: 168.49858927726746
+      reason: ok
+      theta_list:
+      - 1.0862434338859549e-11
+      - 0.00016142711784362533
+      - 8.152142567305364e-23
+      - 4.023199322863919e-12
+      - 7.159488400903039e-08
+    - sample_id: CALB_0015_s0061
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9092448308690054
+      elapsed_s: 165.5744342803955
+      reason: ok
+      theta_list:
+      - 1.2375900146870694e-12
+      - 0.00012830325396289642
+      - 1.0392426035143188e-21
+      - 1.2782156044644855e-12
+      - 6.713566101668313e-10
+    - sample_id: CALB_0015_s0062
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7892669158477958
+      elapsed_s: 166.97033500671387
+      reason: ok
+      theta_list:
+      - 2.971133860261356e-13
+      - 0.00013371124065198294
+      - 4.328899331856121e-24
+      - 6.1873214745859525e-12
+      - 2.0293465429430536e-11
+    - sample_id: CALB_0015_s0063
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9372505686405248
+      elapsed_s: 168.8210952281952
+      reason: ok
+      theta_list:
+      - 3.667927960070688e-12
+      - 9.82845022808926e-05
+      - 4.0367386549572227e-22
+      - 8.342347659266601e-13
+      - 1.0387007640169932e-09
+    - sample_id: CALB_0015_s0064
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7285451591274418
+      elapsed_s: 165.2271237373352
+      reason: ok
+      theta_list:
+      - 3.5609913906530103e-12
+      - 0.00014038983523724326
+      - 1.1925743603208848e-23
+      - 8.744033952886047e-12
+      - 3.3470453619827924e-09
+    - sample_id: CALB_0015_s0065
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9497938370489383
+      elapsed_s: 170.66266083717346
+      reason: ok
+      theta_list:
+      - 3.1811364146967023e-13
+      - 0.00011344901008810181
+      - 3.7081101538135505e-22
+      - 5.969138986683878e-13
+      - 2.3529130454508793e-10
+    - sample_id: CALB_0015_s0066
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8654412966226003
+      elapsed_s: 167.89934825897217
+      reason: ok
+      theta_list:
+      - 1.2736160615334141e-12
+      - 0.00014952128497595506
+      - 7.680976850420843e-23
+      - 3.2215504465912493e-12
+      - 1.570312365326945e-10
+    - sample_id: CALB_0015_s0067
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8879556494006476
+      elapsed_s: 165.15121388435364
+      reason: ok
+      theta_list:
+      - 1.0275780911628778e-11
+      - 0.00012202460801664556
+      - 1.7113268172906232e-21
+      - 1.5916100534465213e-12
+      - 2.3583271943199976e-09
+    - sample_id: CALB_0015_s0068
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9290851969359886
+      elapsed_s: 167.0268611907959
+      reason: ok
+      theta_list:
+      - 7.760283774174122e-12
+      - 0.0001687560068283813
+      - 2.445000369448617e-22
+      - 1.2373967847393507e-12
+      - 1.1183357139017326e-09
+    - sample_id: CALB_0015_s0069
+      anchor_id: CALB_0015
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.842004771676965
+      elapsed_s: 165.27975130081177
+      reason: ok
+      theta_list:
+      - 1.4942155733518492e-12
+      - 0.0001299379524729039
+      - 2.846487726466489e-23
+      - 4.096934732001404e-12
+      - 7.830807152623465e-11
+  EVE_0004:
+    n_sims: 70
+    n_ok: 61
+    n_rejected: 9
+    n_error: 0
+    n_skipped: 0
+    summaries:
+    - sample_id: EVE_0004_s0000
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8048902915884031
+      elapsed_s: 167.38937783241272
+      reason: ok
+      theta_list:
+      - 4.709177283333636e-11
+      - 0.00016735163116821144
+      - 4.0391926982155205e-23
+      - 4.5699521405305785e-12
+      - 6.577547154358991e-10
+    - sample_id: EVE_0004_s0001
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8496545839767625
+      elapsed_s: 163.80107998847961
+      reason: ok
+      theta_list:
+      - 5.197662421907957e-12
+      - 0.00011177277500319652
+      - 1.7482071012872175e-21
+      - 2.9107889605539463e-12
+      - 3.3852997934078613e-08
+    - sample_id: EVE_0004_s0002
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 122
+      soh_final: 0.6482650449695851
+      elapsed_s: 162.34309029579163
+      reason: ok
+      theta_list:
+      - 1.7471830354413593e-12
+      - 0.00020209052876090855
+      - 8.702852246640954e-23
+      - 2.1505055514708405e-10
+      - 2.4224877290715533e-07
+    - sample_id: EVE_0004_s0003
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9702575069560415
+      elapsed_s: 168.5235812664032
+      reason: ok
+      theta_list:
+      - 1.3381898044721504e-11
+      - 0.00014779631537464177
+      - 2.5282627558320574e-22
+      - 1.29149322422106e-12
+      - 5.952519152004745e-09
+    - sample_id: EVE_0004_s0004
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9999999999908581
+      elapsed_s: 161.33523321151733
+      reason: soh_final_too_high(1.000)
+      theta_list:
+      - 1.589525191982382e-11
+      - 0.000176603583880465
+      - 5.674973818126806e-22
+      - 5.253922468168573e-13
+      - 1.0684482899110806e-08
+    - sample_id: EVE_0004_s0005
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2112
+      soh_final: 0.6499916973889579
+      elapsed_s: 166.71481323242188
+      reason: ok
+      theta_list:
+      - 2.8602730211907634e-12
+      - 0.00015174034958929282
+      - 1.780103460555821e-23
+      - 1.2115740284603426e-11
+      - 6.450660634348612e-08
+    - sample_id: EVE_0004_s0006
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8421142486586601
+      elapsed_s: 167.6868815422058
+      reason: ok
+      theta_list:
+      - 6.9709916223018226e-12
+      - 0.00016342529223986808
+      - 1.491711145512096e-22
+      - 3.6025472444877555e-12
+      - 1.7789727946338913e-08
+    - sample_id: EVE_0004_s0007
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7312006491153032
+      elapsed_s: 167.23973894119263
+      reason: ok
+      theta_list:
+      - 6.766114159474404e-11
+      - 0.00013933536856163245
+      - 4.984058740519321e-23
+      - 6.757576068849615e-12
+      - 2.1945276471398517e-09
+    - sample_id: EVE_0004_s0008
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2311
+      soh_final: 0.6499113578733623
+      elapsed_s: 166.57734274864197
+      reason: ok
+      theta_list:
+      - 9.949631614740378e-11
+      - 0.00018656410772288992
+      - 2.010498456886451e-22
+      - 1.0832784398861453e-11
+      - 2.439223347407404e-08
+    - sample_id: EVE_0004_s0009
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 1.0000000000038631
+      elapsed_s: 166.9981038570404
+      reason: soh_final_too_high(1.000)
+      theta_list:
+      - 9.542618184225744e-12
+      - 0.00014275587879112808
+      - 6.505597778443141e-23
+      - 8.272400767210253e-13
+      - 4.362380048608706e-11
+    - sample_id: EVE_0004_s0010
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6983164005132664
+      elapsed_s: 168.5189974308014
+      reason: ok
+      theta_list:
+      - 3.4013173346353168e-12
+      - 0.00017000404728292028
+      - 3.891038243469573e-22
+      - 7.772958486496614e-12
+      - 4.372137934370808e-09
+    - sample_id: EVE_0004_s0011
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8607031344845373
+      elapsed_s: 170.4914140701294
+      reason: ok
+      theta_list:
+      - 2.244818588261612e-11
+      - 0.00012451093150294586
+      - 1.0309455786477299e-23
+      - 3.324007911286366e-12
+      - 1.0775710361893814e-07
+    - sample_id: EVE_0004_s0012
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9242609171069868
+      elapsed_s: 167.7481815814972
+      reason: ok
+      theta_list:
+      - 1.18133617687318e-11
+      - 0.00015841761177033727
+      - 1.0966335084852434e-22
+      - 2.073940193364602e-12
+      - 4.2388221734715614e-08
+    - sample_id: EVE_0004_s0013
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7482116780246503
+      elapsed_s: 167.13123273849487
+      reason: ok
+      theta_list:
+      - 4.681745576166053e-13
+      - 0.000132687526746848
+      - 3.512295532903697e-22
+      - 5.9433283464545106e-12
+      - 7.950598222477267e-09
+    - sample_id: EVE_0004_s0014
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9401622444418816
+      elapsed_s: 167.86668157577515
+      reason: ok
+      theta_list:
+      - 4.5131501920524924e-12
+      - 0.0001801356176229191
+      - 2.990774593535206e-23
+      - 1.8928532015506904e-12
+      - 1.3516736063246683e-09
+    - sample_id: EVE_0004_s0015
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1376
+      soh_final: 0.6499063952545757
+      elapsed_s: 167.93971061706543
+      reason: ok
+      theta_list:
+      - 2.8932686635630485e-11
+      - 0.0001549789127461082
+      - 8.371752632222543e-22
+      - 1.786391485050343e-11
+      - 1.3209124993430308e-08
+    - sample_id: EVE_0004_s0016
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8180960624783422
+      elapsed_s: 169.71738290786743
+      reason: ok
+      theta_list:
+      - 2.9579516440565824e-11
+      - 0.00018492707305962377
+      - 6.909284070437565e-23
+      - 4.216551327367823e-12
+      - 4.7522360514155626e-09
+    - sample_id: EVE_0004_s0017
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7263272902974551
+      elapsed_s: 165.08305072784424
+      reason: ok
+      theta_list:
+      - 4.474259009362919e-12
+      - 0.00015783618458090393
+      - 1.8689105343329952e-22
+      - 6.602842452965093e-12
+      - 4.0428639173676034e-07
+    - sample_id: EVE_0004_s0018
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9999999999952748
+      elapsed_s: 170.69732522964478
+      reason: soh_final_too_high(1.000)
+      theta_list:
+      - 1.0212704741145167e-12
+      - 0.00016115802252517878
+      - 2.962075766624221e-24
+      - 4.580928717982378e-13
+      - 3.141504783900154e-08
+    - sample_id: EVE_0004_s0019
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1563
+      soh_final: 0.649940538794433
+      elapsed_s: 167.1239836215973
+      reason: ok
+      theta_list:
+      - 1.051972391918032e-11
+      - 0.00013712607937650827
+      - 4.956259297585376e-22
+      - 1.585538692090098e-11
+      - 1.2169306730757745e-09
+    - sample_id: EVE_0004_s0020
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 950
+      soh_final: 0.6499958192872132
+      elapsed_s: 163.18681287765503
+      reason: ok
+      theta_list:
+      - 2.2077461171867918e-11
+      - 0.00017320641586602645
+      - 3.2255481206988247e-22
+      - 2.6596580114540143e-11
+      - 2.9822460091188346e-09
+    - sample_id: EVE_0004_s0021
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9705411082985343
+      elapsed_s: 164.3509304523468
+      reason: ok
+      theta_list:
+      - 3.445696323538982e-12
+      - 0.00013077823711584306
+      - 1.1589418360472203e-22
+      - 1.3453287626517226e-12
+      - 1.6946067477015065e-08
+    - sample_id: EVE_0004_s0022
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7817102298154661
+      elapsed_s: 166.2924406528473
+      reason: ok
+      theta_list:
+      - 8.440090334443063e-12
+      - 0.00019350541478766237
+      - 1.2701657762629973e-21
+      - 4.665975606240994e-12
+      - 7.396192799043973e-08
+    - sample_id: EVE_0004_s0023
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9071715132113783
+      elapsed_s: 170.26804566383362
+      reason: ok
+      theta_list:
+      - 2.0677798332723662e-10
+      - 0.0001461295253078408
+      - 2.154964781764635e-23
+      - 2.457208171502288e-12
+      - 8.848831340230971e-09
+    - sample_id: EVE_0004_s0024
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8805614892869444
+      elapsed_s: 163.76717829704285
+      reason: ok
+      theta_list:
+      - 5.6808817475918796e-11
+      - 0.00016432650447297027
+      - 9.369147683987153e-21
+      - 1.6228036022760337e-12
+      - 1.358948785989204e-07
+    - sample_id: EVE_0004_s0025
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1218
+      soh_final: 0.6498916427870622
+      elapsed_s: 165.328045129776
+      reason: ok
+      theta_list:
+      - 7.456824517171733e-12
+      - 0.00014050490881514248
+      - 3.15062055248768e-23
+      - 2.1081778809729834e-11
+      - 3.4301607607207636e-09
+    - sample_id: EVE_0004_s0026
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9113700076626972
+      elapsed_s: 168.15296363830566
+      reason: ok
+      theta_list:
+      - 2.1102947683631065e-12
+      - 0.0001779701860848486
+      - 2.379695133513404e-22
+      - 2.2429196221402707e-12
+      - 5.684210518306557e-10
+    - sample_id: EVE_0004_s0027
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7751134102829262
+      elapsed_s: 167.9285271167755
+      reason: ok
+      theta_list:
+      - 1.919260758897227e-11
+      - 0.00015275527514176652
+      - 9.352465399727129e-23
+      - 5.3011659569839875e-12
+      - 2.276515643934725e-08
+    - sample_id: EVE_0004_s0028
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6803943208343489
+      elapsed_s: 166.7731490135193
+      reason: ok
+      theta_list:
+      - 1.4414545546032403e-11
+      - 0.0002092248783732965
+      - 1.1160850406050022e-23
+      - 8.872984118733369e-12
+      - 1.2649021380491468e-08
+    - sample_id: EVE_0004_s0029
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8542618448337556
+      elapsed_s: 163.97391963005066
+      reason: ok
+      theta_list:
+      - 1.4907637732383333e-12
+      - 0.0001488736637015964
+      - 7.904774387511138e-22
+      - 3.103802333763446e-12
+      - 1.9900920209731966e-09
+    - sample_id: EVE_0004_s0030
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.656343905449202
+      elapsed_s: 165.24345636367798
+      reason: ok
+      theta_list:
+      - 6.32205750348435e-12
+      - 0.0001682980013450194
+      - 5.422006339887282e-23
+      - 9.874374950304303e-12
+      - 6.535588890725047e-09
+    - sample_id: EVE_0004_s0031
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.987084596257068
+      elapsed_s: 166.18309259414673
+      reason: soh_final_too_high(0.987)
+      theta_list:
+      - 3.515024300163468e-11
+      - 0.00011663506947328162
+      - 1.4122741270451478e-22
+      - 1.0797898128117181e-12
+      - 4.712045990694707e-08
+    - sample_id: EVE_0004_s0032
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8853367927884046
+      elapsed_s: 165.61959862709045
+      reason: ok
+      theta_list:
+      - 3.761487875915837e-11
+      - 0.00019702779879522512
+      - 4.494889066372752e-22
+      - 2.6352575202522224e-12
+      - 2.422991039487455e-09
+    - sample_id: EVE_0004_s0033
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7875391709168836
+      elapsed_s: 168.9165906906128
+      reason: ok
+      theta_list:
+      - 6.076178342147172e-12
+      - 0.00014704270860462854
+      - 7.531802128034896e-24
+      - 5.075790648582304e-12
+      - 1.9104449589722772e-08
+    - sample_id: EVE_0004_s0034
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9564591081986918
+      elapsed_s: 163.68046498298645
+      reason: ok
+      theta_list:
+      - 1.2419662079541763e-12
+      - 0.00016601484001797881
+      - 2.0441581205790532e-22
+      - 1.5121457073011857e-12
+      - 5.7251755635405604e-08
+    - sample_id: EVE_0004_s0035
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 787
+      soh_final: 0.6499585384743992
+      elapsed_s: 163.86759901046753
+      reason: ok
+      theta_list:
+      - 1.5520637672363587e-11
+      - 0.00010462642940699709
+      - 6.175283269203273e-23
+      - 3.26072626120617e-11
+      - 9.88082684177632e-09
+    - sample_id: EVE_0004_s0036
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1876
+      soh_final: 0.6498870954584897
+      elapsed_s: 164.92125010490417
+      reason: ok
+      theta_list:
+      - 1.827663001699597e-11
+      - 0.00016221111192252094
+      - 2.6428893695607213e-23
+      - 1.3675027702289901e-11
+      - 5.543701197414766e-09
+    - sample_id: EVE_0004_s0037
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 1.000000000000269
+      elapsed_s: 163.14532136917114
+      reason: soh_final_too_high(1.000)
+      theta_list:
+      - 2.2587577002764934e-12
+      - 0.00013832186658903968
+      - 1.0602457854723843e-21
+      - 2.103301582513492e-13
+      - 1.89968435669471e-07
+    - sample_id: EVE_0004_s0038
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7433482318698348
+      elapsed_s: 168.99218082427979
+      reason: ok
+      theta_list:
+      - 7.959592722624942e-12
+      - 0.00017520667370433515
+      - 1.04551945903527e-22
+      - 6.26722973177813e-12
+      - 3.7121775105448956e-08
+    - sample_id: EVE_0004_s0039
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8232275950834869
+      elapsed_s: 171.44361305236816
+      reason: ok
+      theta_list:
+      - 4.904764538138858e-11
+      - 0.0001510908584248574
+      - 3.579643948808809e-22
+      - 3.912455641293211e-12
+      - 8.220002547250098e-10
+    - sample_id: EVE_0004_s0040
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9984781642103657
+      elapsed_s: 166.427006483078
+      reason: soh_final_too_high(0.998)
+      theta_list:
+      - 1.4364553537029438e-10
+      - 0.00017129788145196144
+      - 7.75667164240943e-23
+      - 9.84862483809508e-13
+      - 1.4256380159183323e-08
+    - sample_id: EVE_0004_s0041
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6544086615590331
+      elapsed_s: 167.76765966415405
+      reason: ok
+      theta_list:
+      - 8.761404636143575e-12
+      - 0.00012626131650832423
+      - 2.7581839609062995e-22
+      - 9.712382648900898e-12
+      - 1.5512955795015074e-09
+    - sample_id: EVE_0004_s0042
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8729406306549286
+      elapsed_s: 165.4159824848175
+      reason: ok
+      theta_list:
+      - 3.749516831436708e-12
+      - 0.0001893098743961134
+      - 3.956763947880512e-23
+      - 3.073524775951128e-12
+      - 7.432263372195495e-09
+    - sample_id: EVE_0004_s0043
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6632186732074932
+      elapsed_s: 161.92040824890137
+      reason: ok
+      theta_list:
+      - 2.033196241802793e-11
+      - 0.00014369971041281292
+      - 2.11845782325263e-21
+      - 8.617015320326128e-12
+      - 3.8902888809259855e-08
+    - sample_id: EVE_0004_s0044
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7701310620840419
+      elapsed_s: 165.57325530052185
+      reason: ok
+      theta_list:
+      - 1.099258604478456e-11
+      - 0.00018203785657000784
+      - 1.615153758998301e-22
+      - 5.369735129865878e-12
+      - 9.188183300980649e-08
+    - sample_id: EVE_0004_s0045
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9112657828905817
+      elapsed_s: 169.35774874687195
+      reason: ok
+      theta_list:
+      - 8.698019467847048e-13
+      - 0.0001557029077115397
+      - 4.356055687100234e-23
+      - 2.359990572175868e-12
+      - 4.000305489564145e-09
+    - sample_id: EVE_0004_s0046
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1107
+      soh_final: 0.6499154003581207
+      elapsed_s: 165.1069803237915
+      reason: ok
+      theta_list:
+      - 4.140660644728528e-12
+      - 0.00015948939859017263
+      - 6.111462366890279e-22
+      - 2.2501345064721197e-11
+      - 2.1327804457955613e-10
+    - sample_id: EVE_0004_s0047
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9564147525646739
+      elapsed_s: 165.49489569664001
+      reason: ok
+      theta_list:
+      - 3.267050737946017e-11
+      - 0.0001337654645063943
+      - 1.72075814146461e-23
+      - 1.6464575065341846e-12
+      - 2.6329800619412616e-08
+    - sample_id: EVE_0004_s0048
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7085386761441836
+      elapsed_s: 167.57014322280884
+      reason: ok
+      theta_list:
+      - 2.63638132078881e-11
+      - 0.00016047772847269977
+      - 2.2618353529448165e-22
+      - 7.452110063497055e-12
+      - 9.441203873999126e-09
+    - sample_id: EVE_0004_s0049
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8326704165396949
+      elapsed_s: 166.91420555114746
+      reason: ok
+      theta_list:
+      - 4.863604772564771e-12
+      - 0.00013539672490085235
+      - 9.503540671598845e-23
+      - 3.821061316025804e-12
+      - 8.278393782307808e-08
+    - sample_id: EVE_0004_s0050
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1751
+      soh_final: 0.6499114695092795
+      elapsed_s: 165.7018268108368
+      reason: ok
+      theta_list:
+      - 6.527419724321425e-13
+      - 0.0001835160554318958
+      - 3.172162768808494e-21
+      - 1.3198281047505141e-11
+      - 1.5727639831490536e-08
+    - sample_id: EVE_0004_s0051
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 1.0000000000077445
+      elapsed_s: 167.55236506462097
+      reason: soh_final_too_high(1.000)
+      theta_list:
+      - 1.1303087798361169e-11
+      - 0.00015657984995008656
+      - 3.679634053370884e-23
+      - 7.015643678550123e-13
+      - 2.7085802474302016e-09
+    - sample_id: EVE_0004_s0052
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9871523678379
+      elapsed_s: 167.27549743652344
+      reason: soh_final_too_high(0.987)
+      theta_list:
+      - 2.4462819993130515e-11
+      - 0.0001914639894324144
+      - 5.52185707284014e-23
+      - 1.1659667553054368e-12
+      - 1.0443041129425148e-09
+    - sample_id: EVE_0004_s0053
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 704
+      soh_final: 0.6498485799048783
+      elapsed_s: 163.49666929244995
+      reason: ok
+      theta_list:
+      - 3.1105718631341398e-12
+      - 0.0001447459010771304
+      - 1.3471634170001828e-22
+      - 3.6340690397578104e-11
+      - 2.893876346389094e-08
+    - sample_id: EVE_0004_s0054
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8791310447768333
+      elapsed_s: 166.8180010318756
+      reason: ok
+      theta_list:
+      - 9.19413851354214e-12
+      - 0.00017245427179841458
+      - 1.5133380424551077e-23
+      - 2.7055561235377194e-12
+      - 9.353380584669649e-07
+    - sample_id: EVE_0004_s0055
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8001477902564065
+      elapsed_s: 170.5199854373932
+      reason: ok
+      theta_list:
+      - 1.2123756686564184e-10
+      - 0.0001285763458902492
+      - 6.8625867831279345e-22
+      - 4.323887919683318e-12
+      - 5.189840196683314e-09
+    - sample_id: EVE_0004_s0056
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1497
+      soh_final: 0.6498936134826033
+      elapsed_s: 168.31786608695984
+      reason: ok
+      theta_list:
+      - 8.312314738738893e-11
+      - 0.00017893116331484785
+      - 4.918504735890213e-24
+      - 1.7203320084329002e-11
+      - 5.2734571754608644e-08
+    - sample_id: EVE_0004_s0057
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.931978815015823
+      elapsed_s: 164.35480642318726
+      reason: ok
+      theta_list:
+      - 6.520661938410734e-12
+      - 0.0001539131429708433
+      - 4.848430366276e-22
+      - 1.8009751651592412e-12
+      - 7.098153256001466e-09
+    - sample_id: EVE_0004_s0058
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7603649528504259
+      elapsed_s: 167.47498965263367
+      reason: ok
+      theta_list:
+      - 2.702051177889736e-12
+      - 0.0001651285575471302
+      - 7.518031359252266e-23
+      - 5.766510981072236e-12
+      - 1.7790872902161653e-09
+    - sample_id: EVE_0004_s0059
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9230770333635222
+      elapsed_s: 166.83085560798645
+      reason: ok
+      theta_list:
+      - 1.6659470755666705e-11
+      - 0.0001421375810713648
+      - 1.6699534737143404e-22
+      - 2.0624590265392328e-12
+      - 1.1776276304665166e-08
+    - sample_id: EVE_0004_s0060
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.83302159431326
+      elapsed_s: 164.70331597328186
+      reason: ok
+      theta_list:
+      - 1.245117102584895e-11
+      - 0.00016908606732317607
+      - 1.2168861128858419e-21
+      - 3.4548407753341534e-12
+      - 2.103700725026151e-08
+    - sample_id: EVE_0004_s0061
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7014906004878951
+      elapsed_s: 168.36080741882324
+      reason: ok
+      theta_list:
+      - 1.9989552650430015e-12
+      - 0.00012134909019616811
+      - 2.34626431988336e-23
+      - 7.945212127622775e-12
+      - 4.191632795635976e-10
+    - sample_id: EVE_0004_s0062
+      anchor_id: EVE_0004
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9999999999955367
+      elapsed_s: 163.92893362045288
+      reason: soh_final_too_high(1.000)
+      theta_list:
+      - 5.4179727676381024e-12
+      - 0.0002184080660268988
+      - 2.8403762259794165e-22
+      - 8.361637523179039e-13
+      - 3.7055492742307213e-09
+    - sample_id: EVE_0004_s0063
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2215
+      soh_final: 0.649979551668634
+      elapsed_s: 166.54926204681396
+      reason: ok
+      theta_list:
+      - 4.349076236753792e-11
+      - 0.00015002022593730657
+      - 1.2539598703201789e-22
+      - 1.1304458568862168e-11
+      - 1.6190013958957428e-07
+    - sample_id: EVE_0004_s0064
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9393651754833139
+      elapsed_s: 166.72523093223572
+      reason: ok
+      theta_list:
+      - 4.207370403160437e-11
+      - 0.0001749165780183216
+      - 3.3816401796121205e-22
+      - 1.7392682900746509e-12
+      - 1.8561917255346047e-08
+    - sample_id: EVE_0004_s0065
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 1539
+      soh_final: 0.6499459603012085
+      elapsed_s: 165.72262358665466
+      reason: ok
+      theta_list:
+      - 5.645968682236165e-12
+      - 0.00015135598303881766
+      - 1.1320604031537341e-22
+      - 1.6498482824442955e-11
+      - 2.5142911037096614e-09
+    - sample_id: EVE_0004_s0066
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9138494489775353
+      elapsed_s: 162.83194732666016
+      reason: ok
+      theta_list:
+      - 1.9242662096269356e-12
+      - 0.0001629413663395617
+      - 8.912885349272944e-22
+      - 1.997578338680385e-12
+      - 9.623942201166264e-09
+    - sample_id: EVE_0004_s0067
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7653620843028629
+      elapsed_s: 167.2754421234131
+      reason: ok
+      theta_list:
+      - 1.2936238998466058e-11
+      - 0.00013731835788811006
+      - 2.848295812751015e-23
+      - 5.646413982595927e-12
+      - 5.970729559474988e-08
+    - sample_id: EVE_0004_s0068
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6926808067089324
+      elapsed_s: 167.20706963539124
+      reason: ok
+      theta_list:
+      - 1.6971608032533038e-11
+      - 0.00016677792168173897
+      - 6.732498019078476e-23
+      - 8.122731387061932e-12
+      - 2.2348168827696323e-07
+    - sample_id: EVE_0004_s0069
+      anchor_id: EVE_0004
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8414605915854534
+      elapsed_s: 164.19600439071655
+      reason: ok
+      theta_list:
+      - 2.5370465679725963e-12
+      - 7.683359168776625e-05
+      - 1.945652781554998e-22
+      - 3.5421324505536267e-12
+      - 5.2853808691919895e-09
+  REPT_0007:
+    n_sims: 70
+    n_ok: 61
+    n_rejected: 9
+    n_error: 0
+    n_skipped: 0
+    summaries:
+    - sample_id: REPT_0007_s0000
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9237497413476066
+      elapsed_s: 158.4651927947998
+      reason: ok
+      theta_list:
+      - 1.031088938122687e-12
+      - 7.553350897487595e-05
+      - 5.636563570207864e-23
+      - 5.903991788246789e-13
+      - 8.970519197148252e-13
+    - sample_id: REPT_0007_s0001
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 332
+      soh_final: 0.8667072047674476
+      elapsed_s: 15.333299398422241
+      reason: ok
+      theta_list:
+      - 3.618590956108867e-11
+      - 0.00020039669577827222
+      - 9.311648854809189e-20
+      - 1.3394902589199358e-12
+      - 1.604690840633775e-10
+    - sample_id: REPT_0007_s0002
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9598411661901699
+      elapsed_s: 159.21654057502747
+      reason: ok
+      theta_list:
+      - 3.901235872791691e-10
+      - 0.00012577657426789842
+      - 7.415556102136654e-22
+      - 3.9925611205829456e-14
+      - 2.6771121081957348e-09
+    - sample_id: REPT_0007_s0003
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 172
+      soh_final: 0.6493479748119054
+      elapsed_s: 159.54987359046936
+      reason: ok
+      theta_list:
+      - 9.523002796513272e-12
+      - 0.0001649709190323913
+      - 5.7961506318830934e-21
+      - 7.156258703490001e-11
+      - 3.671745218120039e-11
+    - sample_id: REPT_0007_s0004
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 789
+      soh_final: 0.6498361448479011
+      elapsed_s: 46.68919324874878
+      reason: ok
+      theta_list:
+      - 5.350560217793553e-12
+      - 0.00013340955485427325
+      - 4.520132024042193e-20
+      - 9.511038144510181e-12
+      - 6.171131783483768e-11
+    - sample_id: REPT_0007_s0005
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9723107182130953
+      elapsed_s: 158.57587003707886
+      reason: ok
+      theta_list:
+      - 4.722382249213863e-10
+      - 0.00014946673121397114
+      - 2.259700612209162e-23
+      - 1.816038754437146e-13
+      - 1.4344881380301737e-07
+    - sample_id: REPT_0007_s0006
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7129878507030866
+      elapsed_s: 155.41339707374573
+      reason: ok
+      theta_list:
+      - 4.056617906924466e-11
+      - 0.00010500179009812934
+      - 4.02341873522095e-21
+      - 2.53791834760665e-12
+      - 1.0937858454042372e-09
+    - sample_id: REPT_0007_s0007
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9428636826426712
+      elapsed_s: 153.97646522521973
+      reason: ok
+      theta_list:
+      - 3.407433279049944e-13
+      - 0.00018504943410947876
+      - 5.125294804220492e-22
+      - 2.891003707591092e-13
+      - 3.303842693631715e-12
+    - sample_id: REPT_0007_s0008
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9229208079444512
+      elapsed_s: 156.9261291027069
+      reason: ok
+      theta_list:
+      - 1.8982964473157103e-14
+      - 0.00012164693642783087
+      - 2.5840809752128037e-21
+      - 9.051034584343268e-14
+      - 2.7270130260470334e-10
+    - sample_id: REPT_0007_s0009
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 1849
+      soh_final: 0.6499482438818358
+      elapsed_s: 158.7485213279724
+      reason: ok
+      theta_list:
+      - 7.715317952587412e-11
+      - 0.00016081955040204665
+      - 3.095709164018215e-22
+      - 6.6051473168536875e-12
+      - 4.0353365548605106e-14
+    - sample_id: REPT_0007_s0010
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7379092570408048
+      elapsed_s: 156.8660478591919
+      reason: ok
+      theta_list:
+      - 2.3365080126277566e-09
+      - 8.461188836238449e-05
+      - 2.3915566504519424e-20
+      - 4.0105499905552044e-13
+      - 2.0667419258355874e-11
+    - sample_id: REPT_0007_s0011
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6859358603729598
+      elapsed_s: 162.89484167099
+      reason: ok
+      theta_list:
+      - 2.8211163097882987e-12
+      - 0.00020908785671565932
+      - 3.923404116693277e-24
+      - 4.227351017355538e-12
+      - 7.654123572787103e-09
+    - sample_id: REPT_0007_s0012
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7900565013038146
+      elapsed_s: 160.9042866230011
+      reason: ok
+      theta_list:
+      - 1.622034388902371e-11
+      - 0.00010033990508981043
+      - 1.3253079828808454e-21
+      - 1.7445105619945756e-12
+      - 3.432081985527415e-08
+    - sample_id: REPT_0007_s0013
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7992051995750595
+      elapsed_s: 157.83797526359558
+      reason: ok
+      theta_list:
+      - 1.590352739805335e-10
+      - 0.00018045682890522002
+      - 1.080222849312064e-20
+      - 9.218236181016421e-13
+      - 1.3472465304063097e-10
+    - sample_id: REPT_0007_s0014
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 714
+      soh_final: 0.6498868863985088
+      elapsed_s: 156.8051540851593
+      reason: ok
+      theta_list:
+      - 2.17020027153321e-11
+      - 0.00013709536809656904
+      - 1.3980189664149717e-22
+      - 1.7811764050363355e-11
+      - 5.621273433329277e-12
+    - sample_id: REPT_0007_s0015
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 96
+      soh_final: 0.8561056817008826
+      elapsed_s: 5.22288179397583
+      reason: too_few_cycles(96)
+      theta_list:
+      - 2.3919915425450976e-12
+      - 0.000153159856230825
+      - 4.385095931880351e-19
+      - 1.2086406595130184e-14
+      - 4.6219342382885534e-10
+    - sample_id: REPT_0007_s0016
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7217137503882701
+      elapsed_s: 158.93000555038452
+      reason: ok
+      theta_list:
+      - 1.448158236760971e-12
+      - 0.00014288417107503776
+      - 3.3487877846588624e-22
+      - 3.194357310712389e-12
+      - 2.2935485173334403e-11
+    - sample_id: REPT_0007_s0017
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8984361874760932
+      elapsed_s: 154.92531776428223
+      reason: ok
+      theta_list:
+      - 1.870465338600038e-11
+      - 0.0001539292032003594
+      - 2.7410294369678296e-21
+      - 3.712800276962187e-13
+      - 1.8183316578221205e-09
+    - sample_id: REPT_0007_s0018
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 959
+      soh_final: 0.649903347580403
+      elapsed_s: 156.89835906028748
+      reason: ok
+      theta_list:
+      - 1.3984148149617276e-10
+      - 9.877356406932219e-05
+      - 5.5915379654899355e-24
+      - 1.3478735292264422e-11
+      - 2.4700750492940583e-10
+    - sample_id: REPT_0007_s0019
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 1392
+      soh_final: 0.851469298735298
+      elapsed_s: 73.02229261398315
+      reason: ok
+      theta_list:
+      - 1.1866689771979702e-11
+      - 0.00017233913397506903
+      - 2.620177556414787e-20
+      - 2.411174520221844e-13
+      - 1.7388502526094866e-12
+    - sample_id: REPT_0007_s0020
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8064737006005566
+      elapsed_s: 159.77840876579285
+      reason: ok
+      theta_list:
+      - 4.2052899093352495e-12
+      - 8.688983482942505e-05
+      - 1.5736159197300005e-20
+      - 6.466836643604785e-14
+      - 4.330621169545064e-12
+    - sample_id: REPT_0007_s0021
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 24
+      soh_final: 0.6461949185521486
+      elapsed_s: 156.5880148410797
+      reason: too_few_cycles(24)
+      theta_list:
+      - 5.049014566817881e-09
+      - 0.00025034546158199074
+      - 1.8116801927893792e-21
+      - 5.830180771374794e-10
+      - 1.503493294378416e-09
+    - sample_id: REPT_0007_s0022
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 15
+      soh_final: 0.8301265417397714
+      elapsed_s: 2.0730836391448975
+      reason: too_few_cycles(15)
+      theta_list:
+      - 8.346370533381685e-11
+      - 0.00011482574163850221
+      - 3.976934991041183e-18
+      - 7.203876884893732e-13
+      - 6.386270233035125e-08
+    - sample_id: REPT_0007_s0023
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8264658935465296
+      elapsed_s: 159.1413893699646
+      reason: ok
+      theta_list:
+      - 1.6866942531515687e-13
+      - 0.0001600123672149711
+      - 2.148611471532207e-22
+      - 1.6221126553286268e-12
+      - 4.695024236548032e-11
+    - sample_id: REPT_0007_s0024
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 193
+      soh_final: 0.6596762976205721
+      elapsed_s: 9.322484493255615
+      reason: ok
+      theta_list:
+      - 4.88430603532446e-13
+      - 0.00011320627981386008
+      - 2.7582604143083875e-19
+      - 2.916445001363395e-11
+      - 5.551540138737693e-09
+    - sample_id: REPT_0007_s0025
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9845049838311757
+      elapsed_s: 160.3469898700714
+      reason: soh_final_too_high(0.985)
+      theta_list:
+      - 6.039678330353867e-11
+      - 0.00018658402621843503
+      - 1.175824702892498e-22
+      - 3.284463372094539e-14
+      - 1.5493488899477394e-11
+    - sample_id: REPT_0007_s0026
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7083402280667652
+      elapsed_s: 158.21856713294983
+      reason: ok
+      theta_list:
+      - 1.0292513125847855e-09
+      - 0.0001326451896226812
+      - 9.396397987309127e-21
+      - 2.1706168088279163e-12
+      - 1.6401391402868565e-13
+    - sample_id: REPT_0007_s0027
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8446546041278206
+      elapsed_s: 153.3630690574646
+      reason: ok
+      theta_list:
+      - 5.9088545843507364e-12
+      - 0.0001436762942336784
+      - 1.1656143576553395e-21
+      - 1.1439597718829328e-12
+      - 3.512806952088233e-10
+    - sample_id: REPT_0007_s0028
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9376038527292232
+      elapsed_s: 159.83369755744934
+      reason: ok
+      theta_list:
+      - 8.427760949818851e-12
+      - 0.00012658331576130577
+      - 3.534754798699958e-23
+      - 4.948513830465784e-13
+      - 6.921338411272903e-10
+    - sample_id: REPT_0007_s0029
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 552
+      soh_final: 0.019210327669871297
+      elapsed_s: 25.583319664001465
+      reason: soh_final_too_low(0.019)
+      theta_list:
+      - 2.1784748943038757e-10
+      - 0.0001718452016539857
+      - 6.227960139474416e-20
+      - 5.320557281799397e-12
+      - 9.074368253181957e-12
+    - sample_id: REPT_0007_s0030
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.910084626308935
+      elapsed_s: 155.37008261680603
+      reason: ok
+      theta_list:
+      - 2.6960063491620325e-11
+      - 1.987216195703326e-05
+      - 6.321475925263878e-22
+      - 1.2574310367789602e-13
+      - 9.244945241711506e-11
+    - sample_id: REPT_0007_s0031
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 1249
+      soh_final: 0.6499799229278717
+      elapsed_s: 157.95483374595642
+      reason: ok
+      theta_list:
+      - 9.23826360903912e-13
+      - 0.00019818568676048786
+      - 4.8715350063461956e-21
+      - 8.615925117878087e-12
+      - 1.4121370390209917e-08
+    - sample_id: REPT_0007_s0032
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7128022900265352
+      elapsed_s: 157.54332160949707
+      reason: ok
+      theta_list:
+      - 6.967560191620926e-13
+      - 0.00012381024059807659
+      - 1.8275461081338604e-20
+      - 1.462975892368161e-12
+      - 2.6166075596723436e-12
+    - sample_id: REPT_0007_s0033
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9155123720106186
+      elapsed_s: 158.47148990631104
+      reason: ok
+      theta_list:
+      - 2.8843110957479298e-11
+      - 0.00016679751623823426
+      - 8.281435811757837e-26
+      - 7.728910200111126e-13
+      - 9.147334188635182e-10
+    - sample_id: REPT_0007_s0034
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 99
+      soh_final: 0.6492616747707506
+      elapsed_s: 153.2900836467743
+      reason: too_few_cycles(99)
+      theta_list:
+      - 2.6388973063572205e-10
+      - 6.850773051465272e-05
+      - 2.164498152333193e-21
+      - 1.290634424517247e-10
+      - 3.9746015835688823e-07
+    - sample_id: REPT_0007_s0035
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.974445723023161
+      elapsed_s: 156.63025522232056
+      reason: ok
+      theta_list:
+      - 7.596554005409402e-12
+      - 0.00020451043410458884
+      - 2.51010138117994e-22
+      - 7.737479200613386e-14
+      - 7.222796047841852e-11
+    - sample_id: REPT_0007_s0036
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9594243634727041
+      elapsed_s: 160.2481245994568
+      reason: ok
+      theta_list:
+      - 6.765325188964616e-12
+      - 0.00010756594160945964
+      - 1.5013565413579469e-22
+      - 2.060362257941182e-13
+      - 4.234976749659081e-11
+    - sample_id: REPT_0007_s0037
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 63
+      soh_final: 0.844191873461657
+      elapsed_s: 4.004622459411621
+      reason: too_few_cycles(63)
+      theta_list:
+      - 7.898589442666203e-10
+      - 0.00018259099208715643
+      - 5.339401440490426e-19
+      - 1.521652255739944e-11
+      - 3.3341423300601923e-09
+    - sample_id: REPT_0007_s0038
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9172006975313114
+      elapsed_s: 154.7592647075653
+      reason: ok
+      theta_list:
+      - 5.1352130699172136e-11
+      - 0.00013522947045306187
+      - 1.4386726482718138e-21
+      - 3.2070289061976847e-13
+      - 1.4033219974354798e-10
+    - sample_id: REPT_0007_s0039
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2410
+      soh_final: 0.6499700787831978
+      elapsed_s: 156.3987283706665
+      reason: ok
+      theta_list:
+      - 5.729835441160868e-13
+      - 0.00014788044579385577
+      - 1.1809048543621273e-20
+      - 3.3742562099904504e-12
+      - 5.871298852153641e-13
+    - sample_id: REPT_0007_s0040
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 1539
+      soh_final: 0.6499708908301594
+      elapsed_s: 158.7243709564209
+      reason: ok
+      theta_list:
+      - 1.2639058746912145e-13
+      - 8.033744356443728e-05
+      - 9.157617429925577e-22
+      - 7.499482966015555e-12
+      - 5.344437483906535e-10
+    - sample_id: REPT_0007_s0041
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8983325246419913
+      elapsed_s: 157.85994458198547
+      reason: ok
+      theta_list:
+      - 1.0058572365487519e-10
+      - 0.0002156734286418033
+      - 7.22348873615881e-21
+      - 1.4367344252178447e-13
+      - 6.988910398044541e-12
+    - sample_id: REPT_0007_s0042
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6623385809981819
+      elapsed_s: 162.49067449569702
+      reason: ok
+      theta_list:
+      - 2.1053195670058865e-08
+      - 0.00011983139147129963
+      - 7.61718016342898e-23
+      - 4.69140647926853e-12
+      - 1.1756209852486364e-10
+    - sample_id: REPT_0007_s0043
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 288
+      soh_final: 0.854281474127839
+      elapsed_s: 12.957650899887085
+      reason: ok
+      theta_list:
+      - 3.662566833496913e-12
+      - 0.00016279516422754587
+      - 1.3560072188677205e-19
+      - 5.329068401166619e-13
+      - 2.2437796439115664e-08
+    - sample_id: REPT_0007_s0044
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8262369880033219
+      elapsed_s: 156.96043515205383
+      reason: ok
+      theta_list:
+      - 1.3035710578860058e-11
+      - 0.00013867927508694596
+      - 3.847028691753387e-21
+      - 1.0064663266633115e-12
+      - 6.024941152153686e-09
+    - sample_id: REPT_0007_s0045
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7720602439231005
+      elapsed_s: 157.35907745361328
+      reason: ok
+      theta_list:
+      - 1.1830553475612748e-10
+      - 0.00015133555594297097
+      - 4.862069010693024e-22
+      - 2.2866116017778246e-12
+      - 1.7319866451339525e-11
+    - sample_id: REPT_0007_s0046
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 1643
+      soh_final: 0.7758277792940108
+      elapsed_s: 90.52479863166809
+      reason: ok
+      theta_list:
+      - 1.738439835078059e-11
+      - 0.00010283777620954537
+      - 4.01276790974175e-20
+      - 2.0451625721749133e-14
+      - 1.22957142388002e-13
+    - sample_id: REPT_0007_s0047
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 370
+      soh_final: 0.6495495457842947
+      elapsed_s: 155.5342001914978
+      reason: ok
+      theta_list:
+      - 1.7884604114693716e-12
+      - 0.0001779252255176114
+      - 1.8045621066918976e-23
+      - 3.525044174283247e-11
+      - 3.185115610781217e-10
+    - sample_id: REPT_0007_s0048
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8457667761379182
+      elapsed_s: 158.75177383422852
+      reason: ok
+      theta_list:
+      - 1.9548488386381626e-12
+      - 9.59913989288092e-05
+      - 7.76420162888397e-21
+      - 2.6977958533697945e-13
+      - 5.391265549858304e-11
+    - sample_id: REPT_0007_s0049
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.728504768069445
+      elapsed_s: 156.90683245658875
+      reason: ok
+      theta_list:
+      - 2.3179648012273297e-11
+      - 0.00017463974731197612
+      - 9.728877242164673e-22
+      - 2.8681238994245003e-12
+      - 1.3219124373987063e-07
+    - sample_id: REPT_0007_s0050
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 293
+      soh_final: 0.8379178224348443
+      elapsed_s: 13.16418170928955
+      reason: ok
+      theta_list:
+      - 1.887333562251476e-10
+      - 0.00014129812311488205
+      - 1.5646860242669618e-19
+      - 1.6898935954227916e-13
+      - 1.2762962425594852e-09
+    - sample_id: REPT_0007_s0051
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 1084
+      soh_final: 0.6499595728734238
+      elapsed_s: 156.18784761428833
+      reason: ok
+      theta_list:
+      - 1.468560507808591e-11
+      - 0.00015579458260580993
+      - 8.51972826543069e-23
+      - 1.1721374944217358e-11
+      - 3.3755407430551556e-12
+    - sample_id: REPT_0007_s0052
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 250
+      soh_final: 0.6493471301875058
+      elapsed_s: 157.5225727558136
+      reason: ok
+      theta_list:
+      - 3.286977511584671e-12
+      - 0.0001167502658856901
+      - 6.864957915053174e-22
+      - 5.104340978494738e-11
+      - 1.3082829703098763e-12
+    - sample_id: REPT_0007_s0053
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.909407442671347
+      elapsed_s: 157.17984676361084
+      reason: ok
+      theta_list:
+      - 1.56244839061406e-09
+      - 0.0001581014870974332
+      - 5.302291552756115e-21
+      - 5.3634212581422856e-14
+      - 2.1156086978128457e-10
+    - sample_id: REPT_0007_s0054
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.865381135554173
+      elapsed_s: 162.8202440738678
+      reason: ok
+      theta_list:
+      - 6.520509673509529e-11
+      - 9.038766944754829e-05
+      - 3.9132891490444753e-23
+      - 1.2331450266255107e-12
+      - 2.1651957265411353e-09
+    - sample_id: REPT_0007_s0055
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 395
+      soh_final: 0.8872886827352598
+      elapsed_s: 17.827579736709595
+      reason: ok
+      theta_list:
+      - 4.930553590981052e-14
+      - 0.00022891228101785125
+      - 6.816670399396575e-20
+      - 6.511056194194819e-13
+      - 2.7264931341279038e-11
+    - sample_id: REPT_0007_s0056
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.995117344056762
+      elapsed_s: 161.78052830696106
+      reason: soh_final_too_high(0.995)
+      theta_list:
+      - 2.831593473340191e-13
+      - 0.00013078560261094263
+      - 1.189030673041611e-23
+      - 7.748335334307002e-15
+      - 1.0614896296091922e-08
+    - sample_id: REPT_0007_s0057
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 408
+      soh_final: 0.6499306519115493
+      elapsed_s: 50.8983359336853
+      reason: ok
+      theta_list:
+      - 4.7759874508073626e-11
+      - 0.00014526309458394608
+      - 3.3288936902654977e-20
+      - 2.375756357143976e-11
+      - 7.937479537560595e-11
+    - sample_id: REPT_0007_s0058
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8813520565582609
+      elapsed_s: 158.00155067443848
+      reason: ok
+      theta_list:
+      - 5.865037033306404e-10
+      - 0.00011088299904947649
+      - 4.2456981117432645e-22
+      - 8.69942496108282e-13
+      - 1.0830498697588948e-11
+    - sample_id: REPT_0007_s0059
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7637840281782706
+      elapsed_s: 155.72378492355347
+      reason: ok
+      theta_list:
+      - 4.691093802363067e-12
+      - 0.0001893126733736204
+      - 3.361932652794146e-21
+      - 1.9616884399358577e-12
+      - 8.202834628714511e-10
+    - sample_id: REPT_0007_s0060
+      anchor_id: REPT_0007
+      outcome: rejected
+      n_cycles: 68
+      soh_final: 0.6482399983652962
+      elapsed_s: 5.084124803543091
+      reason: too_few_cycles(68)
+      theta_list:
+      - 1.0463299002097987e-11
+      - 5.359802648781826e-05
+      - 1.6054683947877254e-18
+      - 3.839587288459855e-12
+      - 4.0428388501630266e-10
+    - sample_id: REPT_0007_s0061
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9357287596896595
+      elapsed_s: 157.81524896621704
+      reason: ok
+      theta_list:
+      - 3.0959110558170073e-10
+      - 0.0001947867853688529
+      - 1.946345560446967e-22
+      - 4.4522882603642095e-13
+      - 3.2534782860176565e-13
+    - sample_id: REPT_0007_s0062
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 1438
+      soh_final: 0.6499041507275528
+      elapsed_s: 156.19506692886353
+      reason: ok
+      theta_list:
+      - 3.3574439698073536e-11
+      - 0.0001284867463437501
+      - 1.484773104671145e-20
+      - 5.967330883235127e-12
+      - 1.3123754794101218e-11
+    - sample_id: REPT_0007_s0063
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9402624919182225
+      elapsed_s: 155.9555366039276
+      reason: ok
+      theta_list:
+      - 1.3025731186895818e-12
+      - 0.00016990513769088214
+      - 1.73373413945431e-21
+      - 1.1011737588354186e-13
+      - 4.3504737871472475e-09
+    - sample_id: REPT_0007_s0064
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 535
+      soh_final: 0.6496767832253384
+      elapsed_s: 161.35531783103943
+      reason: ok
+      theta_list:
+      - 1.3761621716026793e-12
+      - 0.0001361217176044528
+      - 1.0077404469002636e-20
+      - 2.0307396189067566e-11
+      - 8.801311973359688e-10
+    - sample_id: REPT_0007_s0065
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9570220645435484
+      elapsed_s: 155.7563865184784
+      reason: ok
+      theta_list:
+      - 3.492884150591635e-11
+      - 0.00014710571652258638
+      - 1.2409669978063418e-21
+      - 2.30302705173824e-15
+      - 2.116948758942536e-12
+    - sample_id: REPT_0007_s0066
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 181
+      soh_final: 0.7846783032735615
+      elapsed_s: 8.634244441986084
+      reason: ok
+      theta_list:
+      - 2.9427870542452306e-10
+      - 0.0001089713919304183
+      - 3.3885089960370466e-19
+      - 1.8382832900959848e-12
+      - 7.438441426087415e-11
+    - sample_id: REPT_0007_s0067
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8783346199845
+      elapsed_s: 157.77950811386108
+      reason: ok
+      theta_list:
+      - 1.0133693292954136e-11
+      - 0.00018153271403946081
+      - 1.2880494016492583e-22
+      - 8.090882858627721e-13
+      - 3.0033734950411383e-06
+    - sample_id: REPT_0007_s0068
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9250397526933501
+      elapsed_s: 157.57495427131653
+      reason: ok
+      theta_list:
+      - 4.574547803586357e-12
+      - 6.39976253782635e-05
+      - 2.8909798475717734e-22
+      - 4.140532511400214e-13
+      - 3.195765749194845e-09
+    - sample_id: REPT_0007_s0069
+      anchor_id: REPT_0007
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6823222262120613
+      elapsed_s: 152.5757713317871
+      reason: ok
+      theta_list:
+      - 5.54488363241993e-10
+      - 0.00020683434791726664
+      - 2.4114802351240882e-21
+      - 3.5496948407602285e-12
+      - 3.767572293150416e-11
+  REPT_0057:
+    n_sims: 70
+    n_ok: 65
+    n_rejected: 5
+    n_error: 0
+    n_skipped: 0
+    summaries:
+    - sample_id: REPT_0057_s0000
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8960406419931045
+      elapsed_s: 169.40016531944275
+      reason: ok
+      theta_list:
+      - 1.4794040461459433e-11
+      - 0.00017990855255542153
+      - 1.8335819523955136e-22
+      - 1.3339163661118183e-12
+      - 5.396646554894107e-09
+    - sample_id: REPT_0057_s0001
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8698602092761911
+      elapsed_s: 169.74928331375122
+      reason: ok
+      theta_list:
+      - 1.1688697912667224e-13
+      - 0.00016253248290396734
+      - 3.553352954180132e-22
+      - 1.6778466763148133e-12
+      - 9.632294284840365e-08
+    - sample_id: REPT_0057_s0002
+      anchor_id: REPT_0057
+      outcome: rejected
+      n_cycles: 1
+      soh_final: 1.0
+      elapsed_s: 1.6247429847717285
+      reason: too_few_cycles(1)
+      theta_list:
+      - 3.6203107504293015e-12
+      - 0.0001367034934560795
+      - 2.628103761562468e-16
+      - 2.3089435641413974e-13
+      - 5.055724367007805e-07
+    - sample_id: REPT_0057_s0003
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 964
+      soh_final: 0.6498566498761915
+      elapsed_s: 167.127827167511
+      reason: ok
+      theta_list:
+      - 6.219718876073716e-13
+      - 0.0001581292413761905
+      - 8.334907997047664e-23
+      - 2.100622060317426e-11
+      - 9.631409484533005e-13
+    - sample_id: REPT_0057_s0004
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2459
+      soh_final: 0.649967401501351
+      elapsed_s: 166.0453896522522
+      reason: ok
+      theta_list:
+      - 1.8413290202137597e-13
+      - 0.00014752830780453283
+      - 3.251482386001969e-22
+      - 7.931797146395936e-12
+      - 5.974705158115426e-11
+    - sample_id: REPT_0057_s0005
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9311641824643684
+      elapsed_s: 169.04154205322266
+      reason: ok
+      theta_list:
+      - 1.099546335937611e-12
+      - 0.00018586059056532718
+      - 5.5148436613865996e-21
+      - 9.108033543741263e-14
+      - 2.2344820249688112e-08
+    - sample_id: REPT_0057_s0006
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7916165075107444
+      elapsed_s: 167.1961281299591
+      reason: ok
+      theta_list:
+      - 2.6143403589489423e-11
+      - 0.0001114514710907335
+      - 4.012046041405341e-24
+      - 3.503481335798909e-12
+      - 8.488806144617977e-09
+    - sample_id: REPT_0057_s0007
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 452
+      soh_final: 0.891708815371478
+      elapsed_s: 21.309555768966675
+      reason: ok
+      theta_list:
+      - 4.390702456199053e-14
+      - 0.00026763216422357003
+      - 9.786279808102069e-20
+      - 9.78358244681965e-13
+      - 1.4036742686878418e-10
+    - sample_id: REPT_0057_s0008
+      anchor_id: REPT_0057
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9934474210037438
+      elapsed_s: 172.01543641090393
+      reason: soh_final_too_high(0.993)
+      theta_list:
+      - 9.283519824903533e-14
+      - 0.00012942740463446178
+      - 2.3378301269487306e-23
+      - 2.82419534309746e-14
+      - 3.1889123862103924e-09
+    - sample_id: REPT_0057_s0009
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 1238
+      soh_final: 0.6498912024438905
+      elapsed_s: 116.29203748703003
+      reason: ok
+      theta_list:
+      - 1.2141244130042078e-10
+      - 0.00016445172387224977
+      - 3.092846278283755e-20
+      - 1.1360221099272356e-11
+      - 6.448759695575109e-10
+    - sample_id: REPT_0057_s0010
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9071338482783078
+      elapsed_s: 170.5214488506317
+      reason: ok
+      theta_list:
+      - 1.6397738086945616e-12
+      - 3.4169591523393944e-05
+      - 6.039175055958351e-22
+      - 7.221753732023259e-13
+      - 1.2676645647757005e-11
+    - sample_id: REPT_0057_s0011
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6684784467671472
+      elapsed_s: 163.74707055091858
+      reason: ok
+      theta_list:
+      - 2.760192393500412e-13
+      - 0.00020304977699183685
+      - 3.86939669189802e-21
+      - 6.0301535367354696e-12
+      - 3.188380462396356e-07
+    - sample_id: REPT_0057_s0012
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 558
+      soh_final: 0.7703573777302931
+      elapsed_s: 26.180834531784058
+      reason: ok
+      theta_list:
+      - 4.0703500613003255e-13
+      - 0.00012056748097933594
+      - 1.868198355428317e-19
+      - 2.5510770054041543e-12
+      - 6.630338020129828e-08
+    - sample_id: REPT_0057_s0013
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9665691211144556
+      elapsed_s: 172.0097780227661
+      reason: ok
+      theta_list:
+      - 2.4793743246261837e-12
+      - 0.0002286174584640769
+      - 1.5892806942408286e-22
+      - 3.124875198607506e-13
+      - 4.814329493685277e-11
+    - sample_id: REPT_0057_s0014
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 275
+      soh_final: 0.6496422315049859
+      elapsed_s: 160.30026984214783
+      reason: ok
+      theta_list:
+      - 7.033492099689245e-12
+      - 0.00015606320986136447
+      - 1.138976475317731e-20
+      - 6.830075686405458e-11
+      - 3.193049776604313e-10
+    - sample_id: REPT_0057_s0015
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9526087577614811
+      elapsed_s: 162.9200325012207
+      reason: ok
+      theta_list:
+      - 6.30914711736028e-15
+      - 0.00017629255448466168
+      - 1.7048577774246043e-21
+      - 1.5960792451041056e-13
+      - 7.264903427571055e-09
+    - sample_id: REPT_0057_s0016
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2484
+      soh_final: 0.6970205193193791
+      elapsed_s: 163.1889193058014
+      reason: ok
+      theta_list:
+      - 3.5064299085988928e-15
+      - 0.0001528025303289938
+      - 2.9585629836659955e-20
+      - 3.0359315186699277e-12
+      - 1.4738412423607904e-12
+    - sample_id: REPT_0057_s0017
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8369579957346255
+      elapsed_s: 170.24869108200073
+      reason: ok
+      theta_list:
+      - 6.991227638643853e-12
+      - 0.00017182905749190273
+      - 5.352408065178479e-23
+      - 1.2248442911761561e-12
+      - 4.079365421252109e-06
+    - sample_id: REPT_0057_s0018
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 1873
+      soh_final: 0.6499321962220445
+      elapsed_s: 165.4685502052307
+      reason: ok
+      theta_list:
+      - 2.528204111122297e-12
+      - 0.00011613199297807008
+      - 2.5721935335522056e-21
+      - 9.580358692314188e-12
+      - 1.9178947281346792e-09
+    - sample_id: REPT_0057_s0019
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9741995581140738
+      elapsed_s: 167.60646271705627
+      reason: ok
+      theta_list:
+      - 4.462545177071715e-13
+      - 0.0002174807580516811
+      - 7.652991025538851e-22
+      - 5.422433980637317e-14
+      - 1.2419698189237268e-09
+    - sample_id: REPT_0057_s0020
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9654005612952552
+      elapsed_s: 170.17328333854675
+      reason: ok
+      theta_list:
+      - 2.6578288653141715e-13
+      - 6.969745169438606e-05
+      - 2.5492321551919967e-22
+      - 1.9163944582356101e-13
+      - 1.8059151412389447e-10
+    - sample_id: REPT_0057_s0021
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 289
+      soh_final: 0.6892405403860024
+      elapsed_s: 13.519668102264404
+      reason: ok
+      theta_list:
+      - 1.5219895120208554e-12
+      - 0.0002104048426835448
+      - 1.7286991120143398e-19
+      - 3.541152964669289e-11
+      - 1.541174996327933e-08
+    - sample_id: REPT_0057_s0022
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9116536871337628
+      elapsed_s: 165.96169137954712
+      reason: ok
+      theta_list:
+      - 1.7014822158330464e-10
+      - 0.00013315588740619622
+      - 2.121133336941361e-21
+      - 6.180217715177196e-13
+      - 2.4578640844908806e-08
+    - sample_id: REPT_0057_s0023
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.831466558491459
+      elapsed_s: 162.39174723625183
+      reason: ok
+      theta_list:
+      - 9.911492559801409e-14
+      - 0.00016863259954589732
+      - 7.316218697591513e-21
+      - 1.490965449670655e-12
+      - 9.708177801615138e-11
+    - sample_id: REPT_0057_s0024
+      anchor_id: REPT_0057
+      outcome: rejected
+      n_cycles: 45
+      soh_final: 0.6495558038157158
+      elapsed_s: 161.42383670806885
+      reason: too_few_cycles(45)
+      theta_list:
+      - 5.796158050050525e-14
+      - 0.00010605354530912551
+      - 1.3165336219554331e-21
+      - 4.658438121687239e-10
+      - 9.46418393824409e-08
+    - sample_id: REPT_0057_s0025
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8982897884969437
+      elapsed_s: 163.0416178703308
+      reason: ok
+      theta_list:
+      - 3.8038442032976386e-11
+      - 0.0002369851363179602
+      - 1.525905656353165e-20
+      - 1.2848349520188635e-13
+      - 7.43278159567143e-12
+    - sample_id: REPT_0057_s0026
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8581050331952441
+      elapsed_s: 169.0061275959015
+      reason: ok
+      theta_list:
+      - 9.521112375646511e-13
+      - 0.00014421263159436934
+      - 1.0853787214853957e-22
+      - 2.0213131976577895e-12
+      - 4.4368473399791495e-10
+    - sample_id: REPT_0057_s0027
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 177
+      soh_final: 0.8644400617981829
+      elapsed_s: 8.740916728973389
+      reason: ok
+      theta_list:
+      - 1.4875630597269247e-13
+      - 0.00018092987878559472
+      - 3.837451001956619e-19
+      - 3.682697227483434e-13
+      - 2.9566894784362595e-09
+    - sample_id: REPT_0057_s0028
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8728082855006108
+      elapsed_s: 162.827223777771
+      reason: ok
+      theta_list:
+      - 7.062113696386076e-13
+      - 0.00014014655619475704
+      - 5.015915335815012e-21
+      - 9.087656370211399e-13
+      - 4.8938035828890156e-09
+    - sample_id: REPT_0057_s0029
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7188743515896044
+      elapsed_s: 165.29088592529297
+      reason: ok
+      theta_list:
+      - 4.571231227311592e-12
+      - 0.00016226055335756968
+      - 4.531246542320682e-22
+      - 5.132970440242081e-12
+      - 2.943808818616946e-10
+    - sample_id: REPT_0057_s0030
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7762802945212369
+      elapsed_s: 164.4923415184021
+      reason: ok
+      theta_list:
+      - 1.1319079837652106e-11
+      - 9.728520627605918e-05
+      - 4.4227451506810146e-20
+      - 4.713862402291584e-15
+      - 2.061320526363644e-11
+    - sample_id: REPT_0057_s0031
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 1444
+      soh_final: 0.6499046015042342
+      elapsed_s: 164.48896050453186
+      reason: ok
+      theta_list:
+      - 1.863451131818148e-14
+      - 0.00019652662485022444
+      - 9.737534756216952e-24
+      - 1.4120120752661157e-11
+      - 4.606035076088942e-08
+    - sample_id: REPT_0057_s0032
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8824212549784559
+      elapsed_s: 163.04156637191772
+      reason: ok
+      theta_list:
+      - 1.6301470438969455e-14
+      - 0.00013516059405634866
+      - 5.84999841953181e-22
+      - 1.394602264358817e-12
+      - 1.2019642278515567e-10
+    - sample_id: REPT_0057_s0033
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.909962594611433
+      elapsed_s: 162.6584689617157
+      reason: ok
+      theta_list:
+      - 1.0357422843355622e-11
+      - 0.00015947350366645211
+      - 3.3166643131977983e-21
+      - 5.472221974114479e-13
+      - 1.0241024120506186e-08
+    - sample_id: REPT_0057_s0034
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 474
+      soh_final: 0.6499844909412447
+      elapsed_s: 165.8506624698639
+      reason: ok
+      theta_list:
+      - 4.9038320256748114e-12
+      - 9.050568288910566e-05
+      - 2.980927069381761e-23
+      - 4.317838933792918e-11
+      - 1.8882687781338647e-08
+    - sample_id: REPT_0057_s0035
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 1515
+      soh_final: 0.8592069679063237
+      elapsed_s: 84.82984733581543
+      reason: ok
+      theta_list:
+      - 7.428955377635018e-13
+      - 0.0001903073662297304
+      - 4.208783401391354e-20
+      - 2.2406528843348002e-13
+      - 7.500447046076183e-11
+    - sample_id: REPT_0057_s0036
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8963487579268061
+      elapsed_s: 168.1428725719452
+      reason: ok
+      theta_list:
+      - 1.3980480603190065e-13
+      - 0.00011365020936928543
+      - 9.61701924241062e-21
+      - 4.472756231816684e-14
+      - 2.8934152935311086e-13
+    - sample_id: REPT_0057_s0037
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2136
+      soh_final: 0.6499671052852871
+      elapsed_s: 163.9719626903534
+      reason: ok
+      theta_list:
+      - 8.988131237956444e-13
+      - 0.000252665448646683
+      - 1.6560288316606437e-21
+      - 8.195890325149385e-12
+      - 1.0206851732766976e-06
+    - sample_id: REPT_0057_s0038
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 247
+      soh_final: 0.828604067559925
+      elapsed_s: 11.710393190383911
+      reason: ok
+      theta_list:
+      - 4.449931384459294e-11
+      - 0.00014703916487330513
+      - 3.4385824799921645e-19
+      - 1.30981180306593e-12
+      - 1.3616215651268473e-09
+    - sample_id: REPT_0057_s0039
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7874731221232075
+      elapsed_s: 166.0457091331482
+      reason: ok
+      theta_list:
+      - 6.276262682268235e-14
+      - 0.00018637075857695352
+      - 1.8051094795134428e-22
+      - 3.4279256637374317e-12
+      - 8.832699773618259e-10
+    - sample_id: REPT_0057_s0040
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 146
+      soh_final: 0.6490696240540887
+      elapsed_s: 9.107909440994263
+      reason: ok
+      theta_list:
+      - 1.229598539336346e-13
+      - 6.408488118284149e-05
+      - 1.1852096922811868e-18
+      - 1.7187111961441355e-11
+      - 6.310606164037214e-09
+    - sample_id: REPT_0057_s0041
+      anchor_id: REPT_0057
+      outcome: rejected
+      n_cycles: 2500
+      soh_final: 0.9925508484289014
+      elapsed_s: 169.72148370742798
+      reason: soh_final_too_high(0.993)
+      theta_list:
+      - 1.2915245717569029e-09
+      - 0.0001994881940266345
+      - 6.974858842295825e-23
+      - 1.1323119642588467e-14
+      - 3.8032110906513636e-10
+    - sample_id: REPT_0057_s0042
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6629010317573438
+      elapsed_s: 168.64105081558228
+      reason: ok
+      theta_list:
+      - 1.29448251958673e-12
+      - 0.00012549175033781552
+      - 2.0713638698092834e-20
+      - 4.499785896679891e-12
+      - 3.9600035572988694e-11
+    - sample_id: REPT_0057_s0043
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9106526682370165
+      elapsed_s: 165.42280340194702
+      reason: ok
+      theta_list:
+      - 2.2144177279433706e-13
+      - 0.00016770025953490188
+      - 1.020635039288836e-21
+      - 8.486640006140558e-13
+      - 8.944999947443906e-08
+    - sample_id: REPT_0057_s0044
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9636920825880144
+      elapsed_s: 172.56944608688354
+      reason: ok
+      theta_list:
+      - 5.283787504125318e-13
+      - 0.00015373990874145116
+      - 1.5055205011637472e-24
+      - 4.199888643744589e-13
+      - 2.2293116946723672e-07
+    - sample_id: REPT_0057_s0045
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 1007
+      soh_final: 0.8090790966051673
+      elapsed_s: 50.53226828575134
+      reason: ok
+      theta_list:
+      - 3.011847491556287e-12
+      - 0.00017878641415636524
+      - 6.561721240870588e-20
+      - 2.163317980594572e-12
+      - 1.7843379808487486e-11
+    - sample_id: REPT_0057_s0046
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9737874406251221
+      elapsed_s: 167.52641010284424
+      reason: ok
+      theta_list:
+      - 5.674835665196146e-12
+      - 0.00012480088221460546
+      - 3.3897952039549066e-22
+      - 1.0541973534007008e-13
+      - 5.659272170405433e-10
+    - sample_id: REPT_0057_s0047
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 115
+      soh_final: 0.6486248187230609
+      elapsed_s: 159.13515663146973
+      reason: ok
+      theta_list:
+      - 4.4157412831691627e-17
+      - 0.0002196988081291554
+      - 6.5285321635790754e-21
+      - 1.7474051451389193e-10
+      - 3.777802828302263e-09
+    - sample_id: REPT_0057_s0048
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9147750412465719
+      elapsed_s: 169.8809633255005
+      reason: ok
+      theta_list:
+      - 1.1703752657601878e-14
+      - 0.00011933422395485436
+      - 1.253806947902397e-22
+      - 1.0465640469819225e-12
+      - 8.245700004117918e-11
+    - sample_id: REPT_0057_s0049
+      anchor_id: REPT_0057
+      outcome: rejected
+      n_cycles: 59
+      soh_final: 0.8830713712239251
+      elapsed_s: 3.7814111709594727
+      reason: too_few_cycles(59)
+      theta_list:
+      - 8.867171681398866e-12
+      - 0.00021247307230047544
+      - 9.646885496181613e-19
+      - 3.97030370295844e-12
+      - 3.0802185931641046e-08
+    - sample_id: REPT_0057_s0050
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9609965593051258
+      elapsed_s: 166.03204607963562
+      reason: ok
+      theta_list:
+      - 2.0766002170850698e-12
+      - 0.00014957255319766026
+      - 1.2809287232469874e-21
+      - 7.903802047094903e-14
+      - 1.3206602009107094e-08
+    - sample_id: REPT_0057_s0051
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2186
+      soh_final: 0.6499583398809377
+      elapsed_s: 161.22712349891663
+      reason: ok
+      theta_list:
+      - 3.4499110283172924e-13
+      - 0.0001753071928715196
+      - 1.2757827319899087e-20
+      - 6.8511493072446776e-12
+      - 2.1718264405694326e-10
+    - sample_id: REPT_0057_s0052
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 577
+      soh_final: 0.6497078422753093
+      elapsed_s: 65.36337637901306
+      reason: ok
+      theta_list:
+      - 3.2718298391187825e-13
+      - 0.00013052821286778704
+      - 6.203136152279032e-20
+      - 2.4242722599156453e-11
+      - 1.0955373006595875e-09
+    - sample_id: REPT_0057_s0053
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.976308138811487
+      elapsed_s: 168.82613897323608
+      reason: ok
+      theta_list:
+      - 1.948458123066473e-12
+      - 0.0001710679346312518
+      - 1.4038642428482642e-23
+      - 2.6755698009135796e-13
+      - 2.256824176207313e-09
+    - sample_id: REPT_0057_s0054
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7974849188863496
+      elapsed_s: 161.6278395652771
+      reason: ok
+      theta_list:
+      - 6.140097539849653e-11
+      - 8.330252477548112e-05
+      - 4.282631562324882e-21
+      - 1.7509961610815477e-12
+      - 1.5028153188319226e-06
+    - sample_id: REPT_0057_s0055
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9481441303758132
+      elapsed_s: 165.44143557548523
+      reason: ok
+      theta_list:
+      - 7.416263969481892e-14
+      - 0.00020459371634627623
+      - 4.393095646501169e-22
+      - 4.709819217040422e-13
+      - 3.0807163662361706e-12
+    - sample_id: REPT_0057_s0056
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.9382040565071867
+      elapsed_s: 161.6998414993286
+      reason: ok
+      theta_list:
+      - 3.962633185747721e-14
+      - 0.00014279248509706542
+      - 3.020483985754345e-21
+      - 1.33357554377246e-13
+      - 3.7920561118058646e-08
+    - sample_id: REPT_0057_s0057
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 382
+      soh_final: 0.6498971284633311
+      elapsed_s: 165.30940461158752
+      reason: ok
+      theta_list:
+      - 2.3460661414310063e-11
+      - 0.0001825656245476071
+      - 7.954734737770356e-22
+      - 5.251988585416841e-11
+      - 2.762288743055903e-11
+    - sample_id: REPT_0057_s0058
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.824013618284434
+      elapsed_s: 161.86958026885986
+      reason: ok
+      theta_list:
+      - 1.1570655711700095e-12
+      - 0.00010681085340130304
+      - 2.2068999940027002e-20
+      - 3.5816196915356997e-13
+      - 2.5673181205888155e-10
+    - sample_id: REPT_0057_s0059
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.824518933393476
+      elapsed_s: 168.5927131175995
+      reason: ok
+      theta_list:
+      - 1.9668441844538499e-13
+      - 0.00023497592454100474
+      - 4.358029463654396e-23
+      - 2.7359942535545118e-12
+      - 5.816852492322517e-09
+    - sample_id: REPT_0057_s0060
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.6966748936421008
+      elapsed_s: 165.91332173347473
+      reason: ok
+      theta_list:
+      - 5.869219167774909e-13
+      - 0.00010017576165881254
+      - 2.199520099483621e-21
+      - 5.256469776142894e-12
+      - 2.603178130132894e-09
+    - sample_id: REPT_0057_s0061
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8782011917567989
+      elapsed_s: 162.44776725769043
+      reason: ok
+      theta_list:
+      - 3.415262727347416e-12
+      - 0.00019455165406182453
+      - 8.684262468926857e-21
+      - 6.736499314773759e-13
+      - 5.24411345924047e-10
+    - sample_id: REPT_0057_s0062
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 1467
+      soh_final: 0.6498889329285614
+      elapsed_s: 166.3975477218628
+      reason: ok
+      theta_list:
+      - 1.7649942330202048e-11
+      - 0.00013967607229161522
+      - 2.2457627582744793e-22
+      - 1.3561702201928302e-11
+      - 5.1752016946880595e-12
+    - sample_id: REPT_0057_s0063
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 718
+      soh_final: 0.8474393901588149
+      elapsed_s: 34.41259455680847
+      reason: ok
+      theta_list:
+      - 2.77044679270721e-14
+      - 0.0001627649440643539
+      - 1.062309418667879e-19
+      - 3.652456218897525e-14
+      - 1.3205263830153797e-07
+    - sample_id: REPT_0057_s0064
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 356
+      soh_final: 0.6495241996264862
+      elapsed_s: 163.72159147262573
+      reason: ok
+      theta_list:
+      - 3.2951774350223795e-14
+      - 0.0001463277759785246
+      - 1.5533336262560465e-22
+      - 5.7440454804706213e-11
+      - 1.1082440540311978e-08
+    - sample_id: REPT_0057_s0065
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 285
+      soh_final: 0.8681971120463705
+      elapsed_s: 13.360167741775513
+      reason: ok
+      theta_list:
+      - 1.8459706656442128e-11
+      - 0.00018779116653719729
+      - 2.286291138532061e-19
+      - 1.496892231443582e-13
+      - 1.3047937003808439e-10
+    - sample_id: REPT_0057_s0066
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7971993218907014
+      elapsed_s: 163.84534001350403
+      reason: ok
+      theta_list:
+      - 3.2725118628703253e-12
+      - 0.0001147005511568951
+      - 1.905378396284814e-21
+      - 2.6623995825999014e-12
+      - 6.843075931477332e-11
+    - sample_id: REPT_0057_s0067
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.8993056925305112
+      elapsed_s: 162.1048948764801
+      reason: ok
+      theta_list:
+      - 5.461462859075405e-13
+      - 0.00024488108582191404
+      - 1.080681597519736e-20
+      - 3.2948642461143044e-13
+      - 1.7321050107684062e-08
+    - sample_id: REPT_0057_s0068
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7509416224065419
+      elapsed_s: 160.45654320716858
+      reason: ok
+      theta_list:
+      - 2.0064030901727131e-13
+      - 9.347960637459689e-05
+      - 3.604670781327345e-20
+      - 6.861362265813607e-13
+      - 7.115968868374922e-07
+    - sample_id: REPT_0057_s0069
+      anchor_id: REPT_0057
+      outcome: ok
+      n_cycles: 2500
+      soh_final: 0.7110912683995881
+      elapsed_s: 160.10522866249084
+      reason: ok
+      theta_list:
+      - 1.269539838244397e-12
+      - 0.00018941450953484
+      - 2.0350854954272814e-23
+      - 5.695659669527225e-12
+      - 4.7261661004254405e-14

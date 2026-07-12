@@ -1,0 +1,32 @@
+make: REPT
+cell: '0046'
+nominal_capacity_Ah: 150.0
+stoichiometry:
+  x_100: 0.8943199423539128
+  x_0: 0.13138683112001032
+  y_100: 0.01481197338160188
+  y_0: 0.9647230234095305
+  fit_success: true
+capacity:
+  Q_n_Ah: 201.40765684523365
+  Q_p_Ah: 161.76311482927423
+  Q_rpt_used: 153.66057026326428
+resistance:
+  R0_Ohm: 0.0007397562259136141
+  R1_Ohm: 0.0002210371381113788
+diffusion:
+  D_s_m2_s: 3.24299128319689e-14
+  tau_diff_used: 840.224275075416
+  particle_radius_m: 5.22e-06
+validation:
+  ocv_rmse_upper_half_mV: 2.430140298221368
+  ocv_rmse_full_mV: 11.134619513828278
+  rmse_upper_bound_mV: 20.0
+  passed_upper_rmse_budget: true
+  stoich_bound_clipped: false
+  n_ocv_points_used: 3878
+_provenance:
+  identified_at_utc: '2026-07-10T12:32:00.963661+00:00'
+  source_notebook: phase1_bol_identification.ipynb
+  pipeline_version: 1
+  prada_ocp_source: pybamm.ParameterValues('Prada2013')
