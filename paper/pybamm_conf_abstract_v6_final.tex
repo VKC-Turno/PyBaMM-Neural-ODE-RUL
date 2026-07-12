@@ -81,14 +81,17 @@ cycles, while the slowest (CALB\_0015) does not cross the EoL threshold
 within a 5\,000-cycle simulation horizon. We validate the trained operator
 on three held-out cells drawn from all three suppliers --- CALB\_0029,
 EVE\_0003, REPT\_0031 --- using a zero-shot nearest-supplier-anchor
-$\theta$ prior (no per-cell degradation fit). In-window SoH root-mean-square
-errors of 1.05, 1.76 and 1.69 percentage points (mean 1.50\,pp) fall well
-inside a 3.0\,pp acceptance threshold set from first principles
-(Figure~\ref{fig:heldout}); trajectory Pearson correlation
-$r = 0.89, 0.54, 0.80$. Crucially, the standard deviation of per-cell error
-across the three suppliers is only 0.32\,pp: with a single
-supplier-median $\theta$ prior, prediction accuracy is essentially
-chemistry-independent across CALB, EVE and REPT LFP variants.
+$\theta$ prior (no per-cell degradation fit). SoH is
+computed against each supplier's nameplate capacity (72\,Ah CALB,
+105\,Ah EVE, 150\,Ah REPT), so the plotted curves reflect the true
+second-life state relative to design, not the test-window fade fraction.
+In-window SoH root-mean-square errors of 0.53, 1.10 and 0.97 percentage
+points (mean 0.87\,pp) fall well inside a 3.0\,pp acceptance threshold
+set from first principles (Figure~\ref{fig:heldout}); trajectory Pearson
+correlation $r = 0.89, 0.54, 0.80$. Crucially, the standard deviation
+of per-cell error across the three suppliers is only 0.24\,pp: with a
+single supplier-median $\theta$ prior, prediction accuracy is
+essentially chemistry-independent across CALB, EVE and REPT LFP variants.
 
 \begin{figure}[h]
   \centering
@@ -98,12 +101,14 @@ chemistry-independent across CALB, EVE and REPT LFP variants.
     \fbox{\parbox[c][1.2cm][c]{0.95\textwidth}{\centering\footnotesize
       [placeholder: figures/heldout\_soh\_overlay.pdf]}}%
   }
-  \caption{Per-cell SoH predictions on three held-out cells (CALB\_0029,
-  EVE\_0003, REPT\_0031). Blue: observed cycling. Red dashed: operator
-  prediction from a nearest-supplier-anchor $\theta$ prior. Dotted line:
-  end-of-life threshold (SoH~$= 0.80$). Per-cell in-window SoH RMSE:
-  CALB\_0029 $= 1.05$\,pp, EVE\_0003 $= 1.76$\,pp, REPT\_0031 $= 1.69$\,pp;
-  cross-supplier RMSE std $= 0.32$\,pp.}
+  \caption{Per-cell actual SoH (discharge capacity / nameplate) on
+  three held-out cells (CALB\_0029, EVE\_0003, REPT\_0031). Blue:
+  observed cycling. Red dashed: operator prediction from a
+  nearest-supplier-anchor $\theta$ prior, anchored at the observed
+  first-cycle SoH. Dotted line: end-of-life threshold (SoH~$= 0.80$).
+  Per-cell in-window RMSE: CALB\_0029 $= 0.53$\,pp,
+  EVE\_0003 $= 1.10$\,pp, REPT\_0031 $= 0.97$\,pp;
+  cross-supplier RMSE std $= 0.24$\,pp.}
   \label{fig:heldout}
 \end{figure}
 

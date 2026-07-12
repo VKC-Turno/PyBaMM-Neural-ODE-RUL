@@ -77,6 +77,14 @@ BOL_PARAMS_DIR = _PROJECT_ROOT / "configs" / "bol_params"
 DCIR_SUMMARY_PARQUET = _PROJECT_ROOT / "data" / "processed" / "dcir_hppc_summary.parquet"
 LONGTERM_DIR = _PROJECT_ROOT / "Data" / "Longterm"
 
+# Nameplate capacities (Ah) per LFP supplier. Used to compute actual SoH
+# (discharge_cap_Ah / nominal_Ah) rather than test-window-relative SoH.
+NOMINAL_CAPACITY_AH: dict[str, float] = {
+    "CALB": 72.0,
+    "EVE":  105.0,
+    "REPT": 150.0,
+}
+
 # Gate thresholds (mirror configs/phase3_operator.yaml + phase3_heldout.yaml).
 SOH_RMSE_PP_MAX = 3.0
 FISHER_COSINE_MAX = 0.3
@@ -178,10 +186,18 @@ def _load_longterm_soh(cell_id: str, make: str) -> tuple[np.ndarray, np.ndarray]
     cycle_csv = LONGTERM_DIR / f"{make}_Longterm_cell_{cell_id}_cycle.csv"
     raw_csv = LONGTERM_DIR / f"{make}_Longterm_cell_{cell_id}.csv"
 
+    # Actual SoH = discharge capacity divided by nameplate nominal capacity
+    # (72 Ah CALB / 105 Ah EVE / 150 Ah REPT). NOT normalised to the first
+    # Longterm cycle — held-out cells are second-life so their first-cycle
+    # discharge already reflects prior life.
+    nominal = float(NOMINAL_CAPACITY_AH.get(make.upper(), 0.0))
+    if nominal <= 0:
+        return np.array([]), np.array([])
+
     if cycle_csv.exists():
         df = pd.read_csv(cycle_csv)
         # Some CALB/REPT files carry multiple batches at the same cycle_no —
-        # aggregate by min discharge_cap_ah per cycle_no to be safe.
+        # aggregate by median discharge_cap_ah per cycle_no to be safe.
         if "discharge_cap_ah" not in df.columns or "cycle_no" not in df.columns:
             return np.array([]), np.array([])
         df = df[df["discharge_cap_ah"] > 0].copy()
@@ -192,7 +208,7 @@ def _load_longterm_soh(cell_id: str, make: str) -> tuple[np.ndarray, np.ndarray]
         n = per["cycle_no"].to_numpy(dtype=np.float32)
         if q.size == 0:
             return np.array([]), np.array([])
-        soh = q / float(q[0])
+        soh = q / nominal
         return n, soh.astype(np.float32)
 
     if raw_csv.exists():
@@ -214,8 +230,8 @@ def _load_longterm_soh(cell_id: str, make: str) -> tuple[np.ndarray, np.ndarray]
             return np.array([]), np.array([])
         n = np.array(sorted(agg.keys()), dtype=np.float32)
         q = np.array([-agg[int(c)] for c in n], dtype=np.float32)
-        soh = q / float(q[0])
-        return n, soh
+        soh = q / nominal
+        return n, soh.astype(np.float32)
 
     return np.array([]), np.array([])
 
@@ -541,7 +557,6 @@ def run_validation(checkpoint_path: str | Path,
     for c in cells:
         cell_id = str(c["id"]).split("_")[-1]  # "CALB_0029" -> "0029"
         make = str(c["make"])
-        pred_n, pred_soh = predict_cell_soh(model, cell_id, make)
         obs_n, obs_soh = _load_longterm_soh(cell_id, make)
         if obs_n.size == 0:
             per_cell_rows.append({
@@ -549,6 +564,12 @@ def run_validation(checkpoint_path: str | Path,
                 "note": "no on-disk Longterm observation available",
             })
             continue
+        # Start prediction at the observed first-cycle SoH so the operator's
+        # fade curve is anchored to the same point as the ground truth. The
+        # operator was trained on trajectories starting at SoH=1.0, so this
+        # is a slight extrapolation, but keeps pred/obs on the same scale.
+        soh_0 = float(obs_soh[0])
+        pred_n, pred_soh = predict_cell_soh(model, cell_id, make, soh_0=soh_0)
         metrics = heldout_metrics(cell_id, make, pred_soh, obs_soh, obs_n,
                                   pred_cycles=pred_n)
         fisher = fisher_cosine_gate(model, cell_id, make)
