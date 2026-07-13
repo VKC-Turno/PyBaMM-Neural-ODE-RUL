@@ -160,7 +160,12 @@ def _get_prediction(row: dict,
     if model is None:
         model = load_operator_from_checkpoint(checkpoint)
         model_cache[key] = model
-    n, y = predict_cell_soh(model, row["cell_id"], row["make"])
+    # Anchor the prediction at the observed first-cycle SoH (the cell's
+    # second-life starting state) so pred/obs share the same starting point.
+    # Falls back to soh_0=1.0 if no observation is available.
+    obs = load_observed_soh(row["cell_id"], row["make"])
+    soh_0 = float(obs[1][0]) if obs[0].size else 1.0
+    n, y = predict_cell_soh(model, row["cell_id"], row["make"], soh_0=soh_0)
     return n, y, None, None
 
 
