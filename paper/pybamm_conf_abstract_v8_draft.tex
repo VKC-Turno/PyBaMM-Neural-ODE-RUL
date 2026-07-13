@@ -77,21 +77,25 @@ trajectories only.
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[
-    node distance=2mm and 3mm,
-    every node/.style={font=\scriptsize},
-    box/.style={draw,rounded corners=1pt,inner sep=1.5pt,align=center,minimum height=4mm},
-    dec/.style={draw,diamond,aspect=2.4,inner sep=0pt,align=center},
-    arr/.style={-{Latex[length=1.2mm]},shorten <=0.3mm,shorten >=0.3mm},
+    every node/.style={font=\footnotesize},
+    box/.style={draw,rounded corners=1.5pt,inner xsep=4pt,inner ysep=3pt,
+                align=center},
+    dec/.style={draw,diamond,aspect=1.6,inner sep=1pt,align=center},
+    arr/.style={-{Latex[length=1.6mm]},thick,shorten <=1pt,shorten >=1pt},
+    x=1mm,y=1mm,
   ]
-    \node[box] (ctx) {Diagnostic + $K{=}50$ cycles};
-    \node[box,right=of ctx] (res) {residual $r$};
-    \node[dec,right=of res] (dec) {$r{>}\tau$?};
-    \node[box,above right=0mm and 4mm of dec] (op) {Neural operator (PyBaMM-trained)};
-    \node[box,below right=0mm and 4mm of dec] (exp) {Exponential};
-    \node[box,right=14mm of dec,xshift=14mm] (out) {SoH forecast};
-    \draw[arr] (ctx) -- (res); \draw[arr] (res) -- (dec);
-    \draw[arr] (dec) -- (op); \draw[arr] (dec) -- (exp);
-    \draw[arr] (op) -- (out); \draw[arr] (exp) -- (out);
+    \node[box] (ctx) at (0,0)   {Diagnostic\\+ $K{=}50$ cycles};
+    \node[box] (res) at (32,0)  {Context-holdout\\residual $r$};
+    \node[dec] (dec) at (63,0)  {$r{>}\tau$?};
+    \node[box] (op)  at (100,7) {Neural operator\\{\scriptsize(PyBaMM-trained)}};
+    \node[box] (exp) at (100,-7){Exponential\\extrapolation};
+    \node[box] (out) at (140,0) {SoH forecast};
+    \draw[arr] (ctx) -- (res);
+    \draw[arr] (res) -- (dec);
+    \draw[arr] (dec.north east) -- node[above,sloped,font=\scriptsize]{yes} (op.west);
+    \draw[arr] (dec.south east) -- node[below,sloped,font=\scriptsize]{no} (exp.west);
+    \draw[arr] (op.east) -- (out.north west);
+    \draw[arr] (exp.east) -- (out.south west);
   \end{tikzpicture}
   \caption{Adaptive selector: a context-holdout residual (exp fit on
   first 80\% of the $K{=}50$ context, RMSE on last 20\%) picks the
