@@ -82,30 +82,26 @@ on a synthetic-only selector pool disjoint from the external cells.
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[
-    node distance=4mm and 6mm,
-    every node/.style={font=\footnotesize},
-    box/.style={draw,rounded corners=1pt,inner sep=2pt,align=center,minimum height=6mm},
-    dec/.style={draw,diamond,aspect=2.4,inner sep=1pt,align=center},
-    arr/.style={-{Latex[length=1.4mm]}},
+    node distance=2mm and 3mm,
+    every node/.style={font=\scriptsize},
+    box/.style={draw,rounded corners=1pt,inner sep=1.5pt,align=center,minimum height=4mm},
+    dec/.style={draw,diamond,aspect=2.4,inner sep=0pt,align=center},
+    arr/.style={-{Latex[length=1.2mm]},shorten <=0.3mm,shorten >=0.3mm},
   ]
-    \node[box] (ctx) {Early diagnostic + $K{=}50$ cycles};
-    \node[box,right=of ctx] (res) {Context-holdout\\residual $r$};
-    \node[dec,right=of res] (dec) {$r > \tau$?};
-    \node[box,above right=1mm and 6mm of dec] (op) {Neural operator\\{\scriptsize\emph{trained on PyBaMM SPMe corpus}}};
-    \node[box,below right=1mm and 6mm of dec] (exp) {Exponential\\extrapolation};
-    \node[box,right=18mm of dec,xshift=18mm] (out) {SoH trajectory\\forecast};
-    \draw[arr] (ctx) -- (res);
-    \draw[arr] (res) -- (dec);
-    \draw[arr] (dec) -- node[above,sloped]{yes (complex)} (op);
-    \draw[arr] (dec) -- node[below,sloped]{no (smooth)} (exp);
-    \draw[arr] (op) -- (out);
-    \draw[arr] (exp) -- (out);
+    \node[box] (ctx) {Diagnostic + $K{=}50$ cycles};
+    \node[box,right=of ctx] (res) {residual $r$};
+    \node[dec,right=of res] (dec) {$r{>}\tau$?};
+    \node[box,above right=0mm and 4mm of dec] (op) {Neural operator (PyBaMM-trained)};
+    \node[box,below right=0mm and 4mm of dec] (exp) {Exponential};
+    \node[box,right=14mm of dec,xshift=14mm] (out) {SoH forecast};
+    \draw[arr] (ctx) -- (res); \draw[arr] (res) -- (dec);
+    \draw[arr] (dec) -- (op); \draw[arr] (dec) -- (exp);
+    \draw[arr] (op) -- (out); \draw[arr] (exp) -- (out);
   \end{tikzpicture}
-  \caption{Adaptive selector between empirical exponential forecasting
-  and a neural operator trained on physics-informed synthetic
-  degradation trajectories. A context-holdout residual measures
-  early-cycle degradation complexity; the predeclared threshold $\tau$ is
-  chosen on synthetic trajectories, not on the external cells.}
+  \caption{Adaptive selector: a context-holdout residual (exp fit on
+  first 80\% of the $K{=}50$ context, RMSE on last 20\%) picks the
+  neural operator above threshold $\tau$; $\tau$ is set on synthetic
+  trajectories only.}
   \label{fig:selector}
 \end{figure}
 
@@ -120,29 +116,26 @@ CALB\_0029 and REPT\_0028, and the neural operator for EVE\_0003. These
 results motivate adaptive model selection rather than committing to
 either forecasting method alone.
 
-\begin{table}[H]
-\centering
-\footnotesize
-\caption{External held-out SoH RMSE (percentage points) on three cells
-excluded from operator training. The hybrid row uses the full-$\theta$
-operator when the residual-based selector chooses it.}
-\label{tab:decision}
-\begin{tabular}{lcccc}
-\toprule
-Method & CALB\_0029 & EVE\_0003 & REPT\_0028 & Mean \\
-\midrule
-Exponential                     & 0.44 & 1.54 & 0.13 & 0.70 \\
-Full-$\theta$ operator          & 1.06 & 0.84 & 0.51 & 0.80 \\
-No-$\theta$ operator            & 1.08 & 0.89 & 0.49 & 0.82 \\
-Reduced-$\theta$ operator       & 1.18 & 0.97 & 0.55 & 0.90 \\
-Hybrid ($\tau{=}0.54$~pp)       & \textbf{0.44} & \textbf{0.84} & \textbf{0.13} & \textbf{0.47} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{figure}[H]
+  \centering
+  \IfFileExists{figures/heldout_v8_selector_trajectories.pdf}{%
+    \includegraphics[width=0.98\textwidth]{figures/heldout_v8_selector_trajectories.pdf}%
+  }{%
+    \fbox{\parbox[c][0.6cm][c]{0.9\textwidth}{\centering\footnotesize
+      [placeholder]}}%
+  }
+  \caption{Observed and forecast SoH for the three external cells.
+  Grey band = $K{=}50$ context; orange dashed = exponential forecast;
+  red dotted = neural operator forecast. The context-holdout residual
+  selects the exponential model for CALB\_0029 and REPT\_0028 and the
+  operator for EVE\_0003 -- matching the per-cell oracle choice.}
+  \label{fig:trajectories}
+\end{figure}
 
-Ablations indicate that PyBaMM-generated trajectories provide useful
-training diversity, while explicit degradation-parameter conditioning
-provides limited additional benefit.
+Ablations at matched split and seed indicate that PyBaMM-generated
+trajectories provide useful training diversity, while explicit
+degradation-parameter conditioning provides limited additional benefit
+(full-, no- and reduced-$\theta$ operators: 0.80, 0.82 and 0.90~pp mean).
 
 The current evaluation is limited to three external cells, and
 longer-horizon projections require additional experimental validation.
