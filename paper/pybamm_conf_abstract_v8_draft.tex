@@ -12,7 +12,7 @@
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 
-\usepackage[a4paper,top=0.7cm,bottom=0.7cm,left=1.3cm,right=1.3cm]{geometry}
+\usepackage[a4paper,top=0.6cm,bottom=0.6cm,left=1.2cm,right=1.2cm]{geometry}
 \usepackage{graphicx}
 \usepackage{caption}
 \captionsetup{font=footnotesize,labelfont=bf,labelsep=colon,skip=2pt}
@@ -30,28 +30,30 @@
 \begin{document}
 
 \begin{center}
-{\bfseries\large Adaptive SoH Forecasting for Second-Life LFP Cells\\
-Using PyBaMM-Generated Data and Hybrid Model Selection}\\[0.40em]
+{\bfseries\large Accelerated SoH Forecasting for Second-Life LFP Cells\\
+Using a PyBaMM-Trained Neural Operator and Hybrid Model Selection}\\[0.40em]
 \underline{Krishna Chaitanya Vaddepally}\\
 \emph{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India}\\
 krishna.vaddepally@turno.club
 \end{center}
 
 Second-life reuse of retired lithium iron phosphate cells requires rapid
-prediction of future degradation for each incoming cell. Rather than
-assuming that one forecasting model is optimal for all cells, we combine
-exponential extrapolation with a PyBaMM~[1]-trained neural operator and
-select between them using early-cycle behaviour.
+prediction of future degradation for each incoming cell. Comprehensive
+characterisation currently requires approximately four weeks per cell.
+We develop an accelerated forecasting framework that requires only
+DCIR, an initial-capacity assessment and the first $K{=}50$ operating
+cycles, reducing the per-cell testing window to approximately 11 days,
+or by about 60\%. The framework combines exponential extrapolation
+with a PyBaMM~[1]-trained Neural ODE~[3] and selects between them using
+early-cycle deviation from exponential behaviour.
 
-A short diagnostic and the first $K{=}50$ operating cycles provide the
-model context. A Neural ODE~[3] was trained on 490 PyBaMM SPMe
-degradation trajectories generated around seven anchor cells from three
-LFP suppliers (CALB, EVE, REPT) on Prada2013 chemistry~[2], using
-trajectory-grouped train/validation partitions. In parallel, an
-exponential model was fitted to the same context; its first-80\%-fit,
-last-20\%-prediction context-holdout residual indicates departure from
-exponential behaviour. A threshold set on synthetic trajectories alone
-routes each cell to either forecast (Figure~\ref{fig:selector}).
+The Neural ODE was trained on 490 PyBaMM SPMe degradation trajectories
+generated around seven anchor cells from three LFP suppliers (CALB,
+EVE, REPT) on Prada2013 chemistry~[2], using trajectory-grouped
+train/validation partitions. The context-holdout residual is the
+exponential-fit RMSE over the last 20\% of the $K{=}50$ context after
+fitting on the first 80\%; a threshold set on synthetic trajectories
+alone routes each cell to either forecast (Figure~\ref{fig:selector}).
 
 \begin{figure}[H]
   \centering
@@ -114,18 +116,18 @@ degradation-parameter conditioning: full-, no- and reduced-$\theta$
 operators achieved mean RMSEs of 0.80, 0.82 and 0.90 percentage points,
 respectively. These results suggest that matching model complexity to
 observed early-cycle behaviour may be more effective than applying one
-forecasting model uniformly across heterogeneous second-life cells. For
-new cells, the shortened inference protocol reduces the testing window
-by approximately 60\% compared with the four-week comprehensive
-characterisation programme required for anchor-cell development.
+forecasting model uniformly across heterogeneous second-life cells. By
+reducing the testing window from approximately 28 to 11 days, the
+proposed workflow could increase laboratory throughput and enable
+earlier qualification of cells for second-life applications.
 Evaluation is currently limited to three external cells, and
 longer-horizon projections require additional experimental validation.
 
-\vspace{-0.4em}
+\vspace{-0.6em}
 {\scriptsize
-[1]~V.~Sulzer et al., \emph{J.\ Open Res.\ Software} \textbf{9} (2021), 14.
-\textbullet\ [2]~M.~Prada et al., \emph{J.\ Power Sources} \textbf{219} (2012),
-353--362. \textbullet\ [3]~R.\,T.\,Q.~Chen et al., \emph{NeurIPS} (2018).
+[1]~V.~Sulzer et al., \emph{J.\ Open Res.\ Softw.} \textbf{9}, 14 (2021).
+\textbullet\ [2]~M.~Prada et al., \emph{J.\ Power Sources} \textbf{219},
+353 (2012). \textbullet\ [3]~R.\,T.\,Q.~Chen et al., \emph{NeurIPS} (2018).
 }
 
 \end{document}
