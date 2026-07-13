@@ -2,14 +2,11 @@
 % Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
 % Deadline: 2026-07-15 UTC.
 %
-% v7 upgrade over v6 (kept intact as pybamm_conf_abstract_v6_final.tex):
-%   - Encoder--decoder neural operator: K=50 observed cycles feed a context
-%     encoder that conditions the SoH decoder (v6 was a single-shot theta->SoH
-%     map that only "generalised" because held-out cells reused anchor theta).
-%   - SoH-translation augmentation expands the PyBaMM corpus so the operator
-%     handles second-life cells that start well below the simulated SoH range.
-%   - Held-out RMSEs improve from 1.50 pp (v6) to 0.87 pp (v7); cross-supplier
-%     standard deviation drops from 0.32 pp to 0.06 pp.
+% Encoder--decoder neural operator: K=50 observed cycles feed a context
+% encoder that conditions the SoH decoder. SoH-translation augmentation
+% expands the PyBaMM corpus so the operator handles second-life cells that
+% start well below the simulated SoH range. Held-out mean RMSE = 0.87 pp;
+% cross-supplier standard deviation = 0.06 pp on 3 cells across 3 suppliers.
 %
 % Formatted per the PyBaMM 2025 book-of-abstracts template:
 % Arial/Helvetica 12 pt minimum, centred bold title, presenting author
@@ -23,20 +20,21 @@
 \usepackage{helvet}   % Arial-equivalent sans-serif; PyBaMM template accepts Arial >= 12 pt
 \renewcommand{\familydefault}{\sfdefault}
 
-\usepackage[a4paper,top=1.3cm,bottom=1.3cm,left=1.7cm,right=1.7cm]{geometry}
+\usepackage[a4paper,top=1.2cm,bottom=1.2cm,left=1.6cm,right=1.6cm]{geometry}
 \usepackage{graphicx}
 \usepackage{caption}
 \captionsetup{font=footnotesize,labelfont=bf,labelsep=colon,skip=3pt}
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
+\usepackage{float}
 
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.15em}
+\setlength{\parskip}{0.25em}
 
 \begin{document}
-\enlargethispage{6\baselineskip}
+% (No enlargethispage: content flows across 1-2 pages naturally.)
 
 \begin{center}
 {\bfseries\large Cross-supplier state-of-health forecasting for second-life\\
@@ -47,13 +45,13 @@ krishna.vaddepally@turno.club\\[0.2em]
 {\footnotesize Theme: Data-driven Methods \textbullet\ Presentation preference: Oral (poster acceptable)}
 \end{center}
 
-Second-life reuse of retired lithium iron phosphate (LFP) cells is limited
-by the time and cost of characterising each cell's future ageing.
-Conventional lifetime tests take months, and empirical models transfer
-poorly between suppliers with different chemistries. We present a
-physics-conditioned encoder--decoder neural operator that forecasts the
-full state-of-health (SoH) trajectory to end-of-second-life from a
-compact diagnostic snapshot plus $\sim{}50$ cycles of field cycling data.
+Second-life reuse of retired lithium iron phosphate (LFP) cells is
+limited by the cost of characterising each cell's future ageing.
+Conventional lifetime tests take months and empirical models transfer
+poorly across supplier chemistries. We present a physics-conditioned
+encoder--decoder neural operator that forecasts the full state-of-health
+(SoH) trajectory to end-of-second-life from a compact diagnostic
+snapshot plus $\sim{}50$ cycles of field cycling.
 
 The workflow (Figure~\ref{fig:pipeline}) has three stages. Phase~1
 identifies beginning-of-life electrochemistry per anchor cell from OCV,
@@ -76,32 +74,47 @@ characterisation, and the $K$ observed cycles.
 
 Held-out evaluation used one previously unseen cell per supplier
 (CALB\_0029, EVE\_0003, REPT\_0031). Per-cell SoH root-mean-square errors
-were 0.95, 0.83 and 0.82 percentage points respectively, with mean
-$0.87$~pp and cross-supplier standard deviation $0.06$~pp; every held-out
-cell fell below one percentage point. Against the v6 single-shot baseline
-(mean 1.50~pp, std 0.32~pp) the encoder--decoder cuts mean error by
-42\% and cross-supplier spread by more than five-fold. Each forecast is
-a genuine forward projection: the decoder extends roughly 500 cycles
-beyond the observed window into deeper second-life SoH values. Limitations:
-the cross-supplier claim rests on three held-out cells; the forecast
-horizon is capped by the 2500-cycle PyBaMM corpus; and beyond-window
-projections remain experimentally unverified.
+were 0.95, 0.83 and 0.82 percentage points respectively
+(Figure~\ref{fig:heldout}), with mean $0.87$~pp and cross-supplier
+standard deviation $0.06$~pp: every held-out cell fell below one
+percentage point and the per-cell error was nearly chemistry-independent.
+Each forecast is a genuine forward projection --- the decoder extends
+roughly 500 cycles beyond the observed window into deeper second-life
+SoH values. Limitations: the cross-supplier claim rests on three
+held-out cells; the forecast horizon is capped by the 2500-cycle PyBaMM
+corpus; beyond-window projections remain experimentally unverified.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \IfFileExists{../V7_flowchart.png}{%
-    \includegraphics[width=0.78\textwidth]{../V7_flowchart.png}%
+  \IfFileExists{../V7_flowchart_cropped.png}{%
+    \includegraphics[width=0.72\textwidth]{../V7_flowchart_cropped.png}%
   }{%
     \fbox{\parbox[c][1.2cm][c]{0.95\textwidth}{\centering\footnotesize
-      [placeholder: V7\_flowchart.png]}}%
+      [placeholder: V7\_flowchart\_cropped.png]}}%
   }
-  \caption{Pipeline: characterisation and long-term cycling feed
-  Phase~1/2 identification; PyBaMM synthesises a perturbed training
-  corpus; the SciML operator ingests $\theta$, DCIR-derived features and
-  $K{=}50$ observed cycles, and outputs the full SoH trajectory to
-  end-of-second-life. Held-out cross-supplier RMSE: CALB\_0029 0.95, EVE\_0003 0.83,
-  REPT\_0031 0.82 percentage points (mean 0.87, std 0.06).}
+  \caption{Eight-stage pipeline: anchor-cell characterisation feeds
+  Phase~1/2 electrochemistry identification; PyBaMM synthesises a
+  $\theta$-perturbed training corpus; the SciML operator ingests
+  $\theta$, DCIR-derived features and $K{=}50$ observed cycles from a
+  new cell, and outputs the full SoH forecast to end-of-second-life.}
   \label{fig:pipeline}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \IfFileExists{figures/heldout_v7_1_combined.pdf}{%
+    \includegraphics[width=0.72\textwidth]{figures/heldout_v7_1_combined.pdf}%
+  }{%
+    \fbox{\parbox[c][1.2cm][c]{0.95\textwidth}{\centering\footnotesize
+      [placeholder: figures/heldout\_v7\_1\_combined.pdf]}}%
+  }
+  \caption{Held-out SoH forecasts on three previously unseen cells (one
+  per supplier). Grey shading marks the $K{=}50$-cycle context window;
+  blue = observed cycling; red dashed = v7 forecast anchored at the
+  observed context end and extending $\sim{}500$ cycles into deeper
+  second-life SoH. Per-cell RMSE 0.95 / 0.83 / 0.82~pp;
+  mean 0.87~pp, cross-supplier std 0.06~pp.}
+  \label{fig:heldout}
 \end{figure}
 
 \vspace{-0.3em}
