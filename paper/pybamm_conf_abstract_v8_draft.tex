@@ -2,24 +2,8 @@
 % Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
 % Deadline: 2026-07-15 UTC (max 1 A4 page, Arial >= 12 pt).
 %
-% Alternative titles preserved for last-minute swap:
-% (a) "Hybrid SoH Forecasting of Second-Life LFP Cells Using
-%      Physics-Informed Data Generation"
-% (b) "Combining Empirical and Neural Forecasting Models for Adaptive
-%      Second-Life LFP State-of-Health Prediction"
-%
-% Pre-written theta-outcome sentences (uncomment ONE after ablations land):
-% Outcome A (full theta wins):
-%   The neural operator incorporates physics-informed degradation descriptors
-%   derived from electrochemical modelling, improving selection of complex
-%   degradation trajectories.
-% Outcome B (reduced theta wins):
-%   A reduced physics-informed descriptor set provided effective conditioning
-%   while avoiding overparameterisation from poorly identifiable degradation
-%   parameters.
-% Outcome C (no-theta wins):
-%   PyBaMM-generated trajectories improve training diversity, while the final
-%   inference model relies primarily on early-cycle degradation behaviour.
+% Theme and presentation preference are NOT printed on the abstract page
+% (entered only in the submission form). See memory `v8-scope-frozen-july15`.
 %
 \documentclass[12pt,a4paper]{article}
 
@@ -28,7 +12,7 @@
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 
-\usepackage[a4paper,top=0.8cm,bottom=0.8cm,left=1.3cm,right=1.3cm]{geometry}
+\usepackage[a4paper,top=0.7cm,bottom=0.7cm,left=1.3cm,right=1.3cm]{geometry}
 \usepackage{graphicx}
 \usepackage{caption}
 \captionsetup{font=footnotesize,labelfont=bf,labelsep=colon,skip=2pt}
@@ -36,8 +20,6 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{float}
-\usepackage{booktabs}
-\usepackage{array}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
 
@@ -48,100 +30,99 @@
 \begin{document}
 
 \begin{center}
-{\bfseries\large Adaptive State-of-Health Forecasting for Second-Life LFP Cells\\
-Using Physics-Informed Synthetic Data and Hybrid Model Selection}\\[0.30em]
+{\bfseries\large Adaptive SoH Forecasting for Second-Life LFP Cells\\
+Using PyBaMM-Generated Data and Hybrid Model Selection}\\[0.40em]
 \underline{Krishna Chaitanya Vaddepally}\\
-\emph{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India} \textbullet\
-krishna.vaddepally@turno.club\\[0.10em]
-{\footnotesize Theme: Data-driven Methods \textbullet\ Presentation: Oral (poster acceptable)}
+\emph{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India}\\
+krishna.vaddepally@turno.club
 \end{center}
 
-Second-life reuse of retired lithium iron phosphate (LFP) cells requires
-fast prediction of future degradation for each incoming cell. Instead of
-assuming a single degradation model is optimal for all cells, we develop
-an adaptive forecasting framework that selects between simple empirical
-extrapolation and a PyBaMM-trained neural operator based on early-cycle
-degradation complexity.
+Second-life reuse of retired lithium iron phosphate cells requires rapid
+prediction of future degradation for each incoming cell. Rather than
+assuming that one forecasting model is optimal for all cells, we combine
+exponential extrapolation with a PyBaMM~[1]-trained neural operator and
+select between them using early-cycle behaviour.
 
-\textbf{Approach (Figure~\ref{fig:selector}).}
-A short diagnostic characterisation and the first $K{=}50$ operating
-cycles provide early-cycle context. A Neural ODE~[3] is trained on
-PyBaMM~[1] SPMe degradation trajectories generated around seven anchor
-cells from three LFP suppliers (CALB, EVE, REPT) on Prada2013
-chemistry~[2]. In parallel, an exponential model is fitted to the same
-context. A context-holdout residual, computed by fitting the first
-80\% of the context and predicting the final 20\%, selects the neural
-operator when the residual exceeds a threshold chosen using synthetic
-trajectories only.
+A short diagnostic and the first $K{=}50$ operating cycles provide the
+model context. A Neural ODE~[3] was trained on 490 PyBaMM SPMe
+degradation trajectories generated around seven anchor cells from three
+LFP suppliers (CALB, EVE, REPT) on Prada2013 chemistry~[2], using
+trajectory-grouped train/validation partitions. In parallel, an
+exponential model was fitted to the same context; its first-80\%-fit,
+last-20\%-prediction context-holdout residual indicates departure from
+exponential behaviour. A threshold set on synthetic trajectories alone
+routes each cell to either forecast (Figure~\ref{fig:selector}).
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[
     every node/.style={font=\footnotesize},
-    box/.style={draw,rounded corners=1.5pt,inner xsep=4pt,inner ysep=3pt,
+    box/.style={draw,rounded corners=1.2pt,inner xsep=3pt,inner ysep=2pt,
                 align=center},
-    dec/.style={draw,diamond,aspect=1.6,inner sep=1pt,align=center},
-    arr/.style={-{Latex[length=1.6mm]},thick,shorten <=1pt,shorten >=1pt},
+    dec/.style={draw,diamond,aspect=1.8,inner sep=0pt,align=center},
+    arr/.style={-{Latex[length=1.4mm]},semithick,shorten <=1pt,shorten >=1pt},
     x=1mm,y=1mm,
   ]
-    \node[box] (ctx) at (0,0)   {Diagnostic\\+ $K{=}50$ cycles};
-    \node[box] (res) at (32,0)  {Context-holdout\\residual $r$};
-    \node[dec] (dec) at (63,0)  {$r{>}\tau$?};
-    \node[box] (op)  at (100,7) {Neural operator\\{\scriptsize(PyBaMM-trained)}};
-    \node[box] (exp) at (100,-7){Exponential\\extrapolation};
-    \node[box] (out) at (140,0) {SoH forecast};
+    \node[box] (ctx) at (0,0)   {$K{=}50$-cycle context};
+    \node[box] (res) at (32,0)  {residual $r$};
+    \node[dec] (dec) at (57,0)  {selector};
+    \node[box] (op)  at (90,5)  {Neural operator};
+    \node[box] (exp) at (90,-5) {Exponential};
+    \node[box] (out) at (128,0) {SoH forecast};
     \draw[arr] (ctx) -- (res);
     \draw[arr] (res) -- (dec);
-    \draw[arr] (dec.north east) -- node[above,sloped,font=\scriptsize]{yes} (op.west);
-    \draw[arr] (dec.south east) -- node[below,sloped,font=\scriptsize]{no} (exp.west);
+    \draw[arr] (dec.north east) -- node[above,sloped,font=\scriptsize]{high $r$} (op.west);
+    \draw[arr] (dec.south east) -- node[below,sloped,font=\scriptsize]{low $r$} (exp.west);
     \draw[arr] (op.east) -- (out.north west);
     \draw[arr] (exp.east) -- (out.south west);
   \end{tikzpicture}
-  \caption{Adaptive selector: a context-holdout residual (exp fit on
-  first 80\% of the $K{=}50$ context, RMSE on last 20\%) picks the
-  neural operator above threshold $\tau$; $\tau$ is set on synthetic
-  trajectories only.}
+  \caption{Adaptive selector. A context-holdout residual $r$ (exp fit on
+  the first 80\% of the $K{=}50$ context, RMSE on the last 20\%) routes
+  each cell to either the PyBaMM-trained neural operator (high $r$) or
+  exponential extrapolation (low $r$); the threshold is set on
+  synthetic trajectories only.}
   \label{fig:selector}
 \end{figure}
 
-\textbf{Results.}
-Across three external LFP cells excluded from operator training,
-exponential forecasting achieved 0.70~pp mean RMSE and the
-PyBaMM-trained neural operator achieved 0.80~pp. The residual-based
-selector combined their complementary strengths, reducing mean RMSE to
-\textbf{0.47~pp}~---~a 33\% reduction relative to the best fixed
-strategy.
+Across three external cells excluded from operator training, exponential
+and neural forecasts achieved mean SoH RMSEs of 0.70 and 0.80 percentage
+points, respectively (Figure~\ref{fig:trajectories}). Across these three
+cells, the frozen residual-based selector chose the lower-error model
+for all three and reduced mean RMSE to \textbf{0.47 percentage points},
+a 33\% improvement relative to the best fixed strategy. Exponential
+extrapolation performed best for CALB\_0029 and REPT\_0028, whereas the
+neural operator performed best for EVE\_0003.
 
 \begin{figure}[H]
   \centering
   \IfFileExists{figures/heldout_v8_selector_trajectories.pdf}{%
-    \includegraphics[width=0.98\textwidth]{figures/heldout_v8_selector_trajectories.pdf}%
+    \includegraphics[width=\textwidth]{figures/heldout_v8_selector_trajectories.pdf}%
   }{%
     \fbox{\parbox[c][0.6cm][c]{0.9\textwidth}{\centering\footnotesize
       [placeholder]}}%
   }
-  \caption{Observed and forecast SoH for the three external cells.
-  Grey band = $K{=}50$ context; orange dashed = exponential forecast;
-  red dotted = neural operator forecast. Panels use independent
-  y-axis ranges for readability. The context-holdout residual selects
-  the exponential model for CALB\_0029 and REPT\_0028 and the operator
-  for EVE\_0003 -- matching the per-cell oracle choice.}
+  \caption{Forecasts evaluated against measured post-context SoH for
+  three external cells. Grey shading denotes the $K{=}50$ context
+  window; orange dashed and red dotted lines show exponential and
+  neural-operator forecasts, respectively. Panels use independent
+  y-axis ranges.}
   \label{fig:trajectories}
 \end{figure}
 
-Matched ablations indicate that PyBaMM-generated trajectories provide
-useful training diversity, while explicit degradation-parameter
-conditioning adds little additional benefit (0.80, 0.82 and 0.90~pp
-mean RMSE for full-, no- and reduced-$\theta$ operators).
-
-The current evaluation is limited to three external cells, and
+Matched ablations showed little additional benefit from explicit
+degradation-parameter conditioning: full-, no- and reduced-$\theta$
+operators achieved mean RMSEs of 0.80, 0.82 and 0.90 percentage points,
+respectively. These results suggest that matching model complexity to
+observed early-cycle behaviour may be more effective than applying one
+forecasting model uniformly across heterogeneous second-life cells.
+Evaluation is currently limited to three external cells, and
 longer-horizon projections require additional experimental validation.
 
-\vspace{-0.2em}
-{\footnotesize
+\vspace{-0.4em}
+{\scriptsize
 [1]~V.~Sulzer et al., \emph{J.\ Open Res.\ Software} \textbf{9} (2021), 14.
-[2]~M.~Prada et al., \emph{J.\ Power Sources} \textbf{219} (2012), 353--362.
-[3]~R.\,T.\,Q.~Chen et al., \emph{NeurIPS} (2018).
+\textbullet\ [2]~M.~Prada et al., \emph{J.\ Power Sources} \textbf{219} (2012),
+353--362. \textbullet\ [3]~R.\,T.\,Q.~Chen et al., \emph{NeurIPS} (2018).
 }
 
 \end{document}
