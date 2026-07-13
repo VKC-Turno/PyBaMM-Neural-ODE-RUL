@@ -11,3 +11,6 @@
 # Keep committed PDFs for the abstract lineage
 !pybamm_conf_abstract_v7.pdf
 !pybamm_conf_abstract_v8_draft.pdf
+
+# Keep figure PDFs used by the committed abstracts
+!figures/*.pdf
