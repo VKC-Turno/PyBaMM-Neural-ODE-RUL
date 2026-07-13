@@ -57,6 +57,20 @@ supplier-level $\theta$ prior from anchor DE fits, DCIR and
 initial-capacity features from a $\sim{}2$-hour characterisation, and a
 $K{=}50$-cycle SoH context window from the target cell.
 
+\begin{figure}[H]
+  \centering
+  \IfFileExists{../V7_flowchart_cropped.png}{%
+    \includegraphics[width=0.68\textwidth]{../V7_flowchart_cropped.png}%
+  }{%
+    \fbox{\parbox[c][0.8cm][c]{0.9\textwidth}{\centering\footnotesize
+      [placeholder: V7\_flowchart\_cropped.png]}}%
+  }
+  \caption{Pipeline: anchor characterisation and DE-fit feed a PyBaMM
+  synthesis corpus; the SciML operator ingests $\theta$, DCIR/capacity
+  features and $K{=}50$ observed cycles to forecast SoH.}
+  \label{fig:pipeline}
+\end{figure}
+
 \textbf{Results.}
 Evaluation on one cell per supplier that was excluded from
 neural-operator training (CALB\_0029, EVE\_0003, REPT\_0031) gives SoH
@@ -76,20 +90,6 @@ training corpus; and the extrapolation beyond the observed cycling
 window is not yet experimentally verified. A baseline comparison
 against linear/exponential fits and against the operator without
 SoH-offset augmentation is planned next.
-
-\begin{figure}[H]
-  \centering
-  \IfFileExists{../V7_flowchart_cropped.png}{%
-    \includegraphics[width=0.68\textwidth]{../V7_flowchart_cropped.png}%
-  }{%
-    \fbox{\parbox[c][0.8cm][c]{0.9\textwidth}{\centering\footnotesize
-      [placeholder: V7\_flowchart\_cropped.png]}}%
-  }
-  \caption{Pipeline: anchor characterisation and DE-fit feed a PyBaMM
-  synthesis corpus; the SciML operator ingests $\theta$, DCIR/capacity
-  features and $K{=}50$ observed cycles to forecast SoH.}
-  \label{fig:pipeline}
-\end{figure}
 
 \begin{figure}[H]
   \centering
