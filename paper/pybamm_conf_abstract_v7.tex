@@ -42,8 +42,8 @@ plus the first 50 operating cycles, over an approximately 500-cycle
 horizon into the deeper second-life regime.
 
 \textbf{Workflow (Figure~\ref{fig:pipeline}).}
-Seven anchor cells from three suppliers (CALB, EVE, REPT) are
-characterised with OCV, HPPC, GITT and RPT (~7--9 days per cell,
+Seven anchor cells from three suppliers (CALB, EVE, REPT) are put
+through a full R\&D characterisation suite ($\sim{}25$ days per anchor,
 one-time cohort cost) and long-term-cycled at 0.25--0.5\,C.
 Beginning-of-life and five degradation parameters (SEI growth,
 lithium plating, negative-electrode active-material loss) are
@@ -73,36 +73,34 @@ $K{=}50$-cycle SoH context window from the target cell.
 
 \textbf{Results.}
 Evaluation on one cell per supplier that was excluded from
-neural-operator training (CALB\_0029, EVE\_0003, REPT\_0031) gives SoH
-RMSEs of 0.95, 0.83 and 0.82 percentage points on the experimentally
-observed forecast region (Figure~\ref{fig:heldout}); mean 0.87~pp,
-cross-supplier standard deviation 0.06~pp. Comparable errors across
-suppliers provide preliminary evidence of cross-supplier transfer within
-the evaluated LFP families. The trained operator predicts a 500-cycle
-trajectory in \textbf{18\,ms}, versus $\sim{}6$\,s for the equivalent
-PyBaMM SPMe simulation ($\sim{}350{\times}$ speed-up), enabling
-per-cell inference at the pace of a field-screening BMS query rather
-than an overnight compute job.
+neural-operator training (CALB\_0029, EVE\_0003, REPT\_0028) gives SoH
+RMSEs of 0.96, 0.79 and 0.47 percentage points on the experimentally
+observed forecast region (Figure~\ref{fig:heldout}), mean 0.74~pp:
+preliminary evidence of cross-supplier transfer within the evaluated LFP
+families. The trained operator forecasts 500 cycles in \textbf{18\,ms}
+($\sim{}350{\times}$ faster than the equivalent PyBaMM SPMe run). The
+inference input (DCIR + RPT + 50 cycles at 0.5\,C) takes
+$\sim{}12$ days per cell: \textbf{$\sim{}55\%$ shorter than the full
+R\&D characterisation suite} and \textbf{$\sim{}55{\times}$ shorter than
+cycle-to-EoL testing} ($\sim{}650$ days at the pilot anchor $\theta$).
 
 \textbf{Limitations.} Cross-supplier claim rests on three excluded cells;
-the 500-cycle forecast horizon is bounded by the 2500-cycle PyBaMM
-training corpus; and the extrapolation beyond the observed cycling
-window is not yet experimentally verified. A baseline comparison
-against linear/exponential fits and against the operator without
-SoH-offset augmentation is planned next.
+extrapolation beyond the observed cycling window is not yet
+experimentally verified; baselines against linear/exponential fits and
+the operator without SoH-offset augmentation are planned next.
 
 \begin{figure}[H]
   \centering
   \IfFileExists{figures/heldout_v7_1_combined.pdf}{%
-    \includegraphics[width=0.80\textwidth]{figures/heldout_v7_1_combined.pdf}%
+    \includegraphics[width=0.74\textwidth]{figures/heldout_v7_1_combined.pdf}%
   }{%
     \fbox{\parbox[c][0.8cm][c]{0.9\textwidth}{\centering\footnotesize
       [placeholder: figures/heldout\_v7\_1\_combined.pdf]}}%
   }
   \caption{Held-out forecasts (one cell per supplier). Grey band =
   $K{=}50$ context; blue = observed; red dashed = forecast; pink band =
-  unverified extrapolation beyond observed window. Per-cell RMSE 0.95,
-  0.83, 0.82~pp (mean 0.87, std 0.06).}
+  unverified extrapolation beyond observed window. Per-cell RMSE 0.96,
+  0.79, 0.47~pp (mean 0.74, std 0.20).}
   \label{fig:heldout}
 \end{figure}
 

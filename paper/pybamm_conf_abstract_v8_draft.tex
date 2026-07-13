@@ -1,0 +1,160 @@
+% PyBaMM Battery Modelling Conference 2026 — 1-page abstract, v8 draft.
+% Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
+% Deadline: 2026-07-15 UTC (max 1 A4 page, Arial >= 12 pt).
+%
+% Alternative titles preserved for last-minute swap:
+% (a) "Hybrid SoH Forecasting of Second-Life LFP Cells Using
+%      Physics-Informed Data Generation"
+% (b) "Combining Empirical and Neural Forecasting Models for Adaptive
+%      Second-Life LFP State-of-Health Prediction"
+%
+% Pre-written theta-outcome sentences (uncomment ONE after ablations land):
+% Outcome A (full theta wins):
+%   The neural operator incorporates physics-informed degradation descriptors
+%   derived from electrochemical modelling, improving selection of complex
+%   degradation trajectories.
+% Outcome B (reduced theta wins):
+%   A reduced physics-informed descriptor set provided effective conditioning
+%   while avoiding overparameterisation from poorly identifiable degradation
+%   parameters.
+% Outcome C (no-theta wins):
+%   PyBaMM-generated trajectories improve training diversity, while the final
+%   inference model relies primarily on early-cycle degradation behaviour.
+%
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[a4paper,top=0.8cm,bottom=0.8cm,left=1.3cm,right=1.3cm]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\captionsetup{font=footnotesize,labelfont=bf,labelsep=colon,skip=2pt}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.10em}
+
+\begin{document}
+
+\begin{center}
+{\bfseries\large Adaptive State-of-Health Forecasting for Second-Life LFP Cells\\
+Using Physics-Informed Synthetic Data and Hybrid Model Selection}\\[0.30em]
+\underline{Krishna Chaitanya Vaddepally}\\
+\emph{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India} \textbullet\
+krishna.vaddepally@turno.club\\[0.10em]
+{\footnotesize Theme: Data-driven Methods \textbullet\ Presentation: Oral (poster acceptable)}
+\end{center}
+
+Second-life reuse of retired lithium iron phosphate (LFP) cells requires
+fast prediction of future degradation for each incoming cell. Instead of
+assuming a single degradation model is optimal for all cells, we develop
+an adaptive forecasting framework that selects between simple empirical
+extrapolation and a PyBaMM-trained neural operator based on early-cycle
+degradation complexity.
+
+\textbf{Approach (Figure~\ref{fig:selector}).}
+For each target cell the pipeline uses: (1) a short diagnostic
+characterisation together with the first $K{=}50$ operating cycles as
+early-cycle context; (2) a PyBaMM~[1] SPMe corpus on Prada2013 LFP
+chemistry~[2] with perturbed degradation trajectories around seven anchor
+cells from three suppliers (CALB, EVE, REPT), providing training
+trajectories that cover the second-life SoH range; (3) a
+$\theta$-conditioned Neural ODE~[3] operator that forecasts the residual
+SoH trajectory from the diagnostic features, the $K{=}50$ context window
+and degradation-model-derived features; (4) an exponential
+$SoH(n){=}a{+}b\,e^{-cn}$ baseline fitted on the same context window; and
+(5) a residual-based selector that predicts the last 20\% of the context
+from a fit on the first 80\% and picks the neural operator whenever the
+context-holdout residual exceeds a predeclared threshold $\tau$, chosen
+on a synthetic-only selector pool disjoint from the external cells.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=4mm and 6mm,
+    every node/.style={font=\footnotesize},
+    box/.style={draw,rounded corners=1pt,inner sep=2pt,align=center,minimum height=6mm},
+    dec/.style={draw,diamond,aspect=2.4,inner sep=1pt,align=center},
+    arr/.style={-{Latex[length=1.4mm]}},
+  ]
+    \node[box] (ctx) {Early diagnostic + $K{=}50$ cycles};
+    \node[box,right=of ctx] (res) {Context-holdout\\residual $r$};
+    \node[dec,right=of res] (dec) {$r > \tau$?};
+    \node[box,above right=1mm and 6mm of dec] (op) {Neural operator\\{\scriptsize\emph{trained on PyBaMM SPMe corpus}}};
+    \node[box,below right=1mm and 6mm of dec] (exp) {Exponential\\extrapolation};
+    \node[box,right=18mm of dec,xshift=18mm] (out) {SoH trajectory\\forecast};
+    \draw[arr] (ctx) -- (res);
+    \draw[arr] (res) -- (dec);
+    \draw[arr] (dec) -- node[above,sloped]{yes (complex)} (op);
+    \draw[arr] (dec) -- node[below,sloped]{no (smooth)} (exp);
+    \draw[arr] (op) -- (out);
+    \draw[arr] (exp) -- (out);
+  \end{tikzpicture}
+  \caption{Adaptive selector between empirical exponential and
+  physics-informed neural forecast. A context-holdout residual measures
+  early-cycle degradation complexity; the predeclared threshold $\tau$ is
+  chosen on synthetic trajectories, not on the external cells.}
+  \label{fig:selector}
+\end{figure}
+
+\textbf{Results.}
+Across three external LFP cells excluded from operator training
+(CALB\_0029, EVE\_0003, REPT\_0028), exponential forecasting achieved
+0.70~pp mean RMSE, while the physics-informed operator achieved 0.80~pp.
+A context-residual selector combined the complementary models and
+reduced mean RMSE to 0.47~pp, matching the oracle model selection on the
+evaluated cells. The residual-based selector reproduced the oracle model
+choice on the three evaluated external cells: exponential for the two
+smoother trajectories (CALB\_0029, REPT\_0028) and the neural operator
+for the noisier EVE\_0003. The exponential baseline and the operator
+show complementary strengths -- exponential wins on smooth fade while
+the operator wins on the more nonlinear trajectory -- motivating
+selection rather than committing to either model alone.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{External held-out SoH RMSE (percentage points) on three cells
+excluded from operator training. The hybrid row uses the full-$\theta$
+operator when the residual-based selector chooses it.}
+\label{tab:decision}
+\begin{tabular}{lcccc}
+\toprule
+Method & CALB\_0029 & EVE\_0003 & REPT\_0028 & Mean \\
+\midrule
+Exponential                     & 0.44 & 1.54 & 0.13 & 0.70 \\
+Full-$\theta$ operator          & 1.06 & 0.84 & 0.51 & 0.80 \\
+No-$\theta$ operator            & 1.08 & 0.89 & 0.49 & 0.82 \\
+Reduced-$\theta$ operator       & 1.18 & 0.97 & 0.55 & 0.90 \\
+Hybrid ($\tau{=}0.54$~pp)       & \textbf{0.44} & \textbf{0.84} & \textbf{0.13} & \textbf{0.47} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ablations at matched split and seed indicate that PyBaMM-generated
+trajectories improve training diversity, while inference performance is
+primarily driven by early-cycle degradation behaviour rather than explicit
+degradation-parameter conditioning.
+
+The current evaluation is limited to three external cells, and
+longer-horizon projections require additional experimental validation.
+
+\vspace{-0.2em}
+{\footnotesize
+[1]~V.~Sulzer et al., \emph{J.\ Open Res.\ Software} \textbf{9} (2021), 14.
+[2]~M.~Prada et al., \emph{J.\ Power Sources} \textbf{219} (2012), 353--362.
+[3]~R.\,T.\,Q.~Chen et al., \emph{NeurIPS} (2018).
+}
+
+\end{document}

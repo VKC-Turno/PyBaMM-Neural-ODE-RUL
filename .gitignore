@@ -77,3 +77,9 @@ paper/*.synctex.gz
 
 # ── Notebooks ──
 .ipynb_checkpoints/
+
+# ── Proprietary data (added 2026-07-13) ──
+# Root-level battery cohort data files (Turno proprietary)
+/RD_CHARACTERIZATION_CALB_EVE.csv
+/eve_pr_dcir.csv
+/battery_data_rept_all_*.xlsx

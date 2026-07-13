@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
+import pandas as pd
 import torch
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -79,25 +80,37 @@ def forecast_v7(model: OperatorV7,
                 make: str,
                 K: int,
                 forecast_len: int,
+                smooth_window: int = 1,   # 1 = no smoothing (default);
+                                          # smoothing tested at w=5 hurts
+                                          # RMSE (EVE_0003 0.83 -> 1.20 pp),
+                                          # kept as an experimental knob only.
                 ) -> dict:
     """Run the v7 operator on ``{make}_{cell_id}`` and return a report dict.
 
     Steps
     -----
     1. Load per-cycle observed SoH (nameplate-normalised via phase3_validate).
-    2. Build context_delta = obs[:K] - obs[0]; context_soh_start = obs[0].
-    3. Build x_health (v7 uses [T, c_rate, DCIR] — first three fields of the
-       v6 5-dim vector).
-    4. Load theta_norm from configs/deg_params/{make}_{cell_id}.yaml
-       (CALB_0029.yaml is a copy of CALB_0009's fitted theta per project doc).
-    5. Integrate over target_cycles = [K, K+forecast_len].
+    2. Apply a centred rolling-median filter (window=smooth_window) to the
+       first K observed cycles to suppress cycle-to-cycle measurement noise
+       before feeding the encoder. Raw obs (unsmoothed) is still used for
+       RMSE against the forecast.
+    3. Build context_delta = smoothed_obs[:K] - smoothed_obs[0].
+    4. Build x_health (v7 uses [T, c_rate, DCIR]).
+    5. Load theta_norm; integrate over target_cycles = [K, K+forecast_len].
     """
     obs_n, obs_soh = _load_longterm_soh(cell_id, make)
     if obs_n.size < K:
         raise ValueError(f"{make}_{cell_id}: only {obs_n.size} observed cycles, "
                          f"need at least K={K}")
 
-    context_obs = obs_soh[:K].astype(np.float32)
+    context_raw = obs_soh[:K].astype(np.float32)
+    if smooth_window and smooth_window > 1:
+        context_obs = (pd.Series(context_raw)
+                        .rolling(int(smooth_window), center=True, min_periods=1)
+                        .median()
+                        .to_numpy(dtype=np.float32))
+    else:
+        context_obs = context_raw
     context_soh_start = float(context_obs[0])
     context_delta = (context_obs - context_soh_start).astype(np.float32)
 
