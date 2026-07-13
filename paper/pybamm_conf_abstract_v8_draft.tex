@@ -71,9 +71,8 @@ chemistry~[2] with perturbed degradation trajectories around seven anchor
 cells from three suppliers (CALB, EVE, REPT), providing training
 trajectories that cover the second-life SoH range; (3) a
 Neural ODE~[3] operator trained using PyBaMM-generated degradation
-trajectories and degradation-model-derived features, forecasting the
-residual SoH trajectory from the diagnostic features and the $K{=}50$
-context window; (4) an exponential
+trajectories and degradation-model-derived features, forecasting future
+SoH from the diagnostic features and the $K{=}50$ context window; (4) an exponential
 $SoH(n){=}a{+}b\,e^{-cn}$ baseline fitted on the same context window; and
 (5) a residual-based selector that predicts the last 20\% of the context
 from a fit on the first 80\% and picks the neural operator whenever the
@@ -112,17 +111,14 @@ on a synthetic-only selector pool disjoint from the external cells.
 
 \textbf{Results.}
 Across three external LFP cells excluded from operator training
-(CALB\_0029, EVE\_0003, REPT\_0028), exponential forecasting achieved
-0.70~pp mean RMSE, while the physics-informed operator achieved 0.80~pp.
-A context-residual selector combined the complementary models and
-reduced mean RMSE to 0.47~pp, matching the oracle model choice on the
-evaluated cells. The residual-based selector reproduced the oracle model
-choice on the three evaluated external cells: exponential for the two
-smoother trajectories (CALB\_0029, REPT\_0028) and the neural operator
-for the noisier EVE\_0003. The exponential baseline and the operator
-show complementary strengths -- exponential wins on smooth fade while
-the operator wins on the more nonlinear trajectory -- motivating
-selection rather than committing to either model alone.
+(CALB\_0029, EVE\_0003 and REPT\_0028), exponential forecasting achieved
+0.70~pp mean RMSE, while the PyBaMM-trained neural operator achieved
+0.80~pp. The context-residual selector combined their complementary
+strengths, reducing mean RMSE to 0.47~pp and reproducing the oracle
+choice on all three evaluated cells: exponential forecasting for
+CALB\_0029 and REPT\_0028, and the neural operator for EVE\_0003. These
+results motivate adaptive model selection rather than committing to
+either forecasting method alone.
 
 \begin{table}[H]
 \centering
