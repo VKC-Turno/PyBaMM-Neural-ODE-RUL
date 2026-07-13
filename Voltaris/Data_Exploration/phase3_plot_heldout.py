@@ -253,8 +253,9 @@ def plot_heldout_overlay(validation_results: dict,
                 ax.fill_between(n_p, p10, p90, color=BAND_COLOR,
                                 alpha=0.15, lw=0, zorder=1)
 
-            # EoL reference.
-            ax.axhline(0.80, color=EOL_COLOR, lw=0.6, ls=":", zorder=2)
+            # (No EoL reference line: on the actual-SoH scale these
+            #  second-life cells sit below 0.80 at ingest, so the
+            #  threshold is outside the y-range for 2/3 panels.)
 
             # Observed + predicted overlays.
             ax.plot(obs_n, obs_soh, color=OBS_COLOR, lw=1.2,
@@ -266,7 +267,13 @@ def plot_heldout_overlay(validation_results: dict,
             xmax = max(float(obs_n[-1]),
                        float(n_p[-1]) if n_p.size else 0.0)
             ax.set_xlim(0, xmax)
-            ax.set_ylim(*panel["ylim"])
+            # Data-driven y-limits with 5% padding — robust to whichever
+            # scale (nominal-normalised, test-window-normalised, or raw
+            # capacity) the observed and predicted arrays are in.
+            y_all = np.concatenate([obs_soh, y_p]) if n_p.size else obs_soh
+            y_lo, y_hi = float(np.nanmin(y_all)), float(np.nanmax(y_all))
+            pad = max(0.02, 0.08 * (y_hi - y_lo))
+            ax.set_ylim(y_lo - pad, y_hi + pad)
             ax.set_xlabel("cycle number")
             ax.set_title(f"{key}  ({panel['subtitle']})")
             ax.tick_params(direction="out", length=2.5)
