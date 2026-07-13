@@ -111,6 +111,41 @@ _DATASET_OUT_DEFAULT = Path("configs/phase3_corpus/_dataset.parquet")
 # ---------------------------------------------------------------------------
 # Public API — x_health, soh_traj, theta_norm
 # ---------------------------------------------------------------------------
+import re as _re
+
+_PROTOCOL_RE = _re.compile(r"^[A-Z]+_([\d.]+)C_([\d.]+)D_(\d+)_(\d+)$")
+_BOL_PARAMS_DIR = Path("configs/bol_params")
+_BOL_DCIR_CACHE: dict[str, float] = {}
+
+
+def _parse_c_rate(protocol_id: str) -> float:
+    """Parse the C-rate from a protocol_id like 'CALB_0.5C_0.5D_15_100'.
+    Returns NaN if the id doesn't match the canonical format."""
+    if not protocol_id or not isinstance(protocol_id, str):
+        return float("nan")
+    m = _PROTOCOL_RE.match(protocol_id)
+    return float(m.group(1)) if m else float("nan")
+
+
+def _bol_dcir_mohm(anchor_id: str) -> float:
+    """Load the anchor cell's BOL DCIR (R0) in milliohms from its
+    Phase-1 bol_params yaml. Cached per anchor_id. NaN if missing."""
+    if anchor_id in _BOL_DCIR_CACHE:
+        return _BOL_DCIR_CACHE[anchor_id]
+    p = _BOL_PARAMS_DIR / f"{anchor_id}.yaml"
+    if not p.exists():
+        _BOL_DCIR_CACHE[anchor_id] = float("nan")
+        return float("nan")
+    try:
+        doc = yaml.safe_load(p.read_text()) or {}
+        r0_ohm = float(doc.get("resistance", {}).get("R0_Ohm", "nan"))
+        val = r0_ohm * 1000.0 if np.isfinite(r0_ohm) else float("nan")
+    except Exception:  # noqa: BLE001
+        val = float("nan")
+    _BOL_DCIR_CACHE[anchor_id] = val
+    return val
+
+
 def extract_x_health(trajectory_df: pd.DataFrame,
                      anchor_theta: dict | None = None,
                      ambient_C: float = 25.0) -> np.ndarray:
@@ -120,15 +155,17 @@ def extract_x_health(trajectory_df: pd.DataFrame,
 
     Fields:
       0 temperature_C         ambient (25 °C by cohort convention)
-      1 c_rate                simulation C-rate (from cycle 1)
-      2 dcir_mOhm             DCIR at cycle 1
+      1 c_rate                cycling C-rate from the anchor's protocol_id
+      2 dcir_mOhm             BOL R0 from configs/bol_params/{anchor}.yaml
       3 ic_peak1_shift_V      dQ/dV peak-1 shift vs cycle 1 (= 0 by defn)
       4 ic_peak2_area_norm    peak-2 area normalised to cycle 1 (= 1 by defn)
 
-    `anchor_theta` is accepted for API symmetry with `theta_norm` extraction
-    and is currently unused by this vector — the θ context lives in
-    `theta_norm`, not `x_health`. Kept as a parameter so callers can pass the
-    full anchor record without a signature change later.
+    Bug fix (2026-07-13): previous version tried `first.get("c_rate")` and
+    `first.get("dcir_mOhm")` but the raw sweep parquets carry neither column
+    (only `protocol_id`); every sample got NaN → 0 for both fields, so the
+    operator saw x_health = [25, 0, 0, 0, 1] for every one of 489 training
+    samples. Fixed to parse c_rate from protocol_id and load DCIR from the
+    anchor's Phase-1 BOL yaml.
     """
     if trajectory_df.empty:
         return np.full(len(HEALTH_FEATURES), np.nan, dtype=np.float32)
@@ -136,16 +173,19 @@ def extract_x_health(trajectory_df: pd.DataFrame,
     df = trajectory_df.sort_values("cycle_n").reset_index(drop=True)
     first = df.iloc[0]
 
+    # c_rate from protocol_id (cohort convention: MAKE_{c}C_{d}D_{lo}_{hi}).
+    c_rate = _parse_c_rate(str(first.get("protocol_id", "")))
+    # DCIR from anchor BOL yaml (per-anchor constant).
+    anchor_id = str(first.get("anchor_id", "")) or ""
+    dcir_mOhm = _bol_dcir_mohm(anchor_id) if anchor_id else float("nan")
+
     x = np.array([
         ambient_C,
-        float(first.get("c_rate", np.nan)),
-        float(first.get("dcir_mOhm", np.nan)),
+        c_rate,
+        dcir_mOhm,
         0.0,   # ic_peak1_shift_V — zero at cycle 1 by construction
         1.0,   # ic_peak2_area_norm — normalised to itself at cycle 1
     ], dtype=np.float32)
-    # In the current synthetic sweeps some values (e.g. dcir_mOhm on failed
-    # DCIR estimate) can arrive NaN. Follow the SyntheticTrajectoryDataset
-    # convention and replace with a neutral 0 (standardised-space centre).
     return np.where(np.isfinite(x), x, 0.0).astype(np.float32)
 
 

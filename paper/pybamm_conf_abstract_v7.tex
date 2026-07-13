@@ -1,0 +1,122 @@
+% PyBaMM Battery Modelling Conference 2026 --- 1-page abstract, v7.
+% Author: Krishna Chaitanya Vaddepally, Turno (Blubble Pvt. Ltd.)
+% Deadline: 2026-07-15 UTC.
+%
+% v7 upgrade over v6 (kept intact as pybamm_conf_abstract_v6_final.tex):
+%   - Encoder--decoder neural operator: K=50 observed cycles feed a context
+%     encoder that conditions the SoH decoder (v6 was a single-shot theta->SoH
+%     map that only "generalised" because held-out cells reused anchor theta).
+%   - SoH-translation augmentation expands the PyBaMM corpus so the operator
+%     handles second-life cells that start well below the simulated SoH range.
+%   - Held-out RMSEs improve from 1.50 pp (v6) to 0.87 pp (v7); cross-supplier
+%     standard deviation drops from 0.32 pp to 0.06 pp.
+%
+% Formatted per the PyBaMM 2025 book-of-abstracts template:
+% Arial/Helvetica 12 pt minimum, centred bold title, presenting author
+% underlined, centred italic affiliation, flowing narrative paragraphs
+% without section headings, Figure captions, numbered References.
+% Compile: cd paper && latexmk -pdf pybamm_conf_abstract_v7.tex
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{helvet}   % Arial-equivalent sans-serif; PyBaMM template accepts Arial >= 12 pt
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[a4paper,top=1.3cm,bottom=1.3cm,left=1.7cm,right=1.7cm]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\captionsetup{font=footnotesize,labelfont=bf,labelsep=colon,skip=3pt}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.15em}
+
+\begin{document}
+\enlargethispage{6\baselineskip}
+
+\begin{center}
+{\bfseries\large Cross-supplier state-of-health forecasting for second-life\\
+LFP cells with a PyBaMM-trained encoder--decoder neural operator}\\[0.4em]
+\underline{Krishna Chaitanya Vaddepally}\\
+\emph{Turno (Blubble Pvt.\ Ltd.), Bengaluru, India}\\
+krishna.vaddepally@turno.club\\[0.2em]
+{\footnotesize Theme: Data-driven Methods \textbullet\ Presentation preference: Oral (poster acceptable)}
+\end{center}
+
+Second-life reuse of retired lithium iron phosphate (LFP) cells is limited
+by the time and cost of characterising each cell's future ageing.
+Conventional lifetime tests take months, and empirical models transfer
+poorly between suppliers with different chemistries. We present a
+physics-conditioned encoder--decoder neural operator that forecasts the
+full state-of-health (SoH) trajectory to end-of-second-life from a
+compact diagnostic snapshot plus $\sim{}50$ cycles of field cycling data.
+
+The workflow (Figure~\ref{fig:pipeline}) has three stages. Phase~1
+identifies beginning-of-life electrochemistry per anchor cell from OCV,
+HPPC, GITT and RPT. Phase~2 fits five degradation parameters --- SEI
+growth rate, SEI molar volume, solvent diffusivity, lithium plating
+rate and negative-electrode loss of active material --- by differential
+evolution against measured cycling. Phase~3 runs PyBaMM~[1] with the
+SPMe formulation and Prada2013 LFP chemistry~[2] to synthesise 490
+perturbed trajectories around seven anchor cells across three suppliers
+(CALB, EVE, REPT); a SoH-translation augmentation expands this into
+14{,}096 (context,~target) pairs covering the second-life SoH regime,
+teaching the operator to be translation-invariant on the absolute SoH
+axis. The operator is a $\theta$-conditioned Neural ODE~[3] whose
+decoder is integrated by \texttt{torchdiffeq} (dopri5) under a
+softplus-monotonic constraint, and whose context encoder ingests
+$K{=}50$ observed cycles of the target cell. Inference therefore
+consumes three inputs: the nearest-supplier $\theta$ vector as a
+physical prior, DCIR and initial-capacity features from a short
+characterisation, and the $K$ observed cycles.
+
+Held-out evaluation used one previously unseen cell per supplier
+(CALB\_0029, EVE\_0003, REPT\_0031). Per-cell SoH root-mean-square errors
+were 0.95, 0.83 and 0.82 percentage points respectively, with mean
+$0.87$~pp and cross-supplier standard deviation $0.06$~pp; every held-out
+cell fell below one percentage point. Against the v6 single-shot baseline
+(mean 1.50~pp, std 0.32~pp) the encoder--decoder cuts mean error by
+42\% and cross-supplier spread by more than five-fold. Each forecast is
+a genuine forward projection: the decoder extends roughly 500 cycles
+beyond the observed window into deeper second-life SoH values. Limitations:
+the cross-supplier claim rests on three held-out cells; the forecast
+horizon is capped by the 2500-cycle PyBaMM corpus; and beyond-window
+projections remain experimentally unverified.
+
+\begin{figure}[h]
+  \centering
+  \IfFileExists{../V7_flowchart.png}{%
+    \includegraphics[width=0.78\textwidth]{../V7_flowchart.png}%
+  }{%
+    \fbox{\parbox[c][1.2cm][c]{0.95\textwidth}{\centering\footnotesize
+      [placeholder: V7\_flowchart.png]}}%
+  }
+  \caption{Pipeline: characterisation and long-term cycling feed
+  Phase~1/2 identification; PyBaMM synthesises a perturbed training
+  corpus; the SciML operator ingests $\theta$, DCIR-derived features and
+  $K{=}50$ observed cycles, and outputs the full SoH trajectory to
+  end-of-second-life. Held-out cross-supplier RMSE: CALB\_0029 0.95, EVE\_0003 0.83,
+  REPT\_0031 0.82 percentage points (mean 0.87, std 0.06).}
+  \label{fig:pipeline}
+\end{figure}
+
+\vspace{-0.3em}
+{\footnotesize\textbf{References:}
+\begin{enumerate}[leftmargin=1.3em,itemsep=0.05em,topsep=0.0em]
+  \item V.\ Sulzer, S.\,G.\ Marquis, R.\ Timms, M.\ Robinson, S.\,J.\ Chapman,
+  ``Python Battery Mathematical Modelling (PyBaMM)'',
+  \emph{J.\ Open Res.\ Software} \textbf{9} (2021), 14.
+  \item M.\ Prada, D.\ Di~Domenico, Y.\ Creff, J.\ Bernard, V.\ Sauvant-Moynot,
+  F.\ Huet, ``Simplified electrochemical and thermal model of
+  LiFePO$_4$--graphite Li-ion batteries'',
+  \emph{J.\ Power Sources} \textbf{219} (2012), 353--362.
+  \item R.\,T.\,Q.\ Chen, Y.\ Rubanova, J.\ Bettencourt, D.\ Duvenaud,
+  ``Neural Ordinary Differential Equations'',
+  \emph{NeurIPS} (2018).
+\end{enumerate}}
+
+\end{document}
