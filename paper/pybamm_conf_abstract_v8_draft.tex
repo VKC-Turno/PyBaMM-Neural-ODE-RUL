@@ -92,8 +92,11 @@ points, respectively (Figure~\ref{fig:trajectories}). Across these three
 cells, the frozen residual-based selector chose the lower-error model
 for all three and reduced mean RMSE to \textbf{0.47 percentage points},
 a 33\% improvement relative to the best fixed strategy. Exponential
-extrapolation performed best for CALB\_0029 and REPT\_0028, whereas the
-neural operator performed best for EVE\_0003.
+extrapolation performed best for CALB\_0029 and REPT\_0028, and the
+neural operator performed best for EVE\_0003. Long-horizon projections
+on REPT\_0028 are additionally compared with the manufacturer's
+cycle-life specification ($\geq$2500 cycles to 80\% capacity) as a
+reference endpoint rather than cell-specific validation.
 
 \begin{figure}[H]
   \centering
@@ -104,24 +107,22 @@ neural operator performed best for EVE\_0003.
       [placeholder]}}%
   }
   \caption{Forecasts evaluated against measured post-context SoH for
-  three external cells. Grey shading denotes the $K{=}50$ context
-  window; orange dashed and red dotted lines show exponential and
-  neural-operator forecasts, respectively. Panels use independent
-  y-axis ranges.}
+  three external cells (grey band = $K{=}50$ context; independent x/y
+  axes). For REPT\_0028, faded extensions show long-horizon projections
+  to the datasheet cycle-life reference ($\geq$2500 cycles to 80\%
+  capacity) --- not a measured continuation of the cell.}
   \label{fig:trajectories}
 \end{figure}
 
-Matched ablations showed little additional benefit from explicit
-degradation-parameter conditioning: full-, no- and reduced-$\theta$
-operators achieved mean RMSEs of 0.80, 0.82 and 0.90 percentage points,
-respectively. These results suggest that matching model complexity to
-observed early-cycle behaviour may be more effective than applying one
-forecasting model uniformly across heterogeneous second-life cells. By
-reducing the testing window from approximately 28 to 11 days, the
-proposed workflow could increase laboratory throughput and enable
-earlier qualification of cells for second-life applications.
-Evaluation is currently limited to three external cells, and
-longer-horizon projections require additional experimental validation.
+Matched ablations showed limited benefit from explicit
+degradation-parameter conditioning (full-/no-/reduced-$\theta$ operators:
+0.80, 0.82, 0.90 pp mean RMSE), supporting the framework's premise that
+matching model choice to early-cycle behaviour is more effective than
+applying either model uniformly. Reducing the per-cell testing window
+from $\sim$28 to $\sim$11 days could increase laboratory throughput and
+enable earlier qualification of cells for second-life reuse. Evaluation
+is limited to three external cells; longer-horizon projections require
+additional experimental validation.
 
 \vspace{-0.6em}
 {\scriptsize
