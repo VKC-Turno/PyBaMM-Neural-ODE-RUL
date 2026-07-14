@@ -93,10 +93,11 @@ cells, the frozen residual-based selector chose the lower-error model
 for all three and reduced mean RMSE to \textbf{0.47 percentage points},
 a 33\% improvement relative to the best fixed strategy. Exponential
 extrapolation performed best for CALB\_0029 and REPT\_0028, and the
-neural operator performed best for EVE\_0003. Long-horizon projections
-on REPT\_0028 are additionally compared with the manufacturer's
-cycle-life specification ($\geq$2500 cycles to 80\% capacity) as a
-reference endpoint rather than cell-specific validation.
+neural operator performed best for EVE\_0003. For REPT\_0028, the
+neural-operator projection extrapolated to $\sim$2500 cycles remains
+broadly consistent with the manufacturer's cycle-life specification
+($\geq$2500 cycles to 80\% capacity), taken as a reference endpoint
+rather than experimental validation.
 
 \begin{figure}[H]
   \centering
@@ -107,10 +108,9 @@ reference endpoint rather than cell-specific validation.
       [placeholder]}}%
   }
   \caption{Forecasts evaluated against measured post-context SoH for
-  three external cells (grey band = $K{=}50$ context; independent x/y
-  axes). For REPT\_0028, faded extensions show long-horizon projections
-  to the datasheet cycle-life reference ($\geq$2500 cycles to 80\%
-  capacity) --- not a measured continuation of the cell.}
+  three external cells. Grey shading denotes the $K{=}50$ context
+  window and the vertical line marks the transition from context to
+  forecast. Panels use independent y-axis ranges.}
   \label{fig:trajectories}
 \end{figure}
 
